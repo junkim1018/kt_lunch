@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 // 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
 const restaurantDB = [
   {
-    name: "파이프 그라운드 광화문",
+    name: "파이프그라운드 광화문점",
     category: "이탈리안 · 피자/파스타",
     cuisine: "western",
     menus: ["옥수수 피자 26,000원", "화이트 라구 파스타 25,000원", "시저샐러드 14,000원"],
@@ -52,7 +52,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "광화문 석갈비 디타워점",
+    name: "광화문석갈비 D타워점",
     category: "한식 · 갈비/구이",
     cuisine: "korean",
     menus: ["돼지 석갈비 18,000원", "냉면 13,000원", "갈비탕 15,000원"],
@@ -144,7 +144,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "광화문 뚝감",
+    name: "광화문뚝감",
     category: "한식 · 감자탕/뼈해장국",
     cuisine: "korean",
     menus: ["감자탕(소) 13,000원", "뼈해장국 10,000원", "항정살 구이 15,000원"],
@@ -189,7 +189,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "우하나 종각점",
+    name: "우하나 종각역점",
     category: "한식 · 한우 오마카세",
     cuisine: "korean",
     menus: ["런치 오마카세 코스 45,000원~", "한우 육사시미", "와규 스테이크"],
@@ -209,28 +209,6 @@ const restaurantDB = [
     reservation: [
       { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/woohana_jonggak", color: "#FF6B35" },
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/우하나+종각점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "광화문 미진",
-    category: "한식 · 메밀국수/냉면",
-    cuisine: "korean",
-    menus: ["메밀국수 12,000원", "비빔냉면 13,000원", "메밀전병 8,000원"],
-    price: "8,000~16,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 2분 (디타워 내)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["normal","tired"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "미쉐린 빕구르망 선정! 1952년부터 광화문을 지킨 메밀국수 노포. 저GI 메밀로 가볍고 건강하게. 더운 날 냉메밀 한 그릇이 딱.",
-    naver: "https://map.naver.com/v5/search/미진+광화문",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/미진+광화문", color: "#03C75A" },
     ]
   },
   {
@@ -257,7 +235,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "모던샤브하우스 광화문",
+    name: "모던샤브하우스 광화문D타워점",
     category: "한식 · 프리미엄 샤브샤브/스키야키 무한리필",
     cuisine: "korean",
     menus: ["시그니처 코스(무한리필) 58,000원", "스페셜 코스 78,000원", "엑설런트 코스 88,000원"],
@@ -281,7 +259,7 @@ const restaurantDB = [
   },
   // ⛔ 꼬소한 부뚜막 광화문광장점 — 검색 결과 없음, 실존 불확실. 제거.
   {
-    name: "광화문 국밥",
+    name: "광화문국밥",
     category: "한식 · 돼지국밥/평양냉면",
     cuisine: "korean",
     menus: ["돼지국밥 9,500원", "돼지국밥 특 13,000원", "평양냉면 13,000원"],
@@ -305,7 +283,7 @@ const restaurantDB = [
   // ── 700m 확장 구역 ──────────────────────────────────────────────────────────
 
   {
-    name: "무교동 북어국집",
+    name: "무교동북어국집",
     category: "한식 · 북어해장국 (1968년 노포)",
     cuisine: "korean",
     menus: ["북어해장국 10,000원 (단일메뉴)", "밥·국 무한리필", "계란후라이 추가 500원"],
@@ -371,27 +349,6 @@ const restaurantDB = [
   },
 
   {
-    name: "인사동 수제비",
-    category: "한식 · 수제비/칼국수",
-    cuisine: "korean",
-    menus: ["수제비 10,000원", "칼국수 10,000원", "비빔국수 10,000원"],
-    price: "10,000~12,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 11분 (인사동8길 14-1)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["light","vegetarian","nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "다이닝코드 4.6★. 직접 반죽한 쫀득한 수제비. 1만원에 따뜻하고 든든한 한 끼. 비오는 날 최강 선택지.",
-    naver: "https://map.naver.com/v5/search/인사동수제비",
-    reservation: []
-  },
-
-  {
     name: "정원 백반",
     category: "한식 · 가정식 백반",
     cuisine: "korean",
@@ -436,7 +393,7 @@ const restaurantDB = [
   // ── 🥗 다이어트·채식 전문 구역 ─────────────────────────────────────────────
 
   {
-    name: "그린앤그레인 광화문",
+    name: "그린앤그레인",
     category: "샐러드 · 슈퍼곡물 샐러드/포케",
     cuisine: "salad",
     menus: ["치킨 시저샐러드 13,000원", "연어 포케볼 14,000원", "퀴노아 그레인볼 12,000원"],
@@ -457,7 +414,7 @@ const restaurantDB = [
   },
 
   {
-    name: "요지트 광화문",
+    name: "요지트 광화문점",
     category: "카페·디저트 · 그릭요거트/프로틴볼",
     cuisine: "salad",
     menus: ["그릭요거트 S 4,200원~", "그릭요거트+과일+그래놀라 M 8,000원~", "콩포트 그릭요거트 6,500원~"],
@@ -480,7 +437,7 @@ const restaurantDB = [
 
 
   {
-    name: "커피원 광화문",
+    name: "커피원",
     category: "카페·브런치 · 수제 샌드위치/베이커리",
     cuisine: "salad",
     menus: ["훈제오리 당근라페 샌드위치 8,000원", "수제 샌드위치 (종류 다양) 7,000~9,000원", "쫀득빵 3,500원", "커피 3,000~4,500원"],
@@ -501,7 +458,7 @@ const restaurantDB = [
   },
 
   {
-    name: "시래기담은 광화문",
+    name: "시래기담은",
     category: "한식 · 시래기 정식/채식 한식",
     cuisine: "korean",
     menus: ["시래기 된장 정식 12,000원", "시래기 비빔밥 11,000원", "나물 한정식 13,000원"],
@@ -543,7 +500,7 @@ const restaurantDB = [
   },
 
   {
-    name: "스윗샐러드 광화문",
+    name: "스윗샐러드",
     category: "샐러드 전문점 · 프리미엄 토핑 샐러드",
     cuisine: "salad",
     menus: ["된장남 샐러드(닭가슴살+연어+아보카도) 14,000원", "로스티드 버섯 샐러드 12,000원", "시저 치킨 샐러드 13,000원"],
@@ -566,7 +523,7 @@ const restaurantDB = [
   // ── 🆕 추가 확장 구역 ───────────────────────────────────────────────────────
 
   {
-    name: "허니떡볶이 광화문",
+    name: "허니떡볶이",
     category: "분식 · 즉석떡볶이",
     cuisine: "korean",
     menus: ["즉석떡볶이 2인 16,000원", "볶음밥 추가 3,000원", "라면 추가 2,000원"],
@@ -587,7 +544,7 @@ const restaurantDB = [
   },
 
   {
-    name: "성가백암순대 광화문",
+    name: "성가백암순대",
     category: "한식 · 순대국밥",
     cuisine: "korean",
     menus: ["순대국밥 10,000원", "순대 한 접시 12,000원", "머리고기 13,000원"],
@@ -608,7 +565,7 @@ const restaurantDB = [
   },
 
   {
-    name: "우육면관 광화문점",
+    name: "진중 우육면관 광화문점",
     category: "중식 · 대만식 우육면",
     cuisine: "chinese",
     menus: ["우육면 14,000원", "반근 14,000원", "수제 군만두 7,000원"],
@@ -629,7 +586,7 @@ const restaurantDB = [
   },
 
   {
-    name: "금금 (그랑서울)",
+    name: "금금 스타필드애비뉴 그랑서울점",
     category: "한식 · 한식 기반 솥밥/덮밥",
     cuisine: "korean",
     menus: ["소갈비 덮밥 18,000원", "보리된장 고기국수 14,000원", "계절 솥밥 정식 16,000원"],
@@ -698,7 +655,7 @@ const restaurantDB = [
 
 
   {
-    name: "진순대 광화문",
+    name: "진순대",
     category: "한식 · 순대국+라면",
     cuisine: "korean",
     menus: ["순대국+라면 9,000원", "순대국밥 8,000원", "라면 3,500원"],
@@ -719,7 +676,7 @@ const restaurantDB = [
   },
 
   {
-    name: "농민백암순대 시청점",
+    name: "농민백암순대 시청직영점",
     category: "한식 · 순대국밥 (명소)",
     cuisine: "korean",
     menus: ["순대국밥 10,000원", "순대(모듬) 15,000원", "수육 20,000원"],
@@ -740,31 +697,10 @@ const restaurantDB = [
     reservation: []
   },
 
-  {
-    name: "버섯영양칼국수 (세종빌딩)",
-    category: "한식 · 손반죽 칼국수",
-    cuisine: "korean",
-    menus: ["버섯영양칼국수+볶음밥 9,000원", "칼국수 8,000원", "수제비 8,000원"],
-    price: "8,000~10,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 2분 (세종빌딩 지하 아케이드)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["tired","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "30년 넘은 광화문 지하 아케이드 명물. 매일 손반죽한 생면 칼국수. 버섯이 듬뿍! 마지막 볶음밥 직접 볶아줘서 별미. 9천원에 든든한 겨울 점심.",
-    naver: "https://map.naver.com/v5/search/버섯영양칼국수+광화문+세종빌딩",
-    reservation: []
-  },
-
 
 
   {
-    name: "황생가칼국수 (안국역)",
+    name: "황생가칼국수",
     category: "한식 · 사골칼국수 (미쉐린)",
     cuisine: "korean",
     menus: ["칼국수 12,000원", "수제비 12,000원", "만두 8,000원"],
@@ -786,27 +722,6 @@ const restaurantDB = [
   },
 
   // ⛔ 명동교자 광화문 — 명동 직영점만 운영, 광화문/종각 지점 없음. 제거.
-
-  {
-    name: "롤링파스타 광화문",
-    category: "양식 · 파스타/리조또",
-    cuisine: "western",
-    menus: ["로제 파스타 13,000원", "까르보나라 13,000원", "토마토 미트볼 파스타 14,000원"],
-    price: "12,000~16,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 2분 (광화문역 인근)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["normal","great"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "부담 없는 가격에 양 많은 파스타. 빠른 서빙으로 점심 시간에 딱. 양식이 먹고 싶은데 예산이 부담될 때 최적 선택.",
-    naver: "https://map.naver.com/v5/search/롤링파스타+광화문",
-    reservation: []
-  },
 
   {
     name: "코끼리초밥 광화문점",
@@ -832,7 +747,7 @@ const restaurantDB = [
   },
 
   {
-    name: "최대감네 (인사동)",
+    name: "최대감네",
     category: "한식 · 상추샤브샤브/솥밥",
     cuisine: "korean",
     menus: ["상추샤브정식 15,000원", "갈비솥밥 정식 25,000원", "이베리코목살솥밥 26,000원"],
@@ -854,7 +769,7 @@ const restaurantDB = [
   },
 
   {
-    name: "덕후선생 광화문",
+    name: "덕후선생 광화문디타워점",
     category: "중식 · 북경오리/중화요리",
     cuisine: "chinese",
     menus: ["닭볶음탕 정식 13,000원", "청국장 정식 11,000원", "된장찌개 정식 10,000원"],
@@ -974,7 +889,7 @@ const restaurantDB = [
   },
 
   {
-    name: "미도갈비 종각",
+    name: "미도갈비",
     category: "한식 · 한돈 수제 돼지갈비/와규",
     cuisine: "korean",
     menus: ["수제 돼지갈비 1인 18,000원", "와규 갈비 1인 35,000원", "냉면 12,000원"],
@@ -1020,7 +935,7 @@ const restaurantDB = [
   },
 
   {
-    name: "안암 (안국역)",
+    name: "안암",
     category: "한식 · 미쉐린 돼지국밥",
     cuisine: "korean",
     menus: ["돼지국밥 15,000원", "라임 제육 13,000원", "수육 28,000원"],
@@ -1043,7 +958,7 @@ const restaurantDB = [
   },
 
   {
-    name: "스미스가 좋아하는 한옥",
+    name: "스미스가좋아하는한옥",
     category: "양식·퓨전 · 한옥 레스토랑 파스타/피자",
     cuisine: "western",
     menus: ["해물크림파스타 22,000원", "마르게리타 피자 21,000원", "리조또 22,000원"],
@@ -1070,7 +985,7 @@ const restaurantDB = [
 
 
   {
-    name: "오레노라멘 안국점",
+    name: "오레노라멘 인사점",
     category: "일식 · 진한 돈코츠 라멘",
     cuisine: "japanese",
     menus: ["오레노라멘 13,000원", "차슈멘 15,000원", "츠케멘 14,000원"],
@@ -1091,7 +1006,7 @@ const restaurantDB = [
   },
 
   {
-    name: "우당탕탕 (경복궁역)",
+    name: "우당탕탕",
     category: "한식 · 한우육회탕탕이/낙지",
     cuisine: "korean",
     menus: ["한우육회탕탕이 18,000원", "낙지탕탕이 16,000원", "회비빔밥 15,000원"],
@@ -1135,7 +1050,7 @@ const restaurantDB = [
   },
 
   {
-    name: "카페이마 (광화문)",
+    name: "카페이마",
     category: "양식·카페 · 함박스테이크/와플",
     cuisine: "salad",
     menus: ["클래식 함박스테이크 13,500원", "토마토 바질 페스토 함박 15,000원", "수제 와플 9,000원"],
@@ -1158,7 +1073,7 @@ const restaurantDB = [
   // ── 🆕 3차 확장: 빠진 카테고리 보강 ─────────────────────────────────────────
 
   {
-    name: "송백부대찌개 광화문",
+    name: "송백부대찌개",
     category: "한식 · 부대찌개",
     cuisine: "korean",
     menus: ["부대찌개 1인 11,000원", "라면 사리 1,000원", "치즈 사리 1,000원"],
@@ -1179,7 +1094,7 @@ const restaurantDB = [
   },
 
   {
-    name: "오감부대 광화문",
+    name: "오감부대",
     category: "한식 · 부대찌개/소시지전골",
     cuisine: "korean",
     menus: ["부대찌개 1인 12,000원", "소시지전골 1인 13,000원", "라면 사리 1,000원"],
@@ -1204,7 +1119,7 @@ const restaurantDB = [
 
 
   {
-    name: "도치피자 광화문점",
+    name: "도치피자 광화문",
     category: "이탈리안 · 화덕피자",
     cuisine: "western",
     menus: ["디아볼라 24,000원", "고르곤졸라 22,000원", "버팔로 뽀모도로 22,000원", "콰트로 포르마지 26,500원", "감베리 에 루꼴라 23,500원"],
@@ -1252,30 +1167,6 @@ const restaurantDB = [
   },
 
   {
-    name: "광화문 스테이크 (Butcher's Cut)",
-    category: "양식 · 스테이크/버거",
-    cuisine: "western",
-    menus: ["뉴욕 스트립 스테이크 46,000원", "함박스테이크&갈릭라이스 28,000원", "붓처스컷 클럽 샌드위치 26,000원"],
-    price: "26,000~80,000원",
-    priceNote: "1인 평균 3~5만원",
-    walk: "도보 3분 (SFC몰 인근)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "광화문 정통 스테이크 레스토랑. 뉴욕 스트립·한우 티본 등 프리미엄 컷. VIP 비즈니스 런치·특별한 날 1위. 함박스테이크는 2.8만원으로 상대적 가성비.",
-    naver: "https://map.naver.com/v5/search/부처스컷+광화문",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/butcherscut_gwanghwamun", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/부처스컷+광화문", color: "#03C75A" },
-    ]
-  },
-
-  {
     name: "광화문집 (김치찌개/제육볶음)",
     category: "한식 · 김치찌개/제육볶음",
     cuisine: "korean",
@@ -1298,7 +1189,7 @@ const restaurantDB = [
 
 
   {
-    name: "부산식당 (생태탕/대구탕)",
+    name: "부산식당",
     category: "한식 · 생태탕/대구탕",
     cuisine: "korean",
     menus: ["생태탕 12,000원", "대구탕 13,000원", "황태해장국 10,000원"],
@@ -1321,7 +1212,7 @@ const restaurantDB = [
   // ── 🆕 4차 확장: 순대국/돌솥/곰탕/중식 보강 ─────────────────────────────
 
   {
-    name: "화목순대국 광화문 1호점",
+    name: "화목순대국전문 광화문1호점",
     category: "한식 · 순대국/내장탕",
     cuisine: "korean",
     menus: ["순대국 11,000원", "순순대탕 12,000원", "내장탕 13,000원"],
@@ -1387,7 +1278,7 @@ const restaurantDB = [
   },
 
   {
-    name: "청진옥 (종각·해장국)",
+    name: "청진옥",
     category: "한식 · 해장국/설렁탕",
     cuisine: "korean",
     menus: ["해장국 11,000원", "선지해장국 12,000원", "설렁탕 12,000원"],
@@ -1451,7 +1342,7 @@ const restaurantDB = [
   },
 
   {
-    name: "가봉루 (광화문 노포 중식)",
+    name: "가봉루",
     category: "중식 · 고기튀김/짜장면",
     cuisine: "chinese",
     menus: ["고기튀김(소) 20,000원", "간짜장 8,000원", "짬뽕 8,000원", "군만두 6,000원"],
@@ -1472,7 +1363,7 @@ const restaurantDB = [
   },
 
   {
-    name: "홍성원 (종각 중식)",
+    name: "차이니즈키친홍성원 본점",
     category: "중식 · 짜장면/탕수육",
     cuisine: "chinese",
     menus: ["간짜장 9,000원", "삼선간짜장 13,000원", "차돌짬뽕 14,000원", "탕수육(소) 22,000원"],
@@ -1493,30 +1384,7 @@ const restaurantDB = [
   },
 
   {
-    name: "일일향 광화문점",
-    category: "중식 · 프리미엄 중화요리",
-    cuisine: "chinese",
-    menus: ["유니간짜장 28,000원", "깐풍기 38,000원", "어향동고 45,000원", "크림중새우 42,000원"],
-    price: "28,000~90,000원",
-    priceNote: "1인 평균 3~5만원",
-    walk: "도보 2분 (광화문역 인근)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "물 안 넣은 진짜 간짜장으로 유명한 프리미엄 중식당. 신선한 생고기·활어 사용. 개별룸 있어 비즈니스 중식 회식에 최적. 광화문 오래된 노포 중식의 격조.",
-    naver: "https://map.naver.com/v5/search/일일향+광화문",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/일일향+광화문", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "신신원 (광화문 부추짜장)",
+    name: "신신원",
     category: "중식 · 부추짜장/중화요리",
     cuisine: "chinese",
     menus: ["부추짜장 12,000원", "짬뽕 13,000원", "볶음밥 12,000원"],
@@ -1603,7 +1471,7 @@ const restaurantDB = [
   },
 
   {
-    name: "카페마마스 광화문",
+    name: "카페마마스 광화문점",
     category: "샐러드 · 리코타샐러드/파니니/브런치",
     cuisine: "salad",
     menus: ["리코타치즈 샐러드 15,800원", "소고기 가지 파니니 16,800원", "감자스프 6,500원~"],
@@ -1626,7 +1494,7 @@ const restaurantDB = [
   // ⛔ 피그인더가든 광화문 — 2024년 12월 31일 폐업 (SPC 오프라인 전점 철수)
 
   {
-    name: "슬로우캘리 종각역점",
+    name: "슬로우캘리 종각역",
     category: "샐러드 · 포케/샐러드볼/그릴보울",
     cuisine: "salad",
     menus: ["클래식 연어 포케 14,900원", "오리엔탈 두부 포케 9,500원 (비건)", "블랙페퍼 치킨보울 11,500원"],
@@ -1667,32 +1535,11 @@ const restaurantDB = [
     reservation: []
   },
 
-  {
-    name: "닥터로빈 광화문",
-    category: "샐러드 · 건강 이탈리안/샐러드·수프",
-    cuisine: "salad",
-    menus: ["홀토마토 샐러드 13,800원", "통단호박 콩크림스프(1인) 11,800원", "트러플 버섯 리조또 19,800원"],
-    price: "11,000~22,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 2분 (디타워 5층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","diet","vegetarian","nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🥗 NO 설탕·버터·MSG 건강 이탈리안. 단호박 콩크림스프가 시그니처. 디타워 5층에서 광화문 뷰와 함께. 채식 메뉴 다양하고 분위기 좋아 미팅에도 OK.",
-    naver: "https://map.naver.com/v5/search/닥터로빈+광화문",
-    reservation: []
-  },
-
   // ──────────────────────────────────────────────
   // KT WEST 빌딩 (세종대로 178) 신규 추가
   // ──────────────────────────────────────────────
   {
-    name: "광화문 옥희 (KT West)",
+    name: "광화문옥희",
     category: "일식/참치·해산물",
     cuisine: "japanese",
     menus: ["참치회덮밥 19,000원~", "카이센동 18,000원~", "알탕 16,000원~"],
@@ -1824,7 +1671,7 @@ const restaurantDB = [
     reservation: []
   },
   {
-    name: "오리지널팬케이크하우스 다이너 (KT West)",
+    name: "오리지널팬케이크하우스 다이너 광화문점",
     category: "양식/브런치·팬케이크",
     cuisine: "western",
     menus: ["버터밀크팬케이크 13,000원~", "계란+팬케이크 세트 15,000원~", "아메리칸 브런치 18,000원~"],
@@ -1915,7 +1762,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "주유별장 디타워점",
+    name: "주유별장 광화문점",
     category: "한식/퓨전한식·전통주",
     cuisine: "korean",
     menus: ["전복 들기름 카펠리니 22,000원", "엘에이갈비 28,000원~", "치즈감자전 16,000원"],
@@ -1937,7 +1784,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "매드포갈릭 광화문 디타워점",
+    name: "매드포갈릭 광화문D타워",
     category: "양식/이탈리안·갈릭",
     cuisine: "western",
     menus: ["마늘빵 12,000원", "갈릭 파스타 19,000원~", "갈릭 스테이크 32,000원~"],
@@ -1983,75 +1830,8 @@ const restaurantDB = [
 
   // ── 🆕 SFC몰 (서울파이낸스센터) 식당 ───────────────────────────────────────
 
-  {
-    name: "투뿔등심 (SFC몰)",
-    category: "한식 · 한우구이/갈비탕",
-    cuisine: "korean",
-    menus: ["투뿔 꽃등심 (100g) 38,000원~", "투뿔 안심 (100g) 40,000원~", "갈비탕 (점심) 22,000원"],
-    price: "22,000~50,000원",
-    priceNote: "1인 평균 3~5만원 (점심 갈비탕 2만원대)",
-    walk: "도보 3분 (서울파이낸스센터 지하 1층, 광화문역 5번 출구 연결)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","mild","rainy"],
-    mood: ["great","normal","birthday"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "SFC몰 대표 한우 맛집. 투뿔 등급 숙성 한우 구이 전문. 점심엔 갈비탕·갈비폭탄밥 단품도 가능. 콜키지 프리(와인 1병). 룸석 보유로 팀 회식 적합.",
-    naver: "https://map.naver.com/v5/search/투뿔등심+광화문+SFC",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/투뿔등심+광화문+SFC", color: "#03C75A" }
-    ]
-  },
 
-  {
-    name: "더플레이스 (SFC몰)",
-    category: "이탈리안 · 화덕피자/파스타",
-    cuisine: "western",
-    menus: ["마르게리따 피자 19,500원", "뽈리오 알리오올리오 파스타 23,000원", "클래식 라자냐 26,000원", "폭탄피자(콰트로 포르마지오) 31,000원"],
-    price: "19,000~35,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 3분 (서울파이낸스센터 지하 1층, 광화문역 5번 출구 연결)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal","expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "CJ푸드빌 운영 정통 이탈리안 비스트로. 48시간 숙성 수제 도우로 굽는 화덕피자가 시그니처. 불쇼와 함께 나오는 폭탄피자(콰트로 포르마지오) 인기. 샐러드·파스타·스테이크 풀 코스 가능.",
-    naver: "https://map.naver.com/v5/search/더플레이스+광화문+SFC",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/더플레이스+광화문+SFC", color: "#03C75A" }
-    ]
-  },
 
-  {
-    name: "생어거스틴 (SFC몰)",
-    category: "아시안 · 태국/동남아 요리",
-    cuisine: "asian",
-    menus: ["뿌 팟 봉커리 36,000원", "왕새우 팟타이 19,000원", "태국 쌀국수(베트남) 13,000원", "나시고랭 18,000원"],
-    price: "13,000~40,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 3분 (서울파이낸스센터 지하 1층, 광화문역 5번 출구 연결)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","rainy"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal","expensive"],
-    hot: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "태국 현지 쉐프가 운영하는 국내 최대 아시안 푸드 전문점. 뿌 팟 봉커리(게 커리)가 시그니처. 팟타이·나시고랭·베트남 쌀국수 등 동남아 요리 총망라. 무료주차, 단체석·룸 완비.",
-    naver: "https://map.naver.com/v5/search/생어거스틴+광화문+SFC",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/생어거스틴+광화문+SFC", color: "#03C75A" }
-    ]
-  },
 
   {
     name: "다운타우너 (SFC몰)",
@@ -2072,49 +1852,6 @@ const restaurantDB = [
     calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
     reason: "🍔 서울 수제버거 명가 다운타우너의 SFC몰 직영점. 고소하고 담백한 국산 소고기 패티가 핵심. 탐욕버거·더블베이컨치즈버거 인기. 점심 가성비 최강. 바삭한 어니언링·고구마프라이도 추천.",
     naver: "https://map.naver.com/v5/search/다운타우너+광화문+SFC",
-    reservation: []
-  },
-
-  {
-    name: "바스버거 (광화문)",
-    category: "양식 · 수제버거/수제맥주",
-    cuisine: "western",
-    menus: ["바스버거 7,800원", "하와이안버거 9,800원", "더블바스버거 11,300원", "탐욕버거 14,000원"],
-    price: "7,800~16,000원",
-    priceNote: "1인 평균 1~1.3만원",
-    walk: "도보 8분 (중구 다동길 5, 청계천 인근)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "2015년 광화문 1호점으로 시작한 수제버거 맛집. 펍 스타일 분위기에 감자칩 무한 제공이 포인트. 수제맥주도 함께 즐길 수 있어 퇴근 후에도 딱. 청계천 바로 옆.",
-    naver: "https://map.naver.com/v5/search/바스버거+광화문+다동",
-    reservation: []
-  },
-
-  {
-    name: "대장금 (광화문시대)",
-    category: "한식 · 황태국/가정식 백반",
-    cuisine: "korean",
-    menus: ["황태미역국 10,000원", "황태설렁탕 10,000원", "황태해장국 10,000원", "황태구이 정식 15,000원", "돼지김치찌개 10,000원"],
-    price: "10,000~15,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 8분 (사직로8길 42, 광화문역 8번 출구 100m)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["tired","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    waiting: true,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "1997년부터 운영한 광화문 찐 직장인 노포. 용대리 황태 전문점으로 황태미역국·황태해장국이 시그니처. 고향에서 공수한 밑반찬과 전설의 고봉밥으로 유명. 점심 줄 서는 맛집.",
-    naver: "https://map.naver.com/v5/search/대장금+광화문시대",
     reservation: []
   },
 
@@ -2141,7 +1878,7 @@ const restaurantDB = [
   },
 
   {
-    name: "아오리 행방불명 (광화문센트럴)",
+    name: "아오리의행방불명 광화문센트럴점",
     category: "일식 · 돈코츠/미소라멘",
     cuisine: "japanese",
     menus: ["돈코츠라멘 11,000원", "미소라멘 11,000원", "마제멘 11,000원", "TKG(간장계란밥) 별도"],
@@ -2187,7 +1924,7 @@ const restaurantDB = [
   },
 
   {
-    name: "후라토식당 (경복궁 본점)",
+    name: "후라토식당 경복궁 본점",
     category: "일식 · 규카츠/오므라이스",
     cuisine: "japanese",
     menus: ["규카츠 19,500원", "반숙 오므라이스 14,500원", "스테키 정식 19,500원", "야마가타 민치카레 14,500원", "우삼겹 덮밥 14,500원"],
@@ -2210,7 +1947,7 @@ const restaurantDB = [
     ]
   },
   {
-    name: "샐러드로우 앤 트라타 (광화문점)",
+    name: "샐러드로우앤트라타 광화문점",
     category: "양식 · 샐러드/타코/부리또",
     cuisine: "western",
     menus: ["부리또볼 9,500원~11,000원", "크리스피 더블타코 약 10,000원", "트라타 부리또 약 10,000원", "퀘사디아", "샐러드"],
@@ -2231,7 +1968,7 @@ const restaurantDB = [
     reservation: []
   },
   {
-    name: "고우가 광화문",
+    name: "고우가 광화문점",
     category: "한식 · 한우 오마카세",
     cuisine: "korean",
     menus: ["런치 A코스 39,000원", "런치 B코스 59,000원", "런치 C코스 79,000원", "한우구이·코스요리"],
@@ -2294,7 +2031,7 @@ const restaurantDB = [
     reservation: false,
   },
   {
-    name: "진진수라 광화문",
+    name: "일품진진수라 광화문점",
     category: "한식 · 한정식",
     cuisine: "korean",
     menus: ["점심 C코스 39,000원", "점심 B코스 59,000원", "궁중구절판", "보리굴비", "불고기"],
@@ -2315,7 +2052,7 @@ const restaurantDB = [
     reservation: true,
   },
   {
-    name: "울프강 스테이크하우스 광화문",
+    name: "울프강 스테이크하우스 광화문점",
     category: "양식 · 스테이크",
     cuisine: "western",
     menus: ["런치코스 9만원~", "드라이에이징 스테이크", "포터하우스", "필레미뇽"],
@@ -2336,7 +2073,7 @@ const restaurantDB = [
     reservation: true,
   },
   {
-    name: "친니 (광화문 중식)",
+    name: "친니",
     category: "중식 · 탕수육·코스",
     cuisine: "chinese",
     menus: ["탕수육", "깐풍기", "민물장어덮밥 28,000원", "해산물덮밥 20,000원", "매 코스 59,000원"],
@@ -2357,7 +2094,7 @@ const restaurantDB = [
     reservation: true,
   },
   {
-    name: "스시산원 궁 (광화문)",
+    name: "스시산원 궁",
     category: "일식 · 스시오마카세",
     cuisine: "japanese",
     menus: ["런치 오마카세 60,000원", "디너 오마카세 90,000원"],
@@ -2378,7 +2115,7 @@ const restaurantDB = [
     reservation: true,
   },
   {
-    name: "라브리 (광화문 교보빌딩)",
+    name: "라브리",
     category: "양식 · 프렌치",
     cuisine: "western",
     menus: ["런치 프렌치 코스 6~8만원", "꽃등심 스테이크", "바닷가재 메인", "프렌치 코스 풀코스"],
@@ -2399,7 +2136,7 @@ const restaurantDB = [
     reservation: true,
   },
   {
-    name: "신승관 (광화문 중식)",
+    name: "신승관",
     category: "중식 · 정통중화요리",
     cuisine: "chinese",
     menus: ["사천꿔바로우 18,000원", "삼선볶음밥 15,000원", "해물짬뽕 16,000원", "코스요리 40,000원~"],
