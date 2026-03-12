@@ -1,2039 +1,792 @@
-import { useState, useEffect } from "react";
-
-// ✅ KT West(세종대로 178) & East(종로3길 33) 빌딩 반경 700m 실제 맛집 데이터
-// 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
-const restaurantDB = [
-  {
-    name: "파이프그라운드 광화문점",
-    category: "이탈리안 · 피자/파스타",
-    cuisine: "western",
-    menus: ["옥수수 피자 26,000원", "화이트 라구 파스타 25,000원", "시저샐러드 14,000원"],
-    price: "21,000~45,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.9",
-    ribbon: true,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "KT West 건물 지하 바로! 블루리본·네이버 4.9. 옥수수피자 시그니처. 점심엔 웨이팅 필수.",
-    naver: "https://map.naver.com/v5/search/파이프그라운드+광화문",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/maison_pipeground", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/파이프그라운드+광화문", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "무탄 광화문점",
-    category: "중식 · 프리미엄 짜장/유린기",
-    cuisine: "chinese",
-    menus: ["스테이크 트러플 자장면 30,000원", "고추 유린기 40,000원", "마카롱 멘보샤 22,000원"],
-    price: "22,000~40,000원",
-    priceNote: "1인 평균 3~4만원",
-    walk: "도보 3분 (광화문 인근)",
-    rating: "4.9",
-    ribbon: true,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "블루리본·4.9★. 흑백요리사2 출연 셰프의 한우 트러플 자장면. 특별한 날이나 스트레스 풀기 최고.",
-    naver: "https://map.naver.com/v5/search/무탄+광화문점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/mutan_gwanghwamoon", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/무탄+광화문점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "광화문석갈비 D타워점",
-    category: "한식 · 갈비/구이",
-    cuisine: "korean",
-    menus: ["돼지 석갈비 18,000원", "냉면 13,000원", "갈비탕 15,000원"],
-    price: "13,000~22,000원",
-    priceNote: "1인 평균 1.5~2만원",
-    walk: "도보 2분 (디타워 3층)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold"],
-    mood: ["great","stressed","normal"],
-    people: ["small","medium","large"],
-    budget: ["normal","expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "KT East 바로 옆 디타워! 4.6★ 광화문 직장인 단골 갈비집. 회식 때 무조건 인정받는 곳.",
-    naver: "https://map.naver.com/v5/search/광화문석갈비+디타워",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/광화문석갈비+디타워", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "이치규 광화문점",
-    category: "일식 · 규카츠",
-    cuisine: "japanese",
-    menus: ["채끝 규카츠 19,000원", "안심 규카츠 23,000원", "미니카레 5,000원"],
-    price: "19,000~23,000원",
-    priceNote: "1인 평균 2만원",
-    walk: "도보 3분 (르메이에르종로타운 지하1층)",
-    rating: "4.9",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small"],
-    budget: ["expensive"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "4.9★ 1인 1화로 직화 규카츠 전문점. 채끝 19,000·안심 23,000원. 점심 피크 웨이팅 필수.",
-    naver: "https://map.naver.com/v5/search/이치규+광화문점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/ichigyu_gwanghwamun", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/이치규+광화문점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "일품 광화문점",
-    category: "일식 · 카이센동/스시",
-    cuisine: "japanese",
-    menus: ["카이센동 18,000원", "연어덮밥 16,000원", "스시 세트 22,000원"],
-    price: "16,000~22,000원",
-    priceNote: "1인 평균 1.8만원",
-    walk: "도보 3분 (르메이에르종로타운 B2)",
-    rating: "5.0",
-    ribbon: false,
-    diet: ["light","diet","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small"],
-    budget: ["normal","expensive"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "네이버 만점 5.0★! 신선한 해산물 카이센동. 고단백 저칼로리라 다이어트 중에도 OK. 비교적 가볍고 맛있는 점심.",
-    naver: "https://map.naver.com/v5/search/일품+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/일품+광화문점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "쌤쌤쌤 광화문점",
-    category: "양식 · 파스타/뇨끼/라자냐",
-    cuisine: "western",
-    menus: ["잠봉베르 파스타 26,000원", "라자냐 25,000원", "포르치니 뇨끼 23,000원"],
-    price: "23,000~28,000원",
-    priceNote: "1인 평균 2.5~3만원",
-    walk: "도보 2분 (디타워 1층)",
-    rating: "4.8",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "서울 웨이팅 맛집 쌤쌤쌤이 광화문 디타워에 오픈! 4.8★. 감성 인테리어에 수준급 파스타·라자냐.",
-    naver: "https://map.naver.com/v5/search/쌤쌤쌤+광화문점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/samsamsam_kr", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/쌤쌤쌤+광화문점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "광화문뚝감",
-    category: "한식 · 감자탕/뼈해장국",
-    cuisine: "korean",
-    menus: ["감자탕(소) 13,000원", "뼈해장국 10,000원", "항정살 구이 15,000원"],
-    price: "10,000~16,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 2분 (광화문 인근)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "4.3★ 진한 뼈 육수로 피로 회복. 광화문 직장인 단골 속풀이 집. 뼈해장국 1만원으로 해결!",
-    naver: "https://map.naver.com/v5/search/광화문뚝감",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/광화문뚝감", color: "#03C75A" },
-    ]
-  },
-  // ⛔ 동경우동 광화문 — 폐업 확인으로 제거
-  {
-    name: "종로빈대떡 광화문점",
-    category: "한식 · 전/막걸리",
-    cuisine: "korean",
-    menus: ["해물파전 13,000원", "녹두빈대떡 10,000원", "막걸리 4,000원"],
-    price: "10,000~15,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 2분 (광화문 인근)",
-    rating: "3.9",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["rainy","cold"],
-    mood: ["great","stressed","normal"],
-    people: ["small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "비 오는 날엔 파전+막걸리 조합이 진리! 단체 인원도 부담없이 즐기는 전통 맛집.",
-    naver: "https://map.naver.com/v5/search/종로빈대떡+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/종로빈대떡+광화문점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "우하나 종각역점",
-    category: "한식 · 한우 오마카세",
-    cuisine: "korean",
-    menus: ["런치 오마카세 코스 45,000원~", "한우 육사시미", "와규 스테이크"],
-    price: "45,000~65,000원",
-    priceNote: "1인 평균 5만원~",
-    walk: "도보 6분 (그랑서울 2층)",
-    rating: "4.9",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal"],
-    people: ["small","medium"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "4.9★ 그랑서울 한우 오마카세. 중요한 비즈니스 미팅·특별한 팀 점심에 완벽.",
-    naver: "https://map.naver.com/v5/search/우하나+종각점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/woohana_jonggak", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/우하나+종각점", color: "#03C75A" },
-    ]
-  },
-  {
-    name: "모던샤브하우스 광화문D타워점",
-    category: "한식 · 프리미엄 샤브샤브/스키야키 무한리필",
-    cuisine: "korean",
-    menus: ["시그니처 코스(무한리필) 58,000원", "스페셜 코스 78,000원", "엑설런트 코스 88,000원"],
-    price: "58,000~88,000원",
-    priceNote: "1인 평균 6~9만원",
-    walk: "도보 2분 (디타워 내)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "4.6★ 소·돼지 고기 무한리필 프리미엄 샤브샤브. 광화문 뷰가 보이는 럭셔리 단체 회식·특별 모임 추천.",
-    naver: "https://map.naver.com/v5/search/모던샤브하우스+광화문디타워",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/msh_dtower", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/모던샤브하우스+광화문디타워", color: "#03C75A" },
-    ]
-  },
-  // ⛔ 꼬소한 부뚜막 광화문광장점 — 검색 결과 없음, 실존 불확실. 제거.
-  {
-    name: "광화문국밥",
-    category: "한식 · 돼지국밥/평양냉면",
-    cuisine: "korean",
-    menus: ["돼지국밥 9,500원", "돼지국밥 특 13,000원", "평양냉면 13,000원"],
-    price: "9,500~16,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 2분 (세종대로21길)",
-    rating: "4.5",
-    ribbon: true,
-    diet: ["nodiet"],
-    weather: ["hot","cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "🌟 미쉐린 빕구르망 4년 연속! 박찬일 셰프 운영. 맑고 깔끔한 돼지국밥 9,500원. 광화문 대표 가성비 명소.",
-    naver: "https://map.naver.com/v5/search/광화문국밥",
-    reservation: []
-  },
-  // ⛔ 광화문 한상 (사찰음식/건강한정식) — 실존 확인 불가. 제거.
-
-  // ── 700m 확장 구역 ──────────────────────────────────────────────────────────
-
-  {
-    name: "무교동북어국집",
-    category: "한식 · 북어해장국 (1968년 노포)",
-    cuisine: "korean",
-    menus: ["북어해장국 10,000원 (단일메뉴)", "밥·국 무한리필", "계란후라이 추가 500원"],
-    price: "10,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 8분 (을지로1길 38)",
-    rating: "4.8",
-    ribbon: true,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["tired","stressed"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "🏛️ 1968년 노포·서울 미래유산·블루리본 13년 연속. 북어해장국 단일메뉴 1만원. 밥·국 무한리필. 속 풀고 싶은 날 1위.",
-    naver: "https://map.naver.com/v5/search/무교동북어국집",
-    reservation: []
-  },
-
-  {
-    name: "서린낙지",
-    category: "한식 · 낙지볶음/조개탕",
-    cuisine: "korean",
-    menus: ["낙지볶음 1인 15,000원", "베이컨소시지구이 12,000원", "조개탕 14,000원"],
-    price: "13,000~18,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 4분 (르메이에르종로타운1)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["stressed","great"],
-    people: ["small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "TV 방영 여러 번! 광화문·종각 대표 낙지볶음 노포. 매콤하고 중독성 있는 맛. 단골 직장인 많은 진짜 로컬 맛집.",
-    naver: "https://map.naver.com/v5/search/서린낙지+종각",
-    reservation: []
-  },
-
-  {
-    name: "정원 백반",
-    category: "한식 · 가정식 백반",
-    cuisine: "korean",
-    menus: ["백반 정식 (일 2~3가지 반찬+국) 9,000~10,000원", "제육볶음 정식 10,000원", "생선구이 정식 11,000원"],
-    price: "9,000~12,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 4분 (도렴빌딩 지하)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["light","diet","nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["tired","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 10년 직장인들이 추천하는 오래된 백반집. 도렴빌딩 지하 위치. 매일 바뀌는 반찬에 집밥 같은 포근한 맛.",
-    naver: "https://map.naver.com/v5/search/정원+백반+광화문",
-    reservation: []
-  },
-
-  {
-    name: "꼬꼬뚝닭",
-    category: "한식 · 닭볶음탕",
-    cuisine: "korean",
-    menus: ["원조 닭볶음탕 (1인) 9,000원", "수제비 닭볶음탕 10,000원", "카레 닭볶음탕 10,000원"],
-    price: "9,000~11,000원",
-    priceNote: "1인 평균 9천~1만원",
-    walk: "도보 4분 (도렴빌딩 지하 1층, 새문안로5길 37 B1)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["stressed","tired","normal"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "뚝배기에 자작자작 끓여 나오는 칼칼한 닭볶음탕 9천원. 업무지구에서 보기 힘든 대학로 감성 맛집. 스트레스 날리기 최고.",
-    naver: "https://map.naver.com/v5/search/꼬꼬뚝닭+광화문",
-    reservation: []
-  },
-
-  // ── 🥗 다이어트·채식 전문 구역 ─────────────────────────────────────────────
-
-  {
-    name: "그린앤그레인",
-    category: "샐러드 · 슈퍼곡물 샐러드/포케",
-    cuisine: "salad",
-    menus: ["치킨 시저샐러드 13,000원", "연어 포케볼 14,000원", "퀴노아 그레인볼 12,000원"],
-    price: "11,000~16,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 4분 (두산위브파빌리온 1층)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["light","diet","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🥗 광화문 대표 슈퍼곡물 샐러드 전문점. 퀴노아·귀리·병아리콩 베이스로 진짜 건강한 한 끼. 외국인도 많이 찾는 찐 샐러드 맛집.",
-    naver: "https://map.naver.com/v5/search/그린앤그레인+광화문",
-    reservation: []
-  },
-
-  {
-    name: "요지트 광화문점",
-    category: "카페·디저트 · 그릭요거트/프로틴볼",
-    cuisine: "salad",
-    menus: ["그릭요거트 S 4,200원~", "그릭요거트+과일+그래놀라 M 8,000원~", "콩포트 그릭요거트 6,500원~"],
-    price: "4,200~12,000원",
-    priceNote: "1인 평균 7천~1만원",
-    walk: "도보 3분 (르메이에르 종로타운 지하 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["diet","light","vegetarian"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🍦 KT East 바로 인근! 꾸덕한 그릭요거트에 신선 과일·그래놀라 조합. 가볍고 건강한 점심 또는 브런치 대용으로 최적.",
-    naver: "https://map.naver.com/v5/search/요지트+광화문",
-    reservation: []
-  },
-
-
-
-  {
-    name: "커피원",
-    category: "카페·브런치 · 수제 샌드위치/베이커리",
-    cuisine: "salad",
-    menus: ["훈제오리 당근라페 샌드위치 8,000원", "수제 샌드위치 (종류 다양) 7,000~9,000원", "쫀득빵 3,500원", "커피 3,000~4,500원"],
-    price: "7,000~13,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 3분 (새문안로3길 12 지하1층)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["light"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "광화문 직장인 단골 수제 샌드위치 카페. 두툼하고 재료 꽉 찬 샌드위치로 유명. 쫀득빵도 인기. 테이크아웃 전문. 평일 07:00 오픈.",
-    naver: "https://map.naver.com/v5/search/커피원+광화문",
-    reservation: []
-  },
-
-  {
-    name: "시래기담은",
-    category: "한식 · 시래기 정식/채식 한식",
-    cuisine: "korean",
-    menus: ["시래기 된장 정식 12,000원", "시래기 비빔밥 11,000원", "나물 한정식 13,000원"],
-    price: "11,000~15,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 7분",
-    rating: "4.8",
-    ribbon: false,
-    diet: ["light","diet","vegetarian","nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["tired","normal","great"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🌿 다이닝코드 4.8★ 종각 최고 채식 한식. 시래기·나물·된장 중심 건강 정식. 칼로리 걱정 없이 든든한 진짜 건강식 맛집.",
-    naver: "https://map.naver.com/v5/search/시래기담은+종각",
-    reservation: []
-  },
-
-  {
-    name: "슬로우캘리 광화문",
-    category: "샐러드·포케 · 하와이안 포케볼/샐러드랩",
-    cuisine: "salad",
-    menus: ["클래식 연어 포케 12,500원", "블랙페퍼 치킨 보울 11,500원", "닭가슴살 에그 통밀 랩 7,900원"],
-    price: "7,900~14,500원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 3분 (르메이에르 종로타운 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["diet","light","vegetarian","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🐟 국내 1위 포케 프랜차이즈. 연어·참치·닭가슴살 중 선택해 나만의 포케 커스텀. 현미밥·샐러드볼 선택 가능. 다이어트 직장인 단골 맛집.",
-    naver: "https://map.naver.com/v5/search/슬로우캘리+광화문",
-    reservation: []
-  },
-
-  {
-    name: "스윗샐러드",
-    category: "샐러드 전문점 · 프리미엄 토핑 샐러드",
-    cuisine: "salad",
-    menus: ["된장남 샐러드(닭가슴살+연어+아보카도) 14,000원", "로스티드 버섯 샐러드 12,000원", "시저 치킨 샐러드 13,000원"],
-    price: "11,000~16,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 3분 (케이트윈타워 B동 지하 1층)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["diet","light"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🥗 세종문화회관 인근 직장인 샐러드 맛집. 된장남(닭가슴살·연어·아보카도) 시그니처. 오픈키친에서 눈앞에서 바로 조합해 주는 신선한 샐러드.",
-    naver: "https://map.naver.com/v5/search/스윗샐러드+광화문",
-    reservation: []
-  },
-
-  // ── 🆕 추가 확장 구역 ───────────────────────────────────────────────────────
-
-  {
-    name: "허니떡볶이",
-    category: "분식 · 즉석떡볶이",
-    cuisine: "korean",
-    menus: ["즉석떡볶이 2인 16,000원", "볶음밥 추가 3,000원", "라면 추가 2,000원"],
-    price: "8,000~12,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 2분 (일우빌딩 B1)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["stressed","tired","normal"],
-    people: ["small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 직장인 사이 입소문 자자한 즉석떡볶이. 당일 만든 쫄깃한 떡에 달콤매콤 양념이 일품. 마무리 볶음밥까지 배 터지게 먹는 가성비 끝판왕.",
-    naver: "https://map.naver.com/v5/search/허니떡볶이+광화문",
-    reservation: []
-  },
-
-  {
-    name: "성가백암순대",
-    category: "한식 · 순대국밥",
-    cuisine: "korean",
-    menus: ["순대국밥 10,000원", "순대 한 접시 12,000원", "머리고기 13,000원"],
-    price: "10,000~14,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 4분 (두산위브파빌리온 1층)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 현직 직장인들이 직접 추천한 진한 국물 순대국. 탱글탱글한 순대와 진한 육수의 조합. 추운 날 점심 속 확 풀어주는 진짜 노포 감성.",
-    naver: "https://map.naver.com/v5/search/성가백암순대+광화문",
-    reservation: []
-  },
-
-  {
-    name: "진중 우육면관 광화문점",
-    category: "중식 · 대만식 우육면",
-    cuisine: "chinese",
-    menus: ["우육면 14,000원", "반근 14,000원", "수제 군만두 7,000원"],
-    price: "12,000~16,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 6분 (청진동 39)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 직장인 법무팀 차장이 극찬한 대만 본토 우육면. 진한 소고기 국물에 쫄깃한 면발. 뉴로미엔관과 함께 광화문 양대 우육면 맛집.",
-    naver: "https://map.naver.com/v5/search/우육면관+광화문",
-    reservation: []
-  },
-
-  {
-    name: "금금 스타필드애비뉴 그랑서울점",
-    category: "한식 · 한식 기반 솥밥/덮밥",
-    cuisine: "korean",
-    menus: ["소갈비 덮밥 18,000원", "보리된장 고기국수 14,000원", "계절 솥밥 정식 16,000원"],
-    price: "14,000~20,000원",
-    priceNote: "1인 평균 1.6만원",
-    walk: "도보 7분 (스타필드 그랑서울 1층)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "2025년 오픈 신상! 스타필드 그랑서울 1층 한식 맛집. 혼밥부터 단체석까지 완비. 통창으로 밝고 깔끔한 분위기. 직장인 점심 웨이팅 없으려면 11시대 방문 추천.",
-    naver: "https://map.naver.com/v5/search/금금+그랑서울",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/금금+그랑서울", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "양산도 광화문점",
-    category: "일식 · 민물장어덮밥/히츠마부시",
-    cuisine: "japanese",
-    menus: ["히츠마부시(민물장어덮밥) 25,000원", "장어 정식 28,000원", "장어 샐러드 15,000원"],
-    price: "22,000~30,000원",
-    priceNote: "1인 평균 2.5만원",
-    walk: "도보 4분 (로얄빌딩 B1)",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["tired","great","normal"],
-    people: ["solo","small"],
-    budget: ["expensive"],
-    waiting: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "더위 먹은 날 최고의 보양식! 광화문 민물장어덮밥 1위. 히츠마부시 방식으로 세 가지 방법으로 즐기는 일품 장어. 웨이팅 있으니 미리 방문 추천.",
-    naver: "https://map.naver.com/v5/search/양산도+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/양산도+광화문점", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "강촌숯불닭갈비 종각",
-    category: "한식 · 숯불 닭갈비",
-    cuisine: "korean",
-    menus: ["양념 숯불닭갈비 1인분 14,000원", "치즈 추가 2,000원", "볶음밥 3,000원"],
-    price: "14,000~18,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 7분",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["stressed","great","normal"],
-    people: ["small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "달착지근하면서 쫀득한 숯불닭갈비. 광화문 직장인 극찬 — 춘천보다 맛있다는 후기 속출. 직화 숯불 향이 식욕 돋우는 광화문 숨은 맛집.",
-    naver: "https://map.naver.com/v5/search/강촌숯불닭갈비+종각",
-    reservation: []
-  },
-
-
-
-  {
-    name: "진순대",
-    category: "한식 · 순대국+라면",
-    cuisine: "korean",
-    menus: ["순대국+라면 9,000원", "순대국밥 8,000원", "라면 3,500원"],
-    price: "8,000~10,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 3분 (청진동 48-2)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "생소하지만 필승조합! 순대국+라면 콤보. 추운 날 진한 국물과 라면으로 완벽한 해장. 점심시간 줄 서니 11시 30분 전에 가는 게 안전.",
-    naver: "https://map.naver.com/v5/search/진순대+광화문+청진동",
-    reservation: []
-  },
-
-
-
-
-  // ⛔ 명동교자 광화문 — 명동 직영점만 운영, 광화문/종각 지점 없음. 제거.
-
-  {
-    name: "코끼리초밥 광화문점",
-    category: "일식 · 초밥 세트/런치",
-    cuisine: "japanese",
-    menus: ["런치 B세트(12P+우동) 28,000원", "연어 스페셜 세트 32,000원", "런치 단품 초밥 1,500원~"],
-    price: "15,000~35,000원",
-    priceNote: "1인 평균 2.5만원",
-    walk: "도보 1분 (KT East 지하1층 직결)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🏢 KT타워 지하1층 바로 연결! 초밥은 고단백 저칼로리 — 다이어트 중에도 맛있게. 런치 세트 가성비 좋고 신선한 초밥.",
-    naver: "https://map.naver.com/v5/search/코끼리초밥+광화문",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/코끼리초밥+광화문", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "덕후선생 광화문디타워점",
-    category: "중식 · 북경오리/중화요리",
-    cuisine: "chinese",
-    menus: ["닭볶음탕 정식 13,000원", "청국장 정식 11,000원", "된장찌개 정식 10,000원"],
-    price: "10,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 7분",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["normal","great"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "정갈한 반찬에 뚝배기 찌개까지. 엄마 손맛 같은 가정식 정식 맛집. 광화문 직장인 단골 중의 단골.",
-    naver: "https://map.naver.com/v5/search/덕후선생+광화문",
-    reservation: []
-  },
-
-
-
-  // ⛔ 광화문 참치 (다동) — 존재 확인 불가, 사용자 검색 결과 없음으로 제거
-
-  {
-    name: "VIP참치 광화문점",
-    category: "일식 · 참치회/코스",
-    cuisine: "japanese",
-    menus: ["회덮밥 (점심) 12,000원", "참다랑어 정식 (점심) 29,000원", "참다랑어 특정식 (점심) 39,000원"],
-    price: "12,000~39,000원",
-    priceNote: "1인 평균 3만원 (점심코스)",
-    walk: "도보 4분 (도렴빌딩 지하1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "100% 참다랑어 전문점. 전 좌석 프라이빗 룸으로 접대·회식에 딱. 점심 회덮밥 1.2만원부터 가성비 코스까지. 100% 예약제, 토·일 휴무 주의.",
-    naver: "https://map.naver.com/v5/search/VIP참치+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/VIP참치+광화문점", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "VIP참치 종로구청점",
-    category: "일식 · 참치회/코스",
-    cuisine: "japanese",
-    menus: ["일품 코스 38,000원", "특선 코스 (점심) 35,000원~", "참다랑어 정식 (점심) 25,000원"],
-    price: "25,000~88,000원",
-    priceNote: "1인 평균 3.5만원 (점심코스)",
-    walk: "도보 3분 (신라스테이 광화문 지하1층, D타워 뒤편)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "100% 참다랑어 무한리필 룸 참치집. 신라스테이 지하라 깔끔하고 쾌적. 접대·미팅·소규모 회식 최적. 100% 예약제, 토·일 휴무 주의.",
-    naver: "https://map.naver.com/v5/search/VIP참치+종로구청점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/VIP참치+종로구청점", color: "#03C75A" },
-    ]
-  },
-
-  // ── 🆕 2차 확장: 광화문·안국·경복궁·종각역 추가 맛집 ───────────────────────
-
-  {
-    name: "한일관 광화문점",
-    category: "한식 · 한국 전통 불고기/갈비탕 (1939년 노포)",
-    cuisine: "korean",
-    menus: ["전통 갈비탕 19,000원", "등심불고기 (1인) 28,000원", "골동반(궁중비빔밥) 20,000원"],
-    price: "19,000~40,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 3분 (더케이트윈타워 B1)",
-    rating: "4.5",
-    ribbon: true,
-    diet: ["light","nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "🏛️ 1939년 창업 광화문 전통 한식 노포. 고 노무현·이명박 대통령 단골. 서울식 불고기 원조. 외국인 바이어 접대·격식 있는 점심 1순위. 광화문역 지하 직결!",
-    naver: "https://map.naver.com/v5/search/한일관+광화문점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/hanilkwan_gwanghwamun", color: "#FF6B35" },
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/한일관+광화문점", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "이문설렁탕 종각점",
-    category: "한식 · 설렁탕/곰국수 (1904년 노포)",
-    cuisine: "korean",
-    menus: ["설렁탕 13,000원", "곰국수 13,000원", "수육 28,000원"],
-    price: "13,000~30,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 8분",
-    rating: "4.4",
-    ribbon: true,
-    diet: ["light","nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "🏛️ 1904년 창업 대한민국 최고 노포 설렁탕집. 미쉐린 가이드 선정. 120년 한결같은 맑고 깊은 사골 국물. 양 많고 고기 듬뿍. 추운 날 점심 전설.",
-    naver: "https://map.naver.com/v5/search/이문설렁탕+종각",
-    reservation: []
-  },
-
-  {
-    name: "미도갈비",
-    category: "한식 · 한돈 수제 돼지갈비/와규",
-    cuisine: "korean",
-    menus: ["수제 돼지갈비 1인 18,000원", "와규 갈비 1인 35,000원", "냉면 12,000원"],
-    price: "18,000~40,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 9분",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold"],
-    mood: ["great","stressed","normal"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "종각 대표 수제 돼지갈비 맛집. 직접 손질한 두툼한 갈비가 시그니처. 단체 회식·팀 점심으로 딱. 불판 앞에서 구워주는 서비스도 만족.",
-    naver: "https://map.naver.com/v5/search/미도갈비+종각",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/미도갈비+종각", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "동해도 광화문점",
-    category: "일식 · 무한리필 회전초밥/오마카세",
-    cuisine: "japanese",
-    menus: ["회전초밥 무한리필 25,800원~", "사시미 오마카세 100,000원", "스시 오마카세 70,000원"],
-    price: "25,000~100,000원",
-    priceNote: "1인 평균 2.5만원~",
-    walk: "도보 7분",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "종각 대표 회전초밥 맛집. 1시간 무한리필로 원하는 만큼! 오마카세도 운영. 단체 모임부터 혼밥까지 가능. 초밥은 고단백 저칼로리로 다이어트에도 OK.",
-    naver: "https://map.naver.com/v5/search/동해도+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/동해도+광화문점", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "곰국시집 종각",
-    category: "한식 · 곰국수/수육",
-    cuisine: "korean",
-    menus: ["곰국수 12,000원", "전골국수 14,000원", "수육 28,000원"],
-    price: "12,000~30,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 7분",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "구수한 사골 곰국수와 부드러운 수육 맛집. 전골국수·칼국수 모두 평점 높고 김치 맛도 일품. 조용히 든든하게 먹고 싶은 날 딱.",
-    naver: "https://map.naver.com/v5/search/곰국시집+종각",
-    reservation: []
-  },
-
-  {
-    name: "카페이마",
-    category: "양식·카페 · 함박스테이크/와플",
-    cuisine: "salad",
-    menus: ["클래식 함박스테이크 13,500원", "토마토 바질 페스토 함박 15,000원", "수제 와플 9,000원"],
-    price: "9,000~16,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 2분 (세종대로 152, 일민미술관 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","hot"],
-    mood: ["great","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 미술관 건물 속 운치 있는 레스토랑. 옛날식 두툼한 함박스테이크가 추억의 맛. 점심 런치 할인 2천원 적용. 날 좋은 날 분위기 있는 점심 원한다면 여기.",
-    naver: "https://map.naver.com/v5/search/카페이마+일민미술관+광화문",
-    reservation: []
-  },
-
-  // ── 🆕 3차 확장: 빠진 카테고리 보강 ─────────────────────────────────────────
-
-  {
-    name: "송백부대찌개",
-    category: "한식 · 부대찌개",
-    cuisine: "korean",
-    menus: ["부대찌개 1인 11,000원", "라면 사리 1,000원", "치즈 사리 1,000원"],
-    price: "11,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 4분 (도렴빌딩 지하 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["stressed","tired","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "광화문 직장인 추천 찐 부대찌개. 도렴빌딩 지하에 위치. 오독오독 씹히는 감자·당근이 킥. 즉석 해장 가능한 가성비 부대찌개 맛집.",
-    naver: "https://map.naver.com/v5/search/송백부대찌개+광화문",
-    reservation: []
-  },
-
-  {
-    name: "오감부대",
-    category: "한식 · 부대찌개/소시지전골",
-    cuisine: "korean",
-    menus: ["부대찌개 1인 12,000원", "소시지전골 1인 13,000원", "라면 사리 1,000원"],
-    price: "12,000~15,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 2분 (광화문 인근)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["stressed","tired","normal"],
-    people: ["small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "광화문 직장인 전골 맛집. 칼칼하고 얼큰한 국물에 햄·소시지 가득. 추운 날 팀 점심으로 딱. 소시지전골도 인기 메뉴.",
-    naver: "https://map.naver.com/v5/search/오감부대+광화문",
-    reservation: []
-  },
-
-
-
-
-
-  {
-    name: "도치피자 광화문",
-    category: "이탈리안 · 화덕피자",
-    cuisine: "western",
-    menus: ["디아볼라 24,000원", "고르곤졸라 22,000원", "버팔로 뽀모도로 22,000원", "콰트로 포르마지 26,500원", "감베리 에 루꼴라 23,500원"],
-    price: "22,000~27,000원",
-    priceNote: "1인 평균 1.5~2만원 (2인 이상 나눠먹기)",
-    walk: "도보 2분 (세종대로21길 67-2)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal"],
-    people: ["small","medium","large"],
-    budget: ["normal","expensive"],
-    tags: ["waiting"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "서울 3대 화덕피자로 불리는 도치피자의 광화문점. 나폴리 정통 화덕에서 구운 쫄깃한 도우가 특징. 점심 오픈런 필수일 정도로 직장인 인기가 높음. 1~2층 규모로 단체석도 있어 팀 회식에 적합.",
-    naver: "https://map.naver.com/v5/search/도치피자+광화문",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/Ikk0711", color: "#FF6B35" },
-    ]
-  },
-
-  {
-    name: "광화문나폴리",
-    category: "이탈리안 · 화덕피자/파스타",
-    cuisine: "western",
-    menus: ["마르게리타 피자", "미트러버 피자", "백상합 봉골레 파스타", "알리오올리오", "베이컨 버섯 트러플 리조또"],
-    price: "20,000~30,000원",
-    priceNote: "1인 평균 2만원대",
-    walk: "도보 3분 (새문안로9길 24-4)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal","birthday"],
-    people: ["small","medium","large"],
-    budget: ["normal","expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "나폴리 피자협회(AVPN) 정통 교육을 수료한 오너셰프가 운영. 나폴리 화산석으로 만든 참나무 화덕 사용. 슴슴하고 담백한 정통 화덕피자 맛. 아기자기한 유럽풍 인테리어로 분위기 좋음. 월요일 휴무, 예약 권장.",
-    naver: "https://map.naver.com/v5/search/광화문나폴리",
-    reservation: [
-      { label: "테이블링 예약", url: "https://www.tabling.co.kr/restaurant/8827", color: "#FF6B35" },
-    ]
-  },
-
-  {
-    name: "광화문집 (김치찌개/제육볶음)",
-    category: "한식 · 김치찌개/제육볶음",
-    cuisine: "korean",
-    menus: ["김치찌개 9,000원", "제육볶음 정식 10,000원", "된장찌개 8,000원"],
-    price: "8,000~11,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 1분 (광화문 중심)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["tired","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "오랜 전통의 광화문 한식 백반집. 감칠맛 나는 묵은지 김치찌개와 계란말이 조합. 호박볶음·나박김치 등 정갈한 반찬. 집밥 같은 포근한 맛으로 단골 직장인 다수.",
-    naver: "https://map.naver.com/v5/search/광화문집+종로구",
-    reservation: []
-  },
-
-
-  {
-    name: "부산식당",
-    category: "한식 · 생태탕/대구탕",
-    cuisine: "korean",
-    menus: ["생태탕 12,000원", "대구탕 13,000원", "황태해장국 10,000원"],
-    price: "10,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 1분 (광화문 인근)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "삼표 직원이 '전날 과음하고 가면 천상의 맛'이라 극찬한 생태탕 맛집. 생대구·생태 모두 신선하고 갓 한 밥이 정말 맛있는 광화문 해장 명소.",
-    naver: "https://map.naver.com/v5/search/부산식당+광화문+생태탕",
-    reservation: []
-  },
-
-  // ── 🆕 4차 확장: 순대국/돌솥/곰탕/중식 보강 ─────────────────────────────
-
-  {
-    name: "화목순대국전문 광화문1호점",
-    category: "한식 · 순대국/내장탕",
-    cuisine: "korean",
-    menus: ["순대국 11,000원", "순순대탕 12,000원", "내장탕 13,000원"],
-    price: "11,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 3분",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    waiting: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "성시경 '먹을텐데' 방영! 광화문 순대국 1티어. 곱창까지 들어간 푸짐한 순대국이 압도적. 새우젓 넣으면 감칠맛 폭발. 대기 각오하고 가야 하는 광화문 순대국 레전드.",
-    naver: "https://map.naver.com/v5/search/화목순대국+광화문",
-    reservation: []
-  },
-
-  {
-    name: "관북 순대국 (종각)",
-    category: "한식 · 순대국/수육",
-    cuisine: "korean",
-    menus: ["순대국 11,000원", "항정순대국 13,000원", "관북순대국(비지) 15,000원", "모둠수육(소) 25,000원"],
-    price: "11,000~16,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 6분 (종로5길 32-5)",
-    rating: "4.6",
-    ribbon: true,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "2026 블루리본 수록! 함경도식 이북 순대국. 관북순대국은 비지 넣어 끓여 크리미하고 구수한 국물이 특징. 들기름 굼순대도 별미. 광화문 일대 요즘 가장 뜨는 순대국집.",
-    naver: "https://map.naver.com/v5/search/관북+순대국+종각",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/관북+순대국+종각", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "청진동 장터순대국",
-    category: "한식 · 순대국/해장국",
-    cuisine: "korean",
-    menus: ["순대국 10,000원", "뼈해장국 11,000원", "순대 단품 9,000원"],
-    price: "9,000~13,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 3분 (청진동 골목)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "종각역 아침식사 TOP 맛집. 이른 아침부터 운영하는 광화문 청진동 순대국집. 깔끔하고 진한 국물에 순대·고기 푸짐. 출근 전 아침 해장 명소로 직장인 단골.",
-    naver: "https://map.naver.com/v5/search/청진동+장터순대국",
-    reservation: []
-  },
-
-  {
-    name: "청진옥",
-    category: "한식 · 해장국/설렁탕",
-    cuisine: "korean",
-    menus: ["해장국 11,000원", "선지해장국 12,000원", "설렁탕 12,000원"],
-    price: "11,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 5분 (청진동)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","stressed","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "종각역 새벽부터 문 여는 노포 해장국집. 진한 선지해장국·설렁탕으로 유명. 이른 아침 출근 전 뜨끈한 해장 한 그릇 원할 때 최고. 수십 년 된 광화문 골목 터줏대감.",
-    naver: "https://map.naver.com/v5/search/청진옥+종각",
-    reservation: []
-  },
-
-  {
-    name: "스모야 (종각·돌솥밥)",
-    category: "한식 · 돌솥밥",
-    cuisine: "korean",
-    menus: ["제육돌솥밥 13,000원", "낙지돌솥밥 14,000원", "차돌된장돌솥밥 14,000원"],
-    price: "12,000~16,000원",
-    priceNote: "1인 평균 1.4만원",
-    walk: "도보 6분 (센트로폴리스 B동 1층)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet","light"],
-    weather: ["cold","rainy","mild"],
-    mood: ["normal","great","tired"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "종각 직장인 핫플 돌솥밥 전문점. 제육·낙지·차돌된장 등 다양한 종류를 취향껏. 뜨끈하게 눌은밥까지 긁어 먹는 재미. 가볍고 든든한 점심으로 딱.",
-    naver: "https://map.naver.com/v5/search/스모야+종각",
-    reservation: []
-  },
-
-  {
-    name: "애성회관 (한우곰탕)",
-    category: "한식 · 한우곰탕",
-    cuisine: "korean",
-    menus: ["한우곰탕 보통 12,000원", "한우곰탕 특 14,000원", "한우 수육 25,000원"],
-    price: "12,000~25,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 9분 (중구 남대문로5길 23)",
-    rating: "4.8",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    waiting: true,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "시청·광화문 근처 곰탕 최상위 맛집. 점심 대기가 생길 만큼 인기지만 회전 빠름. 맑고 깊은 한우 곰탕 국물이 피로 회복에 딱. 가격 대비 퀄리티 압도적.",
-    naver: "https://map.naver.com/v5/search/애성회관+북창동+한우곰탕",
-    reservation: []
-  },
-
-  {
-    name: "가봉루",
-    category: "중식 · 고기튀김/짜장면",
-    cuisine: "chinese",
-    menus: ["고기튀김(소) 20,000원", "간짜장 8,000원", "짬뽕 8,000원", "군만두 6,000원"],
-    price: "8,000~25,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 2분 (세종대로23길 3)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "광화문역 92m! 화교가 운영하는 노포 중식당. 삼표 직원 극찬 겉바속촉 고기튀김 시그니처. 짜장면·짬뽕도 가격 착함. 점심 피크엔 2층이 꽉 참. 인천 차이나타운 안 가도 됨.",
-    naver: "https://map.naver.com/v5/search/가봉루+광화문",
-    reservation: []
-  },
-
-  {
-    name: "차이니즈키친홍성원 본점",
-    category: "중식 · 짜장면/탕수육",
-    cuisine: "chinese",
-    menus: ["간짜장 9,000원", "삼선간짜장 13,000원", "차돌짬뽕 14,000원", "탕수육(소) 22,000원"],
-    price: "9,000~25,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 7분",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["normal","stressed","great"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "망고플레이트 4.4점, 4만명 방문 희망! 꾸덕꾸덕 진한 간짜장 소스가 킥. 삼선간짜장·차돌짬뽕 모두 추천. 탕수육은 잡내 없이 바삭. 종각 직장인 짜장 생각날 때 1순위.",
-    naver: "https://map.naver.com/v5/search/홍성원+종각",
-    reservation: []
-  },
-
-  {
-    name: "신신원",
-    category: "중식 · 부추짜장/중화요리",
-    cuisine: "chinese",
-    menus: ["부추짜장 12,000원", "짬뽕 13,000원", "볶음밥 12,000원"],
-    price: "12,000~20,000원",
-    priceNote: "1인 평균 1.3만원",
-    walk: "도보 1분 (광화문 인근)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "삼표 직원이 '유명인도 종종 볼 수 있는 찐맛집'으로 극찬. 부추짜장이 시그니처로 남녀노소 누구나 호불호 없는 맛. 광화문 중식 중 개성 있는 메뉴로 꼭 한번 가봐야 할 집.",
-    naver: "https://map.naver.com/v5/search/신신원+광화문+짜장",
-    reservation: []
-  },
-
-  {
-    name: "차알 광화문 디타워점",
-    category: "중식 · 모던 중식/마라탕면",
-    cuisine: "chinese",
-    menus: ["차알 마라탕면 17,000원", "오렌지치킨 18,000원", "마파두부 15,000원"],
-    price: "15,000~25,000원",
-    priceNote: "1인 평균 1.8만원",
-    walk: "도보 2분 (디타워 3층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","stressed","normal"],
-    people: ["small","medium","large"],
-    budget: ["normal"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "디타워 3층 모던 미국식 중식 레스토랑. 차돌 듬뿍 차알 마라탕면이 시그니처. 넓은 홀·모던한 인테리어로 회식·데이트 최적. 줄 서서 먹는 광화문 중식 핫플.",
-    naver: "https://map.naver.com/v5/search/차알+광화문+디타워",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/차알+광화문+디타워", color: "#03C75A" },
-    ]
-  },
-
-  {
-    name: "웰믹스 광화문점",
-    category: "샐러드·비건 · 믹스볼 전문",
-    cuisine: "salad",
-    menus: ["트리플 버섯 불고기 믹스볼", "옥수수를 품은 오리 믹스볼", "후무스 비건 믹스볼", "과카몰리 믹스볼"],
-    price: "10,000~15,000원",
-    priceNote: "1인 평균 1.2만원~",
-    walk: "도보 2분 (세종대로23길 54)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet", "vegetarian"],
-    weather: ["mild", "hot", "rainy"],
-    mood: ["diet", "light", "normal"],
-    people: ["solo", "small"],
-    budget: ["cheap", "normal"],
-    tags: ["vegetarian", "vegan_option"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#4caf50" },
-    reason: "신선한 야채와 다양한 토핑으로 구성된 믹스볼 전문점. 서브웨이처럼 재료를 직접 골라 나만의 볼을 완성. 후무스·과카몰리 비건 옵션과 트리플 버섯 불고기 등 개성 있는 메뉴, 푸짐한 양이 인기.",
-    naver: "https://map.naver.com/v5/search/웰믹스+광화문점",
-    reservation: []
-  },
-
-  {
-    name: "점점점 샐러드",
-    category: "샐러드 · 웜플레이트/샐러드볼 전문",
-    cuisine: "salad",
-    menus: ["닭다리살 아보 플레이트 9,000원", "연어 플레이트 10,500원", "웜볼 (밥 선택 가능) 8,500원~"],
-    price: "8,000~11,000원",
-    priceNote: "1인 평균 9천원",
-    walk: "도보 3분 (르메이에르종로타운 B1)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["light","diet","nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal","tired"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🥗 KT East 르메이에르 지하 직장인 다이어트 성지! 익힌 양배추·구운 버섯·아보카도 웜플레이트로 따뜻한 식단관리 가능. 가격도 착하고 혼밥·포장·배달 모두 OK.",
-    naver: "https://map.naver.com/v5/search/점점점샐러드+광화문",
-    reservation: []
-  },
-
-  {
-    name: "카페마마스 광화문점",
-    category: "샐러드 · 리코타샐러드/파니니/브런치",
-    cuisine: "salad",
-    menus: ["리코타치즈 샐러드 15,800원", "소고기 가지 파니니 16,800원", "감자스프 6,500원~"],
-    price: "6,500~17,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 3분 (종로1길 50 더케이트윈타워 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild","cold","rainy"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "☕ 광화문 브런치 클래식. 꾸덕꾸덕 리코타치즈 샐러드와 파니니의 조화. 청포도 주스도 유명. 2013년부터 이어온 직장인 단골 브런치 맛집. 파니니는 20분 이상 소요되니 여유 있을 때 방문 추천.",
-    naver: "https://map.naver.com/v5/search/카페마마스+광화문",
-    reservation: []
-  },
-
-  // ⛔ 피그인더가든 광화문 — 2024년 12월 31일 폐업 (SPC 오프라인 전점 철수)
-
-  {
-    name: "슬로우캘리 종각역",
-    category: "샐러드 · 포케/샐러드볼/그릴보울",
-    cuisine: "salad",
-    menus: ["클래식 연어 포케 14,900원", "오리엔탈 두부 포케 9,500원 (비건)", "블랙페퍼 치킨보울 11,500원"],
-    price: "9,500~15,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 6분 (센트로폴리스 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["light","diet","vegetarian","nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
-    reason: "🥗 국내 1위 포케 프랜차이즈. 비건 두부 포케부터 연어·참치 포케까지. 신선한 재료와 자체 개발 소스로 건강한 한 끼. 키오스크 주문·포장 가능.",
-    naver: "https://map.naver.com/v5/search/슬로우캘리+종각역",
-    reservation: []
-  },
-
-  // ──────────────────────────────────────────────
-  // KT WEST 빌딩 (세종대로 178) 신규 추가
-  // ──────────────────────────────────────────────
-  {
-    name: "광화문옥희",
-    category: "일식/참치·해산물",
-    cuisine: "japanese",
-    menus: ["참치회덮밥 19,000원~", "카이센동 18,000원~", "알탕 16,000원~"],
-    price: "16,000~25,000원",
-    priceNote: "1인 평균 2만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["seafood","nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal","celebrate"],
-    people: ["solo","small","medium"],
-    budget: ["normal","expensive"],
-    hot: true,
-    waiting: true,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#4CAF50" },
-    reason: "🐟 이춘복참치 셰프의 새 브랜드! KT West 핫플 중 단연 화제. 참치회덮밥·카이센동 양 넉넉하고 신선도 최상. 웨이팅 필수라 캐치테이블 예약 강추.",
-    naver: "https://map.naver.com/v5/search/광화문옥희",
-    reservation: [
-      { label: "캐치테이블 예약", url: "https://app.catchtable.co.kr/ct/shop/okhee_gwm", color: "#FF6B35" }
-    ]
-  },
-  {
-    name: "키보 아츠아츠 (KT West)",
-    category: "일식/경양식·돈카츠",
-    cuisine: "japanese",
-    menus: ["돈카츠 세트 16,000원~", "새우튀김 세트 18,000원~", "나폴리탄 스파게티 14,000원~"],
-    price: "14,000~20,000원",
-    priceNote: "1인 평균 1.7만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["normal","stressed","great"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    hot: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🍱 일본 경양식 감성 맞집. 두툼한 돈카츠·새우튀김·나폴리탄 스파게티 한 세트에 해결. KT West 지하 인기 맛집 중 하나.",
-    naver: "https://map.naver.com/v5/search/키보아츠아츠+광화문",
-    reservation: []
-  },
-  {
-    name: "난포 (KT West)",
-    category: "한식/퓨전한식",
-    cuisine: "korean",
-    menus: ["강된장쌈밥 18,000원~", "전복들깨국수 17,000원~", "새우감자전 14,000원"],
-    price: "14,000~22,000원",
-    priceNote: "1인 평균 1.7만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet","light"],
-    weather: ["mild","cold","rainy"],
-    mood: ["normal","great"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    hot: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🌿 성수 유명 퓨전한식집 난포가 KT West 입성! 강된장쌈밥·전복들깨국수·돌문어간장국수. 깔끔하고 건강한 한식, 나무 인테리어로 분위기도 굿.",
-    naver: "https://map.naver.com/v5/search/난포+광화문",
-    reservation: []
-  },
-  {
-    name: "보보식당 (KT West)",
-    category: "중식/마라·동파육",
-    cuisine: "chinese",
-    menus: ["동파육 19,000원~", "마라가지튀김 14,000원~", "마파두부 13,000원~"],
-    price: "13,000~22,000원",
-    priceNote: "1인 평균 1.8만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["spicy","nodiet"],
-    weather: ["cold","mild","rainy"],
-    mood: ["great","celebrate","normal"],
-    people: ["small","medium"],
-    budget: ["normal"],
-    hot: true,
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🥢 압구정 맛집 보보식당이 KT West 입성! 동파육·마라가지튀김 폭발적 인기. 평점 4.6★ KT West 중식 대표주자.",
-    naver: "https://map.naver.com/v5/search/보보식당+광화문",
-    reservation: [
-      { label: "캐치테이블 예약", url: "https://app.catchtable.co.kr/ct/shop/bobo", color: "#FF6B35" }
-    ]
-  },
-  {
-    name: "타코챔피언 (KT West)",
-    category: "양식/멕시칸·타코",
-    cuisine: "western",
-    menus: ["타코 2개 세트 14,000원~", "부리또볼 13,000원~", "나초 7,000원"],
-    price: "12,000~18,000원",
-    priceNote: "1인 평균 1.4만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["normal","great"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    hot: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🌮 왕십리 안테나숍으로 먼저 검증된 타코 맛집! KT West에 정식 오픈. 직화 고기 타코·부리또볼 점심 가성비 굿.",
-    naver: "https://map.naver.com/v5/search/타코챔피언+광화문",
-    reservation: []
-  },
-  {
-    name: "덴푸라 감춘 (KT West)",
-    category: "일식/튀김·덴푸라",
-    cuisine: "japanese",
-    menus: ["덴푸라 정식 18,000원~", "새우덴푸라 세트 20,000원~", "덴동 17,000원~"],
-    price: "17,000~25,000원",
-    priceNote: "1인 평균 2만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet","seafood"],
-    weather: ["cold","mild"],
-    mood: ["great","celebrate"],
-    people: ["solo","small","medium"],
-    budget: ["normal","expensive"],
-    hot: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🍤 KT West 신비주의 전략으로 화제 된 덴푸라 전문점. 바삭한 새우·야채 튀김 정식. 스시 오마카세 셰프가 개발한 판초밥 코끼리초밥과 같은 라인.",
-    naver: "https://map.naver.com/v5/search/덴푸라감춘+광화문",
-    reservation: []
-  },
-  {
-    name: "오리지널팬케이크하우스 다이너 광화문점",
-    category: "양식/브런치·팬케이크",
-    cuisine: "western",
-    menus: ["버터밀크팬케이크 13,000원~", "계란+팬케이크 세트 15,000원~", "아메리칸 브런치 18,000원~"],
-    price: "12,000~20,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 5분 (KT West 지하 1층)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","normal","date"],
-    people: ["solo","small","couple"],
-    budget: ["normal"],
-    hot: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🥞 미국 다이너 감성 그대로! 버터밀크팬케이크+메이플시럽 클래식 조합. 광화문에서 브런치 하고 싶은 날 1순위. 네온사인·미국 소품으로 포토스팟도.",
-    naver: "https://map.naver.com/v5/search/오리지널팬케이크하우스+광화문",
-    reservation: []
-  },
-  // ⛔ 파이프그라운드 (KT West) — 기존 "파이프 그라운드 광화문" 항목(블루리본·4.9★)과 중복으로 제외
-  {
-    name: "도우룸 (KT West 2층)",
-    category: "양식/피자·카페",
-    cuisine: "western",
-    menus: ["피자 22,000원~", "리조또 19,000원~", "파스타 18,000원~"],
-    price: "18,000~28,000원",
-    priceNote: "광화문 뷰 레스토랑, 1인 평균 2만원+",
-    walk: "도보 5분 (KT West 2층, 광화문광장 뷰)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","hot"],
-    mood: ["great","celebrate","date"],
-    people: ["small","couple","medium"],
-    budget: ["expensive"],
-    hot: true,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🏛️ KT West 2층 광화문광장 뷰 레스토랑! 통창에서 광화문 풍경 보며 피자·파스타. 데이트·특별한 점심에 딱.",
-    naver: "https://map.naver.com/v5/search/도우룸+광화문",
-    reservation: []
-  },
-
-  // ──────────────────────────────────────────────
-  // 디타워 (종로3길 17) 신규 추가
-  // ──────────────────────────────────────────────
-  {
-    name: "야마야 광화문 디타워점",
-    category: "일식/이자카야·모츠나베/정식",
-    cuisine: "japanese",
-    menus: ["[런치] 모츠나베정식 19,800원", "[런치] 명란풍미닭튀김정식 16,900원", "[런치] 고등어미소조림정식 14,900원", "명란젓·타카나 무한리필 제공"],
-    price: "14,900~19,800원",
-    priceNote: "점심 런치정식 전용 운영 (단품 주문 불가), 명란젓·타카나 무한리필",
-    walk: "도보 2분 (디타워 내)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold"],
-    mood: ["great","celebrate","normal"],
-    people: ["small","medium"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🍢 이자카야 분위기에 야키토리·가라아게. 회식·소모임에 최적. 디타워 특유의 테라스 분위기에서 하이볼 한 잔.",
-    naver: "https://map.naver.com/v5/search/야마야+광화문+디타워",
-    reservation: [
-      { label: "캐치테이블 예약", url: "https://app.catchtable.co.kr/ct/shop/yamaya_ghm", color: "#FF6B35" }
-    ]
-  },
-  {
-    name: "타마린드 디타워점",
-    category: "아시안/베트남·태국",
-    cuisine: "asian",
-    menus: ["쌀국수 15,000원~", "베트남식 갈비 스테이크 28,000원~", "월남쌈 세트 22,000원~"],
-    price: "15,000~32,000원",
-    priceNote: "1인 평균 2만원, 모임·데이트 최적",
-    walk: "도보 2분 (디타워 5층)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet","seafood"],
-    weather: ["hot","mild"],
-    mood: ["great","celebrate","date"],
-    people: ["small","medium","group"],
-    budget: ["normal","expensive"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🇻🇳 광화문 베트남·태국·인도네시아 정통 요리 1위. 디타워 5층 분위기 좋은 공간. 팀 점심·소개팅·가족 모임 모두 OK. 패밀리세트 코스도 인기.",
-    naver: "https://map.naver.com/v5/search/타마린드+광화문+디타워",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/타마린드+광화문+디타워", color: "#03C75A" }
-    ]
-  },
-  {
-    name: "주유별장 광화문점",
-    category: "한식/퓨전한식·전통주",
-    cuisine: "korean",
-    menus: ["전복 들기름 카펠리니 22,000원", "엘에이갈비 28,000원~", "치즈감자전 16,000원"],
-    price: "16,000~30,000원",
-    priceNote: "점심 런치도 운영, 1인 평균 2만원+",
-    walk: "도보 2분 (디타워 내)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","mild"],
-    mood: ["great","celebrate","normal"],
-    people: ["small","medium","group"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🍶 디타워 유일 전통주 한식주점. 복순도가 등 프리미엄 전통주·퓨전한식 조합. 전복 카펠리니·갈비 회식 메뉴 인기. 넓은 홀·룸 완비.",
-    naver: "https://map.naver.com/v5/search/주유별장+광화문+디타워",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/주유별장+광화문+디타워", color: "#03C75A" }
-    ]
-  },
-  {
-    name: "매드포갈릭 광화문D타워",
-    category: "양식/이탈리안·갈릭",
-    cuisine: "western",
-    menus: ["마늘빵 12,000원", "갈릭 파스타 19,000원~", "갈릭 스테이크 32,000원~"],
-    price: "18,000~35,000원",
-    priceNote: "모임·단체 추천, 1인 평균 2.5만원",
-    walk: "도보 2분 (디타워 내)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","mild"],
-    mood: ["celebrate","great","normal"],
-    people: ["small","medium","group"],
-    budget: ["expensive"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
-    reason: "🧄 마늘 특화 이탈리안 레스토랑. 마늘빵·갈릭 파스타·스테이크 풀코스 모임 장소로 인기. 디타워 분위기 좋은 공간에서 넉넉한 회식 가능.",
-    naver: "https://map.naver.com/v5/search/매드포갈릭+광화문+디타워",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/매드포갈릭+광화문+디타워", color: "#03C75A" }
-    ]
-  },
-  // ⛔ 후와후와 디타워점 — 폐업 확인으로 제외 (2025년 기준)
-  {
-    name: "브루클린더버거조인트 디타워점",
-    category: "양식/수제버거",
-    cuisine: "western",
-    menus: ["클래식버거 16,000원~", "더블패티버거 19,000원~", "트러플 프라이즈 9,000원"],
-    price: "15,000~22,000원",
-    priceNote: "1인 평균 1.7만원",
-    walk: "도보 2분 (디타워 1층)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","hot"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    hot: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🍔 서래마을 본점 유명 수제버거 맛집의 디타워 지점. 두툼한 패티·트러플 프라이즈 조합 점심 가성비 굿. 11:00~21:30 영업.",
-    naver: "https://map.naver.com/v5/search/브루클린더버거조인트+광화문+디타워",
-    reservation: []
-  },
-
-  // ── 🆕 SFC몰 (서울파이낸스센터) 식당 ───────────────────────────────────────
-
-
-
-
-  {
-    name: "다운타우너 (SFC몰)",
-    category: "양식 · 수제버거",
-    cuisine: "western",
-    menus: ["다운타우너(단품) 10,300원", "아보카도버거 12,700원", "더블치즈트러플 12,400원", "핫앤사워치킨아보카도 11,900원"],
-    price: "10,000~16,000원",
-    priceNote: "1인 평균 1~1.5만원",
-    walk: "도보 3분 (서울파이낸스센터 지하 1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["great","normal","stressed"],
-    people: ["solo","small"],
-    budget: ["cheap","normal"],
-    hot: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
-    reason: "🍔 서울 수제버거 명가 다운타우너의 SFC몰 직영점. 고소하고 담백한 국산 소고기 패티가 핵심. 탐욕버거·더블베이컨치즈버거 인기. 점심 가성비 최강. 바삭한 어니언링·고구마프라이도 추천.",
-    naver: "https://map.naver.com/v5/search/다운타우너+광화문+SFC",
-    reservation: []
-  },
-
-  {
-    name: "라멘 시미즈",
-    category: "일식 · 시오/쇼유라멘",
-    cuisine: "japanese",
-    menus: ["시오라멘(소금) 11,000원", "쇼유라멘(간장) 11,000원", "시오/쇼유 스페셜(오리차슈+맛계란) 14,000원", "차슈덮밥 3,500원"],
-    price: "11,000~14,000원",
-    priceNote: "1인 평균 1.2만원",
-    walk: "도보 3분 (새문안로3길 12 신문로아파트 지하1층)",
-    rating: "4.8",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["cold","rainy","mild"],
-    mood: ["tired","normal","solo_ok"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 라멘 라인 최강자. 닭육수로 뽑은 깔끔하고 깊은 시오라멘 전문. 오리차슈와 탱탱한 면발이 일품. 바 테이블 혼밥 최적. 다이닝코드 평점 4.8, 일요일 휴무.",
-    naver: "https://map.naver.com/v5/search/라멘시미즈+광화문",
-    reservation: []
-  },
-
-  {
-    name: "아오리의행방불명 광화문센트럴점",
-    category: "일식 · 돈코츠/미소라멘",
-    cuisine: "japanese",
-    menus: ["돈코츠라멘 11,000원", "미소라멘 11,000원", "마제멘 11,000원", "TKG(간장계란밥) 별도"],
-    price: "11,000~13,000원",
-    priceNote: "1인 평균 1.1만원",
-    walk: "도보 6분 (종로 87-1 2층)",
-    rating: "3.9",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["tired","normal"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "이치란라멘 스타일의 1인 터치스크린 주문 돈코츠라멘. 맵기·파·마늘을 취향껏 조절 가능. 혼밥에 최적화된 1인 좌석. 종각역 인근 접근성 좋음.",
-    naver: "https://map.naver.com/v5/search/아오리+행방불명+광화문+센트럴",
-    reservation: []
-  },
-
-  {
-    name: "평가옥 (광화문점)",
-    category: "한식 · 평양냉면/어복쟁반",
-    cuisine: "korean",
-    menus: ["평양냉면(물/비빔) 16,000원", "어복쟁반 소 82,000원", "만두전골 1인 29,000원", "국수전골 1인 27,000원", "녹두지짐 17,000원"],
-    price: "16,000~35,000원",
-    priceNote: "1인 평균 2만원",
-    walk: "도보 4분 (로얄빌딩 1층)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["light","nodiet"],
-    weather: ["hot","mild","cold"],
-    mood: ["great","normal","tired"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal","expensive"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "3대째 이어온 정통 평양음식 전문점. 수요미식회 출연으로 유명. 슴슴하고 깔끔한 평양냉면과 이북식 어복쟁반·만두전골이 시그니처. 로얄빌딩 1층, 회식 룸 있음.",
-    naver: "https://map.naver.com/v5/search/평가옥+광화문점",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/평가옥+광화문점", color: "#03C75A" }
-    ]
-  },
-
-  {
-    name: "후라토식당 경복궁 본점",
-    category: "일식 · 규카츠/오므라이스",
-    cuisine: "japanese",
-    menus: ["규카츠 19,500원", "반숙 오므라이스 14,500원", "스테키 정식 19,500원", "야마가타 민치카레 14,500원", "우삼겹 덮밥 14,500원"],
-    price: "14,500~20,000원",
-    priceNote: "1인 평균 1.8만원",
-    walk: "도보 4분 (로얄빌딩 지하1층)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["mild","cold","rainy"],
-    mood: ["great","normal","tired"],
-    people: ["solo","small","medium"],
-    budget: ["normal","expensive"],
-    waiting: true,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "광화문 최고 인기 규카츠 본점. 겉은 바삭하고 속은 촉촉한 소고기 규카츠와 부드러운 반숙 오므라이스가 시그니처. 저녁은 캐치테이블 예약 필수, 점심은 웨이팅 각오.",
-    naver: "https://map.naver.com/v5/search/후라토식당+경복궁본점",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/hurato", color: "#FF6B35" }
-    ]
-  },
-  {
-    name: "샐러드로우앤트라타 광화문점",
-    category: "양식 · 샐러드/타코/부리또",
-    cuisine: "western",
-    menus: ["부리또볼 9,500원~11,000원", "크리스피 더블타코 약 10,000원", "트라타 부리또 약 10,000원", "퀘사디아", "샐러드"],
-    price: "9,000~13,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 3분 (새문안로5길 31)",
-    rating: "4.0",
-    ribbon: false,
-    diet: ["diet","vegetarian","nodiet"],
-    weather: ["mild","hot"],
-    mood: ["great","normal","tired"],
-    people: ["solo","small","medium"],
-    budget: ["cheap","normal"],
-    waiting: false,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#27ae60" },
-    reason: "샐러드+멕시칸 조합으로 광화문 직장인에게 인기. 커스텀 부리또볼과 타코가 대표 메뉴. 고수 등 재료 조절 가능. 평일 아침 8:30부터 운영해 조찬 미팅도 OK. 넓은 내부, 주말에도 영업.",
-    naver: "https://map.naver.com/v5/search/샐러드로우앤트라타+광화문",
-    reservation: []
-  },
-  {
-    name: "고우가 광화문점",
-    category: "한식 · 한우 오마카세",
-    cuisine: "korean",
-    menus: ["런치 A코스 39,000원", "런치 B코스 59,000원", "런치 C코스 79,000원", "한우구이·코스요리"],
-    price: "39,000~79,000원",
-    priceNote: "전 좌석 프라이빗룸, 예약 필수",
-    walk: "도보 3분 (SFC몰 지하2층 205호, 광화문역 5번 출구)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business", "normal", "great"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#e74c3c" },
-    reason: "SFC몰 지하 전 좌석 프라이빗룸 한우 오마카세. 런치 A코스부터 접대·기념일·비즈니스 미팅에 최적. 콜키지 프리, 기념일 서비스 제공.",
-    naver: "https://map.naver.com/p/search/고우가%20광화문",
-    reservation: true,
-  },
-  {
-    name: "일품진진수라 광화문점",
-    category: "한식 · 한정식",
-    cuisine: "korean",
-    menus: ["점심 C코스 39,000원", "점심 B코스 59,000원", "궁중구절판", "보리굴비", "불고기"],
-    price: "39,000~80,000원",
-    priceNote: "점심 코스 C 3.9만~A 7.9만, 전 좌석 룸",
-    walk: "도보 5분 (종로구 종로5길 7 타워8빌딩 B2)",
-    rating: "4.1",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business", "normal", "great"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
-    reason: "타워8빌딩 B2 고급 한정식. 전 좌석 룸으로 VIP 접대·상견례·비즈니스 런치에 최적. 궁중식 한상차림, 예약 권장.",
-    naver: "https://map.naver.com/p/search/진진수라%20광화문",
-    reservation: true,
-  },
-  {
-    name: "울프강 스테이크하우스 광화문점",
-    category: "양식 · 스테이크",
-    cuisine: "western",
-    menus: ["런치코스 9만원~", "드라이에이징 스테이크", "포터하우스", "필레미뇽"],
-    price: "90,000~200,000원",
-    priceNote: "런치코스 9만원~, 접대·기념일 추천, 예약 필수",
-    walk: "도보 2분 (세종대로21길 40 2층)",
-    rating: 4.5,
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business"],
-    people: ["solo","small","medium"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🔴", label: "높음", color: "#e74c3c" },
-    reason: "미국 3대 스테이크하우스 울프강의 광화문점. USDA 프라임 28일 드라이에이징 스테이크. 접대·기념일·특별한 날 최적. 런치코스 예약 필수.",
-    naver: "https://map.naver.com/p/search/울프강스테이크하우스광화문",
-    reservation: true,
-  },
-  {
-    name: "친니",
-    category: "중식 · 탕수육·코스",
-    cuisine: "chinese",
-    menus: ["탕수육", "깐풍기", "민물장어덮밥 28,000원", "해산물덮밥 20,000원", "매 코스 59,000원"],
-    price: "20,000~59,000원",
-    priceNote: "점심 단품 2만원대, 코스 5.9만원~, 수요미식회 탕수육 맛집",
-    walk: "도보 3분 (세종문화회관 지하 1층)",
-    rating: 4.2,
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business", "normal"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal", "expensive"],
-    waiting: true,
-    calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
-    reason: "세종문화회관 지하 중식당. 수요미식회·맛있는녀석들 출연 탕수육 맛집. 점심 단품 2만원대부터 코스까지 다양. 단체·접대·모임에 적합.",
-    naver: "https://map.naver.com/p/search/친니광화문",
-    reservation: true,
-  },
-  {
-    name: "스시산원 궁",
-    category: "일식 · 스시오마카세",
-    cuisine: "japanese",
-    menus: ["런치 오마카세 60,000원", "디너 오마카세 90,000원"],
-    price: "60,000~90,000원",
-    priceNote: "런치 오마카세 6만원, 예약 필수 (캐치테이블)",
-    walk: "도보 3분 (케이트윈타워 B동 지하1층)",
-    rating: 4.4,
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business"],
-    people: ["solo","small"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
-    reason: "스시산원 4번째 브랜드 광화문점. 산지 직송 자연산 수산물 오마카세. 런치 6만원으로 미들급 오마카세 중 가성비 우수. 다찌 좌석 구성.",
-    naver: "https://map.naver.com/p/search/스시산원궁광화문",
-    reservation: true,
-  },
-  {
-    name: "라브리",
-    category: "양식 · 프렌치",
-    cuisine: "western",
-    menus: ["런치 프렌치 코스 6~8만원", "꽃등심 스테이크", "바닷가재 메인", "프렌치 코스 풀코스"],
-    price: "60,000~80,000원",
-    priceNote: "런치 코스 6~8만원, 메인 선택에 따라 가격 상이. 예약 권장.",
-    walk: "도보 4분 (교보빌딩 2층)",
-    rating: 4.3,
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["special", "business"],
-    people: ["solo","small"],
-    budget: ["expensive"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
-    reason: "광화문 교보빌딩 2층의 30년 전통 정통 프렌치 레스토랑. 대사관·외교부·대기업 임직원 단골 맛집. 런치 코스 6~8만원으로 프라이빗한 비즈니스 점심·기념일에 최적.",
-    naver: "https://map.naver.com/p/search/라브리%20광화문",
-    reservation: true,
-  },
-  {
-    name: "신승관",
-    category: "중식 · 정통중화요리",
-    cuisine: "chinese",
-    menus: ["사천꿔바로우 18,000원", "삼선볶음밥 15,000원", "해물짬뽕 16,000원", "코스요리 40,000원~"],
-    price: "15,000~25,000원",
-    priceNote: "단품 1.5~2만원대, 코스 4만원~8만원. 콜키지프리.",
-    walk: "도보 5분 (르메이에르 2층)",
-    rating: 4.2,
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["any"],
-    mood: ["daily", "business"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
-    reason: "화교 3대째 운영하는 60년 전통 정통 중화요리. 48시간 숙성 수제면, 직접 만든 소스가 특징. 룸 6개 완비로 회식·모임에 최적. 콜키지프리.",
-    naver: "https://map.naver.com/p/search/신승관%20광화문",
-    reservation: false,
-  },
-];
-
-const CUISINE_TABS = [
-  { value: "all", emoji: "🍽️", label: "전체" },
-  { value: "korean", emoji: "🍲", label: "한식" },
-  { value: "chinese", emoji: "🥢", label: "중식" },
-  { value: "japanese", emoji: "🍣", label: "일식" },
-  { value: "western", emoji: "🍕", label: "양식" },
-  { value: "asian", emoji: "🍜", label: "아시안" },
-];
-
-const OPTIONS = {
-  weather: [
-    { value: "hot", emoji: "☀️", label: "더워요", sub: "25°C 이상" },
-    { value: "mild", emoji: "🌤️", label: "선선해요", sub: "15~24°C" },
-    { value: "cold", emoji: "🥶", label: "추워요", sub: "14°C 이하" },
-    { value: "rainy", emoji: "🌧️", label: "비 와요", sub: "우중충한 날" },
-  ],
-  mood: [
-    { value: "great", emoji: "😄", label: "최고예요", sub: "기념할 일 있어요" },
-    { value: "normal", emoji: "😊", label: "보통이에요", sub: "평범한 하루" },
-    { value: "tired", emoji: "😩", label: "피곤해요", sub: "힘을 내야 해요" },
-    { value: "stressed", emoji: "🤯", label: "스트레스", sub: "매운 게 당겨요" },
-  ],
-  people: [
-    { value: "solo", emoji: "🙋", label: "혼밥", sub: "나 혼자" },
-    { value: "small", emoji: "👫", label: "2~3명", sub: "소수 정예" },
-    { value: "medium", emoji: "👥", label: "4~6명", sub: "팀 점심" },
-    { value: "large", emoji: "🎉", label: "7명 이상", sub: "단체 회식" },
-  ],
-  diet: [
-    { value: "nodiet", emoji: "🍖", label: "아니요", sub: "다 먹어요" },
-    { value: "light", emoji: "🥗", label: "가볍게", sub: "칼로리 신경써요" },
-    { value: "diet", emoji: "💪", label: "다이어트 중", sub: "저칼로리만요" },
-    { value: "vegetarian", emoji: "🌿", label: "채식 선호", sub: "고기 안 먹어요" },
-  ],
-  budget: [
-    { value: "cheap", emoji: "💸", label: "~1만원", sub: "가성비 최고" },
-    { value: "normal", emoji: "💳", label: "1~2만원", sub: "보통 수준" },
-    { value: "expensive", emoji: "💎", label: "2만원 이상", sub: "특별하게" },
-  ],
-};
-
-const LABELS = {
-  weather: { hot:"더운 날씨", mild:"선선한 날", cold:"추운 날", rainy:"비 오는 날" },
-  mood: { great:"기분 최고", normal:"평범한 하루", tired:"피곤한 날", stressed:"스트레스 날" },
-  people: { solo:"혼밥", small:"2~3명", medium:"4~6명", large:"7명 이상" },
-  diet: { nodiet:"식단 자유", light:"가볍게", diet:"다이어트 중", vegetarian:"채식 선호" },
-  budget: { cheap:"1만원 이하", normal:"1~2만원", expensive:"2만원 이상" },
-  cuisine: { all:"전체", korean:"한식", chinese:"중식", japanese:"일식", western:"양식", salad:"샐러드/카페", asian:"아시안" },
-};
-
-const SECTION_TITLES = {
-  weather: "오늘 날씨가 어때요?",
-  mood: "오늘 기분은요?",
-  people: "몇 명이서 먹어요?",
-  diet: "식단 관리 중이에요?",
-  budget: "1인 예산은요?",
-  cuisine: "어떤 음식이 당겨요?",
-};
-
-// 예산 호환 테이블
-// cheap(~1만원): cheap만
-// normal(1~2만원): cheap, normal (저렴한 것도 허용)
-// expensive(2만원+): expensive만 (1만원짜리는 보여주지 않음 — 목적이 다름)
-const BUDGET_COMPAT = {
-  cheap:     ["cheap"],
-  normal:    ["cheap", "normal"],
-  expensive: ["expensive"],
-};
-
-function scoreRestaurant(r, sel, recentNames = []) {
-  let score = 0;
-
-  // ⓪ 음식 종류 필터: 엄격 필터 (all이면 통과)
-  if (sel.cuisine && sel.cuisine !== 'all') {
-    if (r.cuisine !== sel.cuisine) return -999;
-  }
-
-  // ① 예산 조건: 엄격 필터링
-  const compatBudgets = BUDGET_COMPAT[sel.budget] || [];
-  const budgetMatch = r.budget.some(b => compatBudgets.includes(b));
-  if (!budgetMatch) return -999;
-  if (r.budget.includes(sel.budget)) score += 3; // 완벽 일치 보너스 (6→3으로 축소)
-  else score += 1;
-
-  // ② 식단 조건: 엄격 필터링
-  if (sel.diet === "diet") {
-    if (!r.diet.includes("diet")) return -999;
-    score += 5;
-  } else if (sel.diet === "light") {
-    if (!r.diet.includes("light") && !r.diet.includes("diet")) return -999;
-    score += 4;
-  } else if (sel.diet === "vegetarian") {
-    if (!r.diet.includes("vegetarian")) return -999;
-    score += 5;
+﻿import { useState, useEffect, useRef } from "react";
+import { restaurantDB } from "./data/restaurantData";
+import { OPTIONS, LABELS, SECTION_TITLES, BUDGET_COMPAT, QUICK_PRESETS } from "./data/constants";
+import { AzureOpenAI } from "openai";
+
+// Azure OpenAI 클라이언트 초기화
+let openai = null;
+try {
+  const apiKey = process.env.REACT_APP_AZURE_OPENAI_API_KEY;
+  const endpoint = process.env.REACT_APP_AZURE_OPENAI_ENDPOINT;
+  const apiVersion = process.env.REACT_APP_AZURE_OPENAI_API_VERSION || "2025-04-01-preview";
+
+  if (apiKey && endpoint) {
+    openai = new AzureOpenAI({
+      apiKey,
+      endpoint,
+      apiVersion,
+      dangerouslyAllowBrowser: true // 클라이언트 사이드 사용 (프로덕션에서는 서버 사용 권장)
+    });
+    console.log("✅ Azure OpenAI LLM 추천 활성화");
   } else {
-    score += 1;
+    console.log("ℹ️ Azure OpenAI 설정 없음 - 기본 알고리즘 사용");
   }
+} catch (error) {
+  console.error("Azure OpenAI 초기화 실패:", error);
+  openai = null;
+}
 
-  // ③ 날씨
-  if (r.weather.includes(sel.weather)) score += 8;
-  else score -= 3;
+// ✅ KT East 빌딩 기준 좌표 (종로3길 33)
+const KT_EAST_COORDS = { lat: 37.5703, lng: 126.9835 };
 
-  // ④ 기분
-  if (r.mood.includes(sel.mood)) score += 7;
-  else score -= 6; // 기분 불일치 패널티 강화: 스트레스날에 초밥/샐러드 뜨지 않도록
+// 두 좌표 간 거리 계산 (Haversine formula, 단위: 미터)
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371000; // 지구 반지름 (미터)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
 
-  // ⑤ 인원
-  // large(단체)는 엄격 필터: 해당 식당이 large를 지원하지 않으면 제외
-  if (sel.people === "large" && !r.people.includes("large")) return -999;
-  if (r.people.includes(sel.people)) score += 6;
-  else score -= 4;
+// 거리를 도보 시간으로 변환 (평균 도보 속도: 80m/분, 실제 경로는 직선거리 x 1.3배)
+function getWalkTime(distanceInMeters) {
+  const actualDistance = distanceInMeters * 1.3; // 실제 도보 경로는 직선거리보다 30% 더 김
+  const minutes = Math.round(actualDistance / 80);
+  return Math.max(1, minutes); // 최소 1분
+}
 
-  // ⑤-1 혼밥 시 웨이팅 긴 식당 패널티: 혼자 가서 오래 기다리긴 비효율
-  if (sel.people === "solo" && r.waiting) score -= 8;
+// ============================================================
+// Phase B: 알고리즘 강화 - Helper Functions
+// ============================================================
 
-  // ⑥ 블루리본 + 평점 보너스 (블루리본 3→1.5로 축소, 영향력 줄임)
-  if (r.ribbon) score += 1.5;
-  score += (parseFloat(r.rating) - 4.0) * 1.5; // 평점 가중치도 소폭 축소
-
-  // ⑦ 태그 광범위 패널티 강화: 날씨·기분 태그 많을수록 감점
-  const tagCount = r.weather.length + r.mood.length;
-  score -= (tagCount - 4) * 1.2; // 0.6→1.2로 강화
-
-  // ⑧ 쿨다운 페널티: 최근에 추천됐던 식당일수록 감점 (최대 -8점)
-  const recentIdx = recentNames.indexOf(r.name);
-  if (recentIdx !== -1) {
-    // 최근일수록 강한 페널티: 1번 전=-8, 2번 전=-6, ... 5번 이후=-2
-    score -= Math.max(2, 8 - recentIdx * 1.5);
+// 📅 시간/요일 기반 컨텍스트 점수 계산
+function getTimeContextScore(restaurant, selections) {
+  let score = 0;
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const dayOfWeek = now.getDay(); // 0=일요일, 1=월요일, ..., 5=금요일
+  
+  // 🕐 피크타임 (11:30-12:30) 점수 조정
+  const isPeakTime = (hour === 11 && minute >= 30) || (hour === 12 && minute <= 30);
+  // 점심시간 전후 (11:00~13:30) 거리·대기 가중
+  const isLunchWindow = hour >= 11 && (hour < 13 || (hour === 13 && minute <= 30));
+  
+  if (isPeakTime) {
+    // large 인원은 피크타임에 감점 (자리 구하기 어려움)
+    const peopleNum = selections.people || 2;
+    if (peopleNum > 6 && restaurant.people && Array.isArray(restaurant.people) && restaurant.people.includes('large')) {
+      score -= 10;
+    }
+    
+    // 🕐 대기 있는 식당은 피크타임에 감점
+    if (restaurant.waiting) {
+      score -= 8;
+    }
+    
+    // 300m 이상 원거리는 피크타임에 감점 (시간 부족)
+    if (restaurant.coords) {
+      const distance = getDistance(
+        37.5716, 126.9769,
+        restaurant.coords.lat, 
+        restaurant.coords.lng
+      );
+      if (distance > 400) {
+        score -= 8;
+      } else if (distance > 300) {
+        score -= 5;
+      } else if (distance < 100) {
+        score += 10; // 초근거리 보너스
+      } else if (distance < 200) {
+        score += 5; // 가까운 거리 보너스
+      }
+    }
+  } else if (isLunchWindow) {
+    // 점심 전후 시간: 대기 식당 약한 감점
+    if (restaurant.waiting) {
+      score -= 4;
+    }
   }
-
-  // ⑨ 랜덤: 충분히 크게 → 매번 다른 결과
-  score += Math.random() * 5.0;
+  
+  // 📆 요일별 점수 조정
+  if (dayOfWeek === 5) { // 금요일
+    // expensive 식당 보너스 (주말 전, 특별한 점심)
+    if (restaurant.budget && Array.isArray(restaurant.budget) && 
+        restaurant.budget.includes('expensive')) {
+      score += 10;
+    }
+  }
+  
+  if (dayOfWeek === 1) { // 월요일
+    // safe mood 보너스 (주초 안정적인 선택)
+    if (restaurant.mood && Array.isArray(restaurant.mood) && 
+        (restaurant.mood.includes('safe') || restaurant.mood.includes('normal'))) {
+      score += 8;
+    }
+    
+    // 높은 평점 식당 보너스 (확실한 선택)
+    const rating = parseFloat(restaurant.rating) || 0;
+    if (rating >= 4.7) {
+      score += 5;
+    }
+  }
+  
+  if (dayOfWeek === 3) { // 수요일 - 주중 중간, 새로운 도전
+    // 평소 안 가본 타입의 식당에 보너스
+    if (restaurant.cuisine && (restaurant.cuisine === 'japanese' || restaurant.cuisine === 'western' || restaurant.cuisine === 'chinese')) {
+      score += 4;
+    }
+  }
+  
+  if (dayOfWeek === 4) { // 목요일 - 금요일 전날, 살짝 특별하게
+    if (restaurant.ribbon) {
+      score += 5;
+    }
+  }
+  
+  // 🌤️ 날씨별 메뉴 타입 점수 조정 (category + menus 모두 검사)
+  const category = restaurant.category || '';
+  const menuText = (restaurant.menus || []).join(' ');
+  const searchText = category + ' ' + menuText;
+  
+  if (selections.weather === 'hot') {
+    // 더운 날: 시원한/가벼운 메뉴 보너스
+    if (/냉면|회|샐러드|초밥|카이센동|냉모밀|냉소바|물냉|비빔냉|메밀|아이스|콩국수|물회/.test(searchText)) {
+      score += 12;
+    }
+    // 뜨거운/무거운 음식 감점
+    if (/찌개|탕|국밥|전골|뚝배기|설렁탕|곰탕/.test(category)) {
+      score -= 8;
+    }
+    // 더운 날 먼 거리 추가 감점
+    if (restaurant.coords) {
+      const dist = getDistance(37.5716, 126.9769, restaurant.coords.lat, restaurant.coords.lng);
+      if (dist > 400) score -= 3; // 더운 날 먼 거리는 더 힘듦
+    }
+  }
+  
+  if (selections.weather === 'cold') {
+    // 추운 날: 따뜻한 국물 보너스
+    if (/찌개|탕|국밥|전골|국|라멘|우동|설렁탕|갈비탕|샤브|곰탕|순대국|감자탕/.test(searchText)) {
+      score += 12;
+    }
+    // 찬 음식 감점
+    if (/냉면|회|샐러드|냉모밀|물회|콩국수/.test(searchText)) {
+      score -= 5;
+    }
+  }
+  
+  if (selections.weather === 'rainy') {
+    // 비 오는 날: 찌개, 전, 국물 특별 보너스 (가장 높은 보너스)
+    if (/찌개|전|국밥|파전|부침|수제비|칼국수|라멘|순대국/.test(searchText)) {
+      score += 15;
+    }
+    // 비 오는 날 먼 거리 감점 (우산 들고 이동 힘듦)
+    if (restaurant.coords) {
+      const dist = getDistance(37.5716, 126.9769, restaurant.coords.lat, restaurant.coords.lng);
+      if (dist > 300) score -= 5;
+    }
+  }
+  
+  if (selections.weather === 'mild') {
+    // 선선한 날: 다양한 선택 가능, 야외 가능한 곳 보너스
+    if (/파스타|브런치|샌드위치|버거|비빔/.test(searchText)) {
+      score += 5;
+    }
+  }
+  
+  // 🌿 계절 보너스 (4계절)
+  const month = new Date().getMonth() + 1;
+  if (month >= 3 && month <= 5) {
+    // 봄: 가벼운 메뉴, 샐러드, 회, 신선한 음식
+    if (/샐러드|회|초밥|비빔|봄|냉면|파스타|브런치/.test(searchText)) {
+      score += 5;
+    }
+  } else if (month >= 6 && month <= 8) {
+    // 여름: 냉면, 콩국수, 회 등 시원한 메뉴
+    if (/냉면|콩국수|물회|냉모밀|냉소바|샐러드|빙수|아이스/.test(searchText)) {
+      score += 5;
+    }
+  } else if (month >= 9 && month <= 11) {
+    // 가을: 보양식, 든든한 메뉴
+    if (/갈비|구이|삼겹|보쌈|삼계탕|추어|전골/.test(searchText)) {
+      score += 5;
+    }
+  } else {
+    // 겨울 (12~2월): 따뜻한 국물, 전골
+    if (/찌개|탕|전골|국밥|라멘|우동|설렁탕|곰탕|순대국|감자탕|샤브/.test(searchText)) {
+      score += 5;
+    }
+  }
+  
+  // 🚶 거리 점수 (비피크 시간대에도 항상 적용)
+  if (!isPeakTime && restaurant.coords) {
+    const distance = getDistance(
+      37.5716, 126.9769,
+      restaurant.coords.lat, 
+      restaurant.coords.lng
+    );
+    if (distance < 100) {
+      score += 7; // 초근거리 (도보 1~2분)
+    } else if (distance < 200) {
+      score += 4; // 가까움 (도보 3~4분)
+    } else if (distance < 350) {
+      score += 2; // 적당 (도보 5~6분)
+    } else if (distance > 600) {
+      score -= 5; // 먼 거리 (도보 10분+)
+    } else if (distance > 450) {
+      score -= 2; // 다소 먼 거리 (도보 7~8분)
+    }
+  }
+  
   return score;
 }
 
+// 🎯 MMR (Maximal Marginal Relevance) 다양성 점수 계산
+function calculateMMRScore(restaurant, selectedRestaurants, relevanceScore) {
+  if (selectedRestaurants.length === 0) {
+    return relevanceScore; // 첫 번째는 그대로
+  }
+  
+  // 이미 선택된 식당들과의 유사도 계산
+  let maxSimilarity = 0;
+  
+  for (const selected of selectedRestaurants) {
+    let similarity = 0;
+    
+    // 1. 카테고리 유사도 (+0.4)
+    if (restaurant.category === selected.category) {
+      similarity += 0.4;
+    } else {
+      // 같은 cuisine이면 +0.2
+      if (restaurant.cuisine === selected.cuisine) {
+        similarity += 0.2;
+      }
+    }
+    
+    // 2. 브랜드 유사도 (+0.5) - 같은 브랜드면 높은 패널티
+    const getBrand = (name) => {
+      const suffixes = ['광화문점', '디타워점', 'SFC점', '종각점', '본점', '지점'];
+      let brand = name;
+      suffixes.forEach(suffix => {
+        if (brand.includes(suffix)) {
+          brand = brand.replace(suffix, '').trim();
+        }
+      });
+      return brand.replace(/\s*\([^)]*\)\s*/g, '').trim();
+    };
+    
+    if (getBrand(restaurant.name) === getBrand(selected.name)) {
+      similarity += 0.5;
+    }
+    
+    // 3. 가격 유사도 (+0.2)
+    const getPriceRange = (r) => {
+      if (!r.price) return 15000;
+      const match = r.price.match(/(\d{1,3}(?:,?\d{3})*)/);
+      return match ? parseInt(match[1].replace(/,/g, '')) : 15000;
+    };
+    
+    const price1 = getPriceRange(restaurant);
+    const price2 = getPriceRange(selected);
+    const priceDiff = Math.abs(price1 - price2);
+    
+    if (priceDiff < 5000) {
+      similarity += 0.2;
+    } else if (priceDiff < 10000) {
+      similarity += 0.1;
+    }
+    
+    // 4. 거리 유사도 (+0.1)
+    if (restaurant.coords && selected.coords) {
+      const dist1 = getDistance(37.5716, 126.9769, restaurant.coords.lat, restaurant.coords.lng);
+      const dist2 = getDistance(37.5716, 126.9769, selected.coords.lat, selected.coords.lng);
+      const distDiff = Math.abs(dist1 - dist2);
+      
+      if (distDiff < 100) {
+        similarity += 0.1;
+      }
+    }
+    
+    maxSimilarity = Math.max(maxSimilarity, similarity);
+  }
+  
+  // MMR 공식: λ * Relevance - (1-λ) * MaxSimilarity
+  // λ를 후보 수에 따라 동적 조정 (후보 많으면 관련성 중시, 적으면 다양성 강화)
+  const poolSize = selectedRestaurants.length;
+  const lambda = Math.min(0.9, 0.5 + poolSize / 20);
+  const mmrScore = lambda * relevanceScore - (1 - lambda) * maxSimilarity * 100;
+  
+  return mmrScore;
+}
+
+// 💾 사용자 피드백 저장/조회
+function getUserFeedback() {
+  try {
+    const feedback = localStorage.getItem('kt-lunch-feedback');
+    return feedback ? JSON.parse(feedback) : [];
+  } catch (e) {
+    console.error('피드백 로드 실패:', e);
+    return [];
+  }
+}
+
+function saveFeedback(restaurantName, feedbackType, context) {
+  try {
+    const allFeedback = getUserFeedback();
+    const newFeedback = {
+      restaurantId: restaurantName,
+      feedback: feedbackType, // 'like' or 'dislike'
+      timestamp: new Date().toISOString(),
+      context: context // 어떤 조건으로 추천받았는지
+    };
+    
+    // 중복 제거 (같은 식당의 최신 피드백만 유지)
+    const filtered = allFeedback.filter(f => f.restaurantId !== restaurantName);
+    filtered.push(newFeedback);
+    
+    localStorage.setItem('kt-lunch-feedback', JSON.stringify(filtered));
+    console.log('✅ 피드백 저장:', newFeedback);
+    return true;
+  } catch (e) {
+    console.error('피드백 저장 실패:', e);
+    return false;
+  }
+}
+
+function getFeedbackScore(restaurantName) {
+  const allFeedback = getUserFeedback();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  // 최근 30일 피드백만 고려
+  const recentFeedback = allFeedback.filter(f => {
+    const feedbackDate = new Date(f.timestamp);
+    return f.restaurantId === restaurantName && feedbackDate > thirtyDaysAgo;
+  });
+  
+  if (recentFeedback.length === 0) return 0;
+  
+  // 좋아요/싫어요 비율 기반 점수 (단일 클릭 노이즈 방지)
+  const likes = recentFeedback.filter(f => f.feedback === 'like').length;
+  const dislikes = recentFeedback.filter(f => f.feedback === 'dislike').length;
+  const total = likes + dislikes;
+  const ratio = likes / total;
+  
+  if (ratio > 0.66) return 25;      // 대체로 긍정 → +25
+  else if (ratio < 0.33) return -25; // 대체로 부정 → -25
+  else return 0;                     // 엇갈린 피드백 → 중립
+}
+
+// 📊 방문 이력 관리
+function getVisitHistory() {
+  try {
+    const history = localStorage.getItem('kt-lunch-visits');
+    return history ? JSON.parse(history) : [];
+  } catch (e) {
+    console.error('방문 이력 로드 실패:', e);
+    return [];
+  }
+}
+
+function saveVisit(restaurantName, category, cuisine) {
+  try {
+    const history = getVisitHistory();
+    const newVisit = {
+      restaurantName,
+      category,
+      cuisine,
+      timestamp: new Date().toISOString()
+    };
+    
+    history.push(newVisit);
+    
+    // 최근 100개만 유지
+    const trimmed = history.slice(-100);
+    localStorage.setItem('kt-lunch-visits', JSON.stringify(trimmed));
+    console.log('✅ 방문 기록:', newVisit);
+    return true;
+  } catch (e) {
+    console.error('방문 기록 실패:', e);
+    return false;
+  }
+}
+
+function getPersonalizationScore(restaurant) {
+  const history = getVisitHistory();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  // 최근 30일 이력만
+  const recentHistory = history.filter(v => {
+    const visitDate = new Date(v.timestamp);
+    return visitDate > thirtyDaysAgo;
+  });
+  
+  if (recentHistory.length === 0) return 0;
+  
+  let score = 0;
+  
+  // 1. 자주 가는 카테고리 보너스 (+5점)
+  const cuisineCounts = {};
+  recentHistory.forEach(v => {
+    cuisineCounts[v.cuisine] = (cuisineCounts[v.cuisine] || 0) + 1;
+  });
+  
+  const mostVisitedCuisine = Object.keys(cuisineCounts).reduce((a, b) => 
+    cuisineCounts[a] > cuisineCounts[b] ? a : b, ''
+  );
+  
+  if (restaurant.cuisine === mostVisitedCuisine && cuisineCounts[mostVisitedCuisine] >= 3) {
+    score += 5;
+  }
+  
+  // 2. 한 번도 안 간 카테고리는 새로운 경험 보너스 (+3점)
+  const visitedCuisines = new Set(recentHistory.map(v => v.cuisine));
+  if (!visitedCuisines.has(restaurant.cuisine)) {
+    score += 3;
+  }
+  
+  // 3. 최근 3일 내 방문한 식당은 반복 방지 감점 (-15점)
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  
+  const veryRecentVisit = recentHistory.find(v => {
+    const visitDate = new Date(v.timestamp);
+    return v.restaurantName === restaurant.name && visitDate > threeDaysAgo;
+  });
+  
+  if (veryRecentVisit) {
+    score -= 15;
+  }
+  
+  return score;
+}
+
+
+function extractBrand(restaurantName) {
+  // 점포 접미사 패턴 제거
+  const suffixes = [
+    '광화문점', '디타워점', 'SFC점', '서린점', '시청점', '종로점',
+    '광화문', '디타워', '본점', '지점', '1호점', '2호점', '3호점'
+  ];
+  
+  let brand = restaurantName;
+  for (const suffix of suffixes) {
+    if (brand.endsWith(suffix)) {
+      brand = brand.slice(0, -suffix.length).trim();
+      break;
+    }
+  }
+  
+  return brand;
+}
+
+function scoreRestaurant(r, sel, recentNames = []) {
+  let score = 100; // 기본 점수 100점에서 시작
+
+  // ============================================================
+  // 1️⃣ CUISINE 필터 (HARD FILTER - 완전 제외)
+  // ============================================================
+  if (sel.cuisine && sel.cuisine !== 'all') {
+    const mainCuisines = ['korean', 'chinese', 'japanese', 'western', 'asian'];
+    const isOtherCategory = !mainCuisines.includes(r.cuisine);
+    
+    if (sel.cuisine === 'other') {
+      // '기타' 선택: salad, mexican, indian만 허용
+      if (!isOtherCategory) {
+        return -999; // 메인 카테고리는 제외
+      }
+      score += 20; // 기타 카테고리 매칭 보너스
+    } else {
+      // 특정 카테고리 선택: 해당 카테고리만 허용
+      if (r.cuisine !== sel.cuisine) {
+        return -999; // 다른 카테고리는 제외
+      }
+      score += 20; // 카테고리 매칭 보너스
+    }
+  }
+
+  // ============================================================
+  // 2️⃣ 식단 필터 (HARD FILTER)
+  // ============================================================
+  if (sel.diet === 'vegetarian') {
+    // 채식: vegetarian 태그가 있는 식당만 허용 (샐러드/포케 전문점)
+    const hasDietArray = Array.isArray(r.diet);
+    const hasVegetarianTag = hasDietArray && r.diet.includes('vegetarian');
+    
+    if (!hasVegetarianTag) {
+      console.log(`🚫 [채식 제외] ${r.name} - diet: ${hasDietArray ? r.diet.join(', ') : 'undefined'}`);
+      return -999;
+    }
+    console.log(`✅ [채식 포함] ${r.name}`);
+    score += 100;  // 채식 선호 식당에 매우 높은 점수
+  } else if (sel.diet === 'diet') {
+    // 다이어트: diet 또는 light 포함
+    if (!r.diet.includes('diet') && !r.diet.includes('light')) {
+      return -999;
+    }
+    
+    // 다이어트 모드: 특정 카테고리 완전 제외 (더 포괄적으로)
+    const category = r.category || '';
+    const excludeKeywords = [
+      '국밥', '국', '탕', '전골', '찌개', '뚝배기',  // 국물 요리
+      '덮밥', '돈부리', '돌솥밥',  // 밥류
+      '튀김', '치킨', '돈까스', '카츠', '텐동', '가라아게', '크리스피', '프라이',  // 튀김류
+      '분식', '떡볶이', '순대', '김밥',  // 분식류
+      '라멘', '라면', '우동', '소바',  // 면류 (국물 면)
+      '갈비', '구이', '석갈비', '삼겹살', '목살', '항정살',  // 고칼로리 육류 구이
+      '피자', '파스타',  // 고칼로리 양식
+      '햄버거', '버거',  // 패스트푸드
+      '곰탕', '설렁탕', '육개장'  // 기타 국물 요리
+    ];
+    
+    for (const keyword of excludeKeywords) {
+      if (category.includes(keyword)) {
+        return -999;  // 다이어트 중에는 완전 제외
+      }
+    }
+    
+    score += 20;
+  } else if (sel.diet === 'light') {
+    // 가벼운 식사: light, diet, seafood 포함
+    if (!r.diet.includes('light') && !r.diet.includes('diet') && !r.diet.includes('seafood')) {
+      score -= 10;
+    } else {
+      score += 15;
+    }
+  }
+  // nodiet은 모든 식당 허용
+
+  // ============================================================
+  // 3️⃣ 날씨 매칭 (SOFT FILTER) - 높은 가중치 적용
+  // ============================================================
+  if (sel.weather && r.weather.includes(sel.weather)) {
+    score += 50; // 25 → 50 증가 (날씨 매칭 시 확실한 보너스)
+  } else if (sel.weather) {
+    score -= 15; // 5 → 15 증가 (날씨 불일치 시 감점 강화)
+  }
+
+  // ============================================================
+  // 4️⃣ 기분 매칭 (SOFT FILTER) - 높은 가중치 적용
+  // ============================================================
+  // 기분 매핑 로직
+  const restaurantMoods = new Set(r.mood);
+  
+  // 식당 특성에 따라 추가 mood 부여
+  if (r.people.includes('large') || r.people.includes('medium')) {
+    restaurantMoods.add('team');
+  }
+  if (r.category && (r.category.includes('국밥') || r.category.includes('해장') || 
+                     r.category.includes('탕') || r.category.includes('국'))) {
+    restaurantMoods.add('hangover');
+  }
+  if (r.ribbon || (r.budget.includes('expensive') && parseFloat(r.rating) >= 4.3)) {
+    restaurantMoods.add('executive');
+  }
+
+  if (sel.mood && restaurantMoods.has(sel.mood)) {
+    score += 60; // 30 → 60 증가 (기분 매칭 시 최고 보너스)
+  } else if (sel.mood) {
+    score -= 15; // 5 → 15 증가 (기분 불일치 시 감점 강화)
+  }
+
+  // 해장 모드일 때: 피자, 파스타 메뉴 제외
+  if (sel.mood === 'hangover') {
+    const category = r.category || '';
+    const excludeKeywords = ['피자', '파스타', '파이프', '이탈리안'];
+    
+    for (const keyword of excludeKeywords) {
+      if (category.includes(keyword)) {
+        return -999;  // 해장에는 피자/파스타 완전 제외
+      }
+    }
+  }
+
+  // ============================================================
+  // 5️⃣ 인원 매칭 (SOFT FILTER)
+  // ============================================================
+  if (sel.people) {
+    if (r.people.includes(sel.people)) {
+      score += 20;
+    } else {
+      // 유연한 매칭
+      if (sel.people === 'small' && (r.people.includes('solo') || r.people.includes('medium'))) {
+        score += 10;
+      } else if (sel.people === 'medium' && (r.people.includes('small') || r.people.includes('large'))) {
+        score += 10;
+      } else if (sel.people === 'large' && r.people.includes('medium')) {
+        score += 5;
+      } else {
+        score -= 10;
+      }
+    }
+  }
+
+  // 혼밥 시 웨이팅 긴 식당 감점
+  if (sel.people === 'solo' && r.waiting) {
+    score -= 15;
+  }
+
+  // ============================================================
+  // 6️⃣ 예산 매칭 (SOFT FILTER)
+  // ============================================================
+  if (sel.budget) {
+    const budgetMatch = r.budget.some(b => {
+      if (sel.budget === 'cheap') return b === 'cheap';
+      if (sel.budget === 'normal') return b === 'cheap' || b === 'normal';
+      if (sel.budget === 'expensive') return b === 'normal' || b === 'expensive';
+      return false;
+    });
+
+    if (budgetMatch) {
+      score += 15;
+      // 정확히 일치하면 추가 보너스
+      if (r.budget.includes(sel.budget)) {
+        score += 10;
+      }
+    } else {
+      score -= 15;
+    }
+  }
+
+  // ============================================================
+  // 7️⃣ 평점/블루리본 보너스
+  // ============================================================
+  if (r.ribbon) {
+    score += 10;
+  }
+  if (r.rating) {
+    const rating = parseFloat(r.rating);
+    score += (rating - 4.0) * 5; // 4.0 기준으로 0.1당 0.5점
+  }
+
+  // ============================================================
+  // 8️⃣ 최근 방문 패널티
+  // ============================================================
+  const recentIdx = recentNames.indexOf(r.name);
+  if (recentIdx !== -1) {
+    score -= (20 - recentIdx * 1); // 최근일수록 큰 감점 (10→20 강화)
+  }
+
+  // ============================================================
+  // 9️⃣ 다양성을 위한 랜덤 점수
+  // ============================================================
+  score += Math.random() * 50; // 30 → 50 증가 (더 다양한 추천)
+
+  return score;
+}
+
+// ============================================================
+// 🤖 LLM 기반 추천 함수
+// ============================================================
+async function getLLMRecommendations(candidates, userConditions, recentNames) {
+  if (!openai) {
+    console.warn("OpenAI API key not found. Falling back to algorithm.");
+    return null;
+  }
+
+  try {
+    const prompt = `당신은 광화문 지역 점심 식당 추천 전문가입니다.
+아래 조건에 맞는 식당 10곳을 추천하고, 각 식당마다 친근하고 설득력 있는 추천 이유를 작성해주세요.
+
+## 사용자 조건
+- 음식 종류: ${userConditions.cuisine === 'all' ? '전체' : userConditions.cuisine}
+- 날씨: ${userConditions.weather}
+- 기분: ${userConditions.mood}
+- 인원: ${userConditions.people}명
+- 식단: ${userConditions.diet}
+- 예산: ${userConditions.budget}원
+
+## 후보 식당 목록 (상위 ${candidates.length}개)
+${JSON.stringify(candidates.map(r => ({
+  name: r.name,
+  category: r.category,
+  rating: r.rating,
+  ribbon: r.ribbon,
+  menus: r.menus,
+  priceNote: r.priceNote,
+  walk: r.walk,
+  cuisine: r.cuisine,
+  weather: r.weather,
+  mood: r.mood,
+  people: r.people,
+  diet: r.diet,
+  budget: r.budget
+})), null, 2)}
+
+## 최근 추천한 식당 (가능하면 피해주세요)
+${recentNames.slice(0, 10).join(', ')}
+
+## 출력 형식
+다음 JSON 형식으로 정확히 반환해주세요:
+{
+  "recommendations": [
+    {
+      "name": "식당명",
+      "reason": "추천 이유 (2-3문장, 친근하고 설득력 있게. 날씨/기분/상황과 연결지어 설명. '~해요', '~거예요' 같은 친근한 말투 사용)"
+    }
+  ]
+}
+
+예시:
+{
+  "recommendations": [
+    {
+      "name": "일품 광화문",
+      "reason": "오늘같이 더운 날엔 시원한 냉면이 최고죠! 평점 4.6에 블루리본까지 받은 곳이라 맛은 보장되어 있어요. 2명이서 가기 딱 좋은 분위기예요."
+    }
+  ]
+}
+
+꼭 10개를 선택하되, 다양성을 고려해서 같은 종류 음식만 추천하지 마세요. 후보 목록에 있는 식당명을 정확히 사용해주세요.`;
+
+    const deployment = process.env.REACT_APP_AZURE_OPENAI_DEPLOYMENT || "gpt-5.2";
+    const response = await openai.chat.completions.create({
+      model: deployment,
+      messages: [
+        {
+          role: "system",
+          content: "당신은 광화문 지역 점심 식당 추천 전문가입니다. 친근하고 설득력 있는 추천을 제공합니다."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.8,
+      response_format: { type: "json_object" }
+    });
+
+    const content = response.choices[0].message.content;
+    const llmResult = JSON.parse(content);
+    
+    // LLM 응답을 기존 식당 데이터와 매칭
+    const recommendations = llmResult.recommendations || [];
+    const final = [];
+    
+    for (const rec of recommendations) {
+      const restaurant = candidates.find(r => r.name === rec.name);
+      if (restaurant) {
+        final.push({
+          ...restaurant,
+          reason: rec.reason
+        });
+      }
+    }
+    
+    return final.slice(0, 10);
+  } catch (error) {
+    console.error("LLM API Error:", error);
+    return null;
+  }
+}
+
+
 export default function LunchRecommender() {
-  const [selections, setSelections] = useState({ cuisine: 'all', weather: null, mood: null, people: null, diet: null, budget: null });
-  const [step, setStep] = useState("form"); // form | loading | results
+  const [selections, setSelections] = useState({ weather: 'hot', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
   const [results, setResults] = useState({ list: [], relaxedMsg: null });
-  const recentSeen = React.useRef([]); // 최근 추천 기록 (쿨다운)
-  const resultsTopRef = React.useRef(null); // 결과 최상단 ref
-  const pageTopRef = React.useRef(null); // 페이지 최상단 ref (다시 추천받기용)
-  const [showAlert, setShowAlert] = useState(false);
+  const recentSeen = useRef([]);
+  const resultsTopRef = useRef(null);
+  const pageTopRef = useRef(null);
   const [time, setTime] = useState("");
+  const [step, setStep] = useState("form");
   const [loadingDot, setLoadingDot] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
+  const [quickPresets, setQuickPresets] = useState([]);
 
   useEffect(() => {
     const tick = () => {
@@ -2045,61 +798,611 @@ export default function LunchRecommender() {
     return () => clearInterval(t);
   }, []);
 
+  // 빠른 추천 버튼을 섞는 함수
+  const shuffleQuickPresets = () => {
+    const shuffled = [...QUICK_PRESETS];
+    // Fisher-Yates shuffle 알고리즘
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const selected = shuffled.slice(0, 4);
+    setQuickPresets(selected);
+    console.log('🎲 [빠른 추천 버튼]', selected.map(p => p.label));
+  };
+
+  // 컴포넌트 마운트 시 빠른 추천 버튼 랜덤 선택
+  useEffect(() => {
+    shuffleQuickPresets();
+    
+    // 탭 복귀 시 프리셋 새로고침 (오래된 날씨 프리셋 방지)
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        shuffleQuickPresets();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  // ⚡ 빠른 추천: 현재 날씨와 시간대를 고려한 자동 추천
+  const handleQuickRecommend = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const month = now.getMonth() + 1; // 0-based
+
+    // 시간대 기반 기분 설정
+    let mood = 'safe';
+    if (hour >= 11 && hour < 13) {
+      mood = 'hearty'; // 점심 피크타임: 든든한 식사
+    } else if (hour >= 13 && hour < 14) {
+      mood = 'safe'; // 늦은 점심: 안전한 선택
+    } else if (hour >= 14) {
+      mood = 'safe'; // 늦은 시간: 간단한 식사
+    }
+
+    // 계절 기반 날씨 설정
+    let weather = 'mild';
+    if (month >= 6 && month <= 8) {
+      weather = 'hot'; // 여름
+    } else if (month >= 12 || month <= 2) {
+      weather = 'cold'; // 겨울
+    } else if (month === 3 || month === 9 || month === 10 || month === 11) {
+      weather = 'mild'; // 봄/가을
+    }
+
+    // 빠른 추천 설정 적용
+    const quickSettings = {
+      weather,
+      mood,
+      people: 2,
+      diet: selections.diet !== 'nodiet' ? selections.diet : 'nodiet',
+      budget: 15000,
+    };
+
+    setSelections(quickSettings);
+    console.log('⚡ [빠른 추천]', { hour, month, weather, mood });
+
+    // 바로 추천 실행
+    setTimeout(() => {
+      handleRecommend();
+    }, 100);
+  };
+
   useEffect(() => {
     if (step !== "loading") return;
     const interval = setInterval(() => setLoadingDot(d => (d + 1) % 3), 150);
-    const timeout = setTimeout(() => {
+    const timeout = setTimeout(async () => {
       try {
-        const getResults = (dietOverride) => {
-          const sel = dietOverride ? { ...selections, diet: dietOverride } : selections;
-          const recent = recentSeen.current; // 최근 추천 기록 참조
-          const scored = restaurantDB
-            .map(r => ({ ...r, score: scoreRestaurant(r, sel, recent) }))
-            .filter(r => r.score > -999);
-          scored.sort((a, b) => b.score - a.score);
+        console.log('🎯 [추천 시작]', selections);
+        console.log('📝 [최근 방문] 최근 30개:', recentSeen.current.slice(0, 30));
 
-          // 다양성 로직: 소분류(category 뒷부분) 기준으로 같은 종류 최대 1개씩
-          // 단, cuisine 대분류별로 최소 1개 보장 시도
-          const diversified = [];
-          const subCatCounts = {};  // 소분류 카운트 (국밥류, 순대국류 등 중복 방지)
-          const cuisineCounts = {}; // 대분류 카운트
+        // 🎯 새로운 알고리즘: 조건 교집합 기반 3단계 필터링
+        const recentSet = new Set(recentSeen.current);
+        const peopleNum = selections.people || 2;
+        const budgetNum = selections.budget || 15000;
+        
+        let peopleCategory;
+        if (peopleNum === 1) peopleCategory = 'solo';
+        else if (peopleNum <= 3) peopleCategory = 'small';
+        else if (peopleNum <= 6) peopleCategory = 'medium';
+        else peopleCategory = 'large';
 
-          for (const r of scored) {
-            const subCat = (r.category || "").split("·").slice(1).join("·").trim() || r.cuisine;
-            const cuisine = r.cuisine;
-            subCatCounts[subCat] = (subCatCounts[subCat] || 0) + 1;
-            cuisineCounts[cuisine] = (cuisineCounts[cuisine] || 0) + 1;
-            // 소분류 최대 1개 (단, cuisine이 처음 나온 경우 1개 허용)
-            if (subCatCounts[subCat] <= 1 || cuisineCounts[cuisine] === 1) {
-              diversified.push(r);
-            }
-            if (diversified.length >= 10) break;
-          }
-          return diversified.length >= 3 ? diversified : scored.slice(0, 10);
+        // ✅ 조건 매칭 함수들
+        const matchWeather = (r) => {
+          if (!selections.weather) return false;
+          const hasTag = r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather);
+          if (hasTag) return true;
+          // 태그 없어도 메뉴/카테고리로 매칭
+          const text = ((r.category || '') + ' ' + (r.menus || []).join(' ')).toLowerCase();
+          if (selections.weather === 'hot') return /냉면|콩국수|물회|냉모밀|빙수|샐러드|냉채/.test(text);
+          if (selections.weather === 'cold') return /국밥|탕|찌개|전골|라멘|설렁탕|갈비탕|부대/.test(text);
+          if (selections.weather === 'rainy') return /전|파전|수제비|칼국수|국밥|짬뽕/.test(text);
+          return false;
         };
 
-        let final = getResults(null);
-        let relaxedMsg = null;
+        const matchMood = (r) => {
+          if (!selections.mood) return false;
+          
+          // 해장: mood에 'hangover'가 있거나 카테고리에 국밥/해장/탕/국 포함
+          if (selections.mood === 'hangover') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('hangover');
+            const hasHangoverCategory = r.category && 
+              (r.category.includes('국밥') || r.category.includes('해장') || 
+               r.category.includes('탕') || r.category.includes('찌개') || r.category.includes('국'));
+            return hasMoodTag || hasHangoverCategory;
+          }
+          
+          // 격식: mood에 'executive'가 있거나 블루리본/expensive
+          if (selections.mood === 'executive') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('executive');
+            const isUpscale = r.ribbon || (r.budget && Array.isArray(r.budget) && r.budget.includes('expensive'));
+            return hasMoodTag || isUpscale;
+          }
+          
+          // 팀: mood에 'team'이 있거나 중/대규모 가능
+          if (selections.mood === 'team') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('team');
+            const supportsGroup = r.people && Array.isArray(r.people) && 
+              (r.people.includes('large') || r.people.includes('medium'));
+            return hasMoodTag || supportsGroup;
+          }
+          
+          // 우울: mood에 'sad'가 있거나, 디저트/특별한 음식/분위기 좋은 곳
+          if (selections.mood === 'sad') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('sad');
+            const isComfortFood = r.mood && Array.isArray(r.mood) && 
+              (r.mood.includes('great') || r.mood.includes('exciting'));
+            const category = r.category || '';
+            const hasComfortCategory = category.includes('디저트') || category.includes('카페') || 
+              category.includes('빵') || category.includes('떡볶이') || category.includes('치킨') ||
+              category.includes('파스타') || category.includes('라멘');
+            return hasMoodTag || isComfortFood || hasComfortCategory;
+          }
+          
+          // 특별하게/신나게: mood에 'exciting'이 있거나, 이색/프리미엄 식당
+          if (selections.mood === 'exciting') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('exciting');
+            const isSpecial = r.ribbon || 
+              (r.mood && Array.isArray(r.mood) && r.mood.includes('great'));
+            const category = r.category || '';
+            const hasExcitingCategory = category.includes('오마카세') || category.includes('코스') ||
+              category.includes('프리미엄') || category.includes('스테이크');
+            return hasMoodTag || isSpecial || hasExcitingCategory;
+          }
+          
+          // 든든하게: mood에 'hearty'가 있거나, 고칼로리/구이/육류 메뉴
+          if (selections.mood === 'hearty') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('hearty');
+            const category = r.category || '';
+            const isHearty = category.includes('구이') || category.includes('갈비') || 
+              category.includes('삼겹') || category.includes('돈까스') || category.includes('카츠') ||
+              category.includes('육') || category.includes('불고기') || category.includes('곱창');
+            const isHighCal = r.calorie && r.calorie.label === '고칼로리';
+            return hasMoodTag || isHearty || isHighCal;
+          }
+          
+          // 스트레스: mood에 'stressed'가 있거나, 매운음식/고기/특별한 음식
+          if (selections.mood === 'stressed') {
+            const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('stressed');
+            const category = r.category || '';
+            const menuText = (r.menus || []).join(' ');
+            const isStressRelief = category.includes('구이') || category.includes('매운') ||
+              category.includes('불') || category.includes('마라') ||
+              category.includes('떡볶이') || category.includes('닭갈비') ||
+              category.includes('곱창') || category.includes('삼겹');
+            const hasSpicyMenu = /매운|불닭|마라|떡볶이|쭈꾸미|닭발|엽기/.test(menuText);
+            const isComfort = r.mood && Array.isArray(r.mood) && 
+              (r.mood.includes('hearty') || r.mood.includes('great'));
+            return hasMoodTag || isStressRelief || hasSpicyMenu || isComfort;
+          }
+          
+          // 나머지 mood: 직접 매칭
+          return r.mood && Array.isArray(r.mood) && r.mood.includes(selections.mood);
+        };
 
-        // 결과가 5개 미만이면 식단 조건 자동 완화
-        if (final.length < 5 && selections.diet === "diet") {
-          final = getResults("light");
-          if (final.length >= 3) relaxedMsg = "💡 다이어트 식당이 부족해서 저칼로리 메뉴도 포함했어요";
+        const matchPeople = (r) => {
+          if (!r.people || !Array.isArray(r.people)) return false;
+          
+          // 정확히 매칭되거나
+          if (r.people.includes(peopleCategory)) return true;
+          
+          // 양방향 인접 카테고리 매칭 (1단계 차이까지 허용)
+          const categoryMap = { 'solo': 0, 'small': 1, 'medium': 2, 'large': 3 };
+          const userCat = categoryMap[peopleCategory];
+          return r.people.some(p => {
+            const restCat = categoryMap[p];
+            return restCat !== undefined && Math.abs(restCat - userCat) <= 1;
+          });
+        };
+
+        const matchDiet = (r) => {
+          if (!selections.diet || selections.diet === 'nodiet') return true;
+          if (!r.diet || !Array.isArray(r.diet)) return false;
+          
+          if (selections.diet === 'vegetarian') {
+            return r.diet.includes('vegetarian');
+          } else if (selections.diet === 'diet') {
+            return r.diet.includes('diet') || r.diet.includes('light');
+          } else if (selections.diet === 'light') {
+            return r.diet.includes('light') || r.diet.includes('diet');
+          }
+          
+          return false;
+        };
+
+        // 🎯 가격 파싱 헬퍼 (매칭 + 근접도 점수 공용)
+        const parsePriceRange = (r) => {
+          const priceStr = r.price || r.priceNote || '';
+          
+          // 가격 범위: "10,000~15,000원"
+          const rangeMatch = priceStr.match(/(\d{1,3}(?:,?\d{3})*)\s*[~-]\s*(\d{1,3}(?:,?\d{3})*)/);
+          if (rangeMatch) {
+            return {
+              min: parseInt(rangeMatch[1].replace(/,/g, '')),
+              max: parseInt(rangeMatch[2].replace(/,/g, ''))
+            };
+          }
+          
+          // "1.5~2만원" (만원 단위 범위)
+          const manRangeMatch = priceStr.match(/(\d+\.?\d*)\s*[~-]\s*(\d+\.?\d*)\s*만원/);
+          if (manRangeMatch) {
+            return {
+              min: Math.round(parseFloat(manRangeMatch[1]) * 10000),
+              max: Math.round(parseFloat(manRangeMatch[2]) * 10000)
+            };
+          }
+          
+          // "1.5만원"
+          const manwonMatch = priceStr.match(/(\d+\.?\d*)\s*만원/);
+          if (manwonMatch) {
+            const price = Math.round(parseFloat(manwonMatch[1]) * 10000);
+            return { min: price, max: price };
+          }
+          
+          // "15,000원"
+          const singleMatch = priceStr.match(/(\d{1,3}(?:,?\d{3})*)\s*원/);
+          if (singleMatch) {
+            const price = parseInt(singleMatch[1].replace(/,/g, ''));
+            return { min: price, max: price };
+          }
+          
+          return null;
+        };
+
+        const matchBudget = (r) => {
+          const parsed = parsePriceRange(r);
+          if (!parsed) return false;
+          
+          const { min, max } = parsed;
+          
+          // 예산이 최소값 이상이면 매칭 (최소값 메뉴는 먹을 수 있음)
+          if (budgetNum >= min) return true;
+          
+          // 예산이 최소값보다 약간 부족해도 허용 (2,000원 또는 예산의 15% 중 큰 값)
+          const tolerance = Math.max(2000, budgetNum * 0.15);
+          if (min - budgetNum <= tolerance) return true;
+          
+          return false;
+        };
+
+        // 📋 모든 식당에 조건 매칭 개수 계산
+        const withMatches = restaurantDB.map(r => {
+          const matches = [
+            matchWeather(r),
+            matchMood(r),
+            matchPeople(r),
+            matchDiet(r),
+            matchBudget(r)
+          ];
+          
+          const matchCount = matches.filter(Boolean).length;
+          const isRecent = recentSet.has(r.name);
+          const rating = parseFloat(r.rating) || 0;
+
+          // 🎯 Phase B: 종합 점수 계산
+          let totalScore = matchCount * 20; // 기본 점수 (조건 1개당 20점)
+          
+          // 평점 점수 (최대 10점)
+          totalScore += rating * 2;
+          
+          // 블루리본 보너스 (10점)
+          if (r.ribbon) {
+            totalScore += 10;
+          }
+          
+          // 💰 예산 근접도 보너스 (최대 8점) - 예산과의 거리 기반 계단식 점수
+          const parsed = parsePriceRange(r);
+          if (parsed && matches[4]) { // 예산 매칭된 경우만
+            const { min } = parsed;
+            const comparablePrice = min; // 최소가(실제 이용가능 가격) 기준
+            const budgetDiff = Math.abs(comparablePrice - budgetNum);
+            
+            if (comparablePrice <= budgetNum) {
+              // 예산 이하: 차이가 적을수록 고점수
+              if (budgetDiff < 2000) totalScore += 8;      // 거의 딱 맞음
+              else if (budgetDiff < 5000) totalScore += 5;  // 적당히 여유
+              else totalScore += 2;                         // 지나치게 저렴
+            } else {
+              // 예산 초과: 초과분에 비례해 감점
+              if (budgetDiff < 2000) totalScore += 3;       // 약간 초과, 허용
+              else if (budgetDiff < 5000) totalScore -= 3;  // 부담스러운 초과
+              else totalScore -= Math.min(Math.round(budgetDiff / 1000), 10); // 최대 -10점
+            }
+          }
+          
+          // 🥗 다이어트/채식-칼로리 시너지 보너스 (최대 6점)
+          if (selections.diet === 'diet' || selections.diet === 'light' || selections.diet === 'vegetarian') {
+            if (r.calorie && r.calorie.label === '저칼로리') {
+              totalScore += 6; // 다이어트/채식 선택 + 저칼로리 식당 = 최적
+            } else if (r.calorie && r.calorie.label === '보통칼로리') {
+              totalScore += 2;
+            } else if (r.calorie && r.calorie.label === '고칼로리') {
+              totalScore -= 3; // 다이어트인데 고칼로리면 감점
+            }
+          }
+          
+          // ⏰ 시간/요일 컨텍스트 점수
+          totalScore += getTimeContextScore(r, selections);
+          
+          // 👍👎 사용자 피드백 점수
+          totalScore += getFeedbackScore(r.name);
+          
+          // 📊 개인화 점수 (방문 이력 기반)
+          totalScore += getPersonalizationScore(r);
+
+          // 📝 추천 이유 동적 생성
+          const reasons = [];
+          
+          if (matches[0]) { // weather
+            if (selections.weather === 'hot') reasons.push('🌡️ 더운 날 딱 맞는 메뉴');
+            else if (selections.weather === 'cold') reasons.push('❄️ 추운 날 몸 녹이기 좋은 메뉴');
+            else if (selections.weather === 'rainy') reasons.push('☔ 비 오는 날 생각나는 메뉴');
+            else if (selections.weather === 'mild') reasons.push('🌤️ 선선한 날씨에 제격');
+          }
+          
+          if (matches[1]) { // mood
+            if (selections.mood === 'hangover') reasons.push('💊 해장에 최고');
+            else if (selections.mood === 'executive') reasons.push('🤵 격식있는 자리에 적합');
+            else if (selections.mood === 'team') reasons.push('👥 팀 점심으로 추천');
+            else if (selections.mood === 'hearty') reasons.push('🍖 든든하게 배부르게');
+            else if (selections.mood === 'exciting') reasons.push('🎉 특별한 날 분위기 좋음');
+            else if (selections.mood === 'sad') reasons.push('😌 기분 전환에 좋은 맛');
+            else if (selections.mood === 'safe') reasons.push('😊 무난하고 안전한 선택');
+          }
+          
+          if (matches[2]) { // people
+            if (peopleCategory === 'solo') reasons.push('🧍 혼밥하기 편한 곳');
+            else if (peopleCategory === 'small') reasons.push('👫 소수 인원 최적');
+            else if (peopleCategory === 'medium') reasons.push('👨‍👨‍👦‍👦 중간 규모 모임에 좋음');
+            else if (peopleCategory === 'large') reasons.push('👨‍👩‍👧‍👦 단체 손님 환영');
+          }
+          
+          if (matches[3] && selections.diet !== 'nodiet') { // diet
+            if (selections.diet === 'vegetarian') reasons.push('🥗 채식 메뉴 가능');
+            else if (selections.diet === 'diet') reasons.push('🏃 다이어트 추천');
+            else if (selections.diet === 'light') reasons.push('🍃 가볍게 먹기 좋음');
+          }
+          
+          if (matches[4]) { // budget
+            if (budgetNum <= 10000) {
+              reasons.push(`💰 ${(budgetNum/1000).toFixed(0)}천원대 가성비 최고`);
+            } else if (budgetNum <= 13000) {
+              reasons.push('💵 만원 초반 합리적 가격');
+            } else if (budgetNum <= 17000) {
+              reasons.push(`💳 ${(budgetNum/1000).toFixed(0)}천원대 적정 가격`);
+            } else if (budgetNum <= 22000) {
+              reasons.push('💎 2만원 이하 알뜰 선택');
+            } else {
+              reasons.push('👑 특별한 날 프리미엄 맛집');
+            }
+          }
+          
+          // 특별한 특징
+          if (r.ribbon) reasons.push('🏅 블루리본 인증');
+          if (rating >= 4.7) reasons.push(`⭐ 평점 ${r.rating}★`);
+          
+          // 거리 정보
+          if (r.coords) {
+            const dist = getDistance(KT_EAST_COORDS.lat, KT_EAST_COORDS.lng, r.coords.lat, r.coords.lng);
+            if (dist < 150) reasons.push('🚶 도보 2분 이내');
+            else if (dist < 250) reasons.push('🚶 도보 5분 이내');
+          }
+          
+          // 대기/칼로리 정보
+          if (!r.waiting) reasons.push('✅ 대기 없이 바로');
+          if ((selections.diet === 'diet' || selections.diet === 'light' || selections.diet === 'vegetarian') && r.calorie && r.calorie.label === '저칼로리') {
+            reasons.push('🥬 저칼로리 인증');
+          }
+          
+          // 계절 추천
+          const curMonth = new Date().getMonth() + 1;
+          const seasonText = (r.category || '') + ' ' + (r.menus || []).join(' ');
+          if (curMonth >= 3 && curMonth <= 5 && /샐러드|회|비빔|파스타/.test(seasonText)) {
+            reasons.push('🌸 봄 시즌 추천');
+          } else if (curMonth >= 6 && curMonth <= 8 && /냉면|콩국수|물회/.test(seasonText)) {
+            reasons.push('🌊 여름 시즌 추천');
+          } else if (curMonth >= 9 && curMonth <= 11 && /갈비|구이|전골|보쌈/.test(seasonText)) {
+            reasons.push('🍂 가을 시즌 추천');
+          } else if ((curMonth >= 12 || curMonth <= 2) && /찌개|탕|전골|라멘|국밥/.test(seasonText)) {
+            reasons.push('❄️ 겨울 시즌 추천');
+          }
+
+          const recommendReason = reasons.length > 0 
+            ? reasons.slice(0, 5).join(' · ') 
+            : r.reason || '추천 맛집';
+
+          return { 
+            ...r, 
+            matchCount, 
+            isRecent, 
+            rating,
+            dietMatched: matches[3], // 식단 매칭 여부 (필수 필터용)
+            score: totalScore, // 🎯 Phase B: 종합 점수 추가
+            recommendReason 
+          };
+        });
+
+        // 🎯 3단계 필터링
+        // 식단 조건 설정 시(채식/다이어트/가볍게), diet 미매칭 식당은 반드시 제외
+        const hasDietFilter = selections.diet && selections.diet !== 'nodiet';
+        const candidates = hasDietFilter
+          ? withMatches.filter(r => r.dietMatched)
+          : withMatches;
+        
+        // 1단계: 모든 조건 만족 (5개)
+        let tier1 = candidates.filter(r => r.matchCount === 5);
+        // 2단계: 3개 이상 만족
+        let tier2 = candidates.filter(r => r.matchCount >= 3 && r.matchCount < 5);
+        // 3단계: 2개 이상 만족
+        let tier3 = candidates.filter(r => r.matchCount >= 2 && r.matchCount < 3);
+
+        console.log(`📊 [필터링 결과]`);
+        console.log(`   1단계 (5개 만족): ${tier1.length}개`);
+        console.log(`   2단계 (3-4개 만족): ${tier2.length}개`);
+        console.log(`   3단계 (2개 만족): ${tier3.length}개`);
+
+        // 🎯 Phase B: 글로벌 점수 기반 정렬 (티어 간 경계 제거)
+        // Tier2 고점수가 Tier1 저점수보다 우선되도록 글로벌 정렬
+        let allCandidates = [...tier1, ...tier2, ...tier3];
+        allCandidates.sort((a, b) => {
+          // 매칭 수 가중치 + 점수 통합 정렬
+          const tierBonusA = a.matchCount >= 5 ? 15 : a.matchCount >= 3 ? 5 : 0;
+          const tierBonusB = b.matchCount >= 5 ? 15 : b.matchCount >= 3 ? 5 : 0;
+          const scoreA = a.score + tierBonusA;
+          const scoreB = b.score + tierBonusB;
+          if (a.isRecent !== b.isRecent) return a.isRecent ? 1 : -1;
+          return scoreB - scoreA;
+        });
+
+        // 🚫 최근 본 식당 제외 (다른 맛집 추천을 위해)
+        const beforeFilterCount = allCandidates.length;
+        const filteredCandidates = allCandidates.filter(r => !r.isRecent);
+        
+        if (beforeFilterCount !== filteredCandidates.length) {
+          console.log(`🚫 [최근 본 식당 제외] ${beforeFilterCount - filteredCandidates.length}개 제외, ${filteredCandidates.length}개 남음`);
         }
-        // vegetarian은 완화하지 않음 — 고기/생선 식당은 절대 포함하지 않음
-        if (final.length < 5 && selections.diet !== "vegetarian") {
-          final = getResults("nodiet");
-          if (final.length >= 3) relaxedMsg = "💡 조건에 딱 맞는 식당이 적어서 비슷한 곳도 포함했어요";
+        
+        // 🔄 후보가 부족하면 제외 목록 초기화 후 재시도
+        if (filteredCandidates.length < 3 && recentSeen.current.length > 0) {
+          console.log(`⚠️ [후보 부족] ${filteredCandidates.length}개만 남음. 제외 목록 초기화 후 전체에서 다시 추천`);
+          recentSeen.current = [];
+          allCandidates = [...allCandidates]; // 원본 유지 (제외 없이)
+          // 사용자에게 순환 안내
+          var recycleNotice = "🔄 추천 가능한 식당을 모두 보여드렸어요! 처음부터 다시 추천합니다.";
+        } else {
+          allCandidates = filteredCandidates;
+          var recycleNotice = null;
         }
 
-        setResults({ list: final, relaxedMsg });
+        console.log(`✅ [정렬 완료] 상위 20개:`, allCandidates.slice(0, 20).map(r => 
+          `${r.name} (점수: ${r.score?.toFixed(1) || 0}, ${r.matchCount}개 만족)`
+        ));
 
-        // 이번에 추천된 식당들을 최근 기록에 추가 (최대 20개 유지)
-        const newNames = final.map(r => r.name);
-        recentSeen.current = [...newNames, ...recentSeen.current].slice(0, 20);
+        // 🎯 Phase B: MMR 다양성 알고리즘 적용
+        const selectedRestaurants = [];
+        const remainingCandidates = [...allCandidates];
+
+        // 첫 번째는 점수가 가장 높은 것 선택
+        if (remainingCandidates.length > 0) {
+          selectedRestaurants.push(remainingCandidates[0]);
+          remainingCandidates.splice(0, 1);
+        }
+
+        // 나머지 9개는 MMR로 선택
+        while (selectedRestaurants.length < 10 && remainingCandidates.length > 0) {
+          let bestIdx = 0;
+          let bestMMRScore = -Infinity;
+          
+          for (let i = 0; i < remainingCandidates.length; i++) {
+            const candidate = remainingCandidates[i];
+            const mmrScore = calculateMMRScore(
+              candidate, 
+              selectedRestaurants, 
+              candidate.score
+            );
+            
+            if (mmrScore > bestMMRScore) {
+              bestMMRScore = mmrScore;
+              bestIdx = i;
+            }
+          }
+          
+          selectedRestaurants.push(remainingCandidates[bestIdx]);
+          remainingCandidates.splice(bestIdx, 1);
+        }
+
+        // 브랜드 중복 최종 필터링
+        const final = [];
+        const seenBrands = new Set();
+
+        for (const restaurant of selectedRestaurants) {
+          let brand = restaurant.name;
+          const suffixes = ['광화문점', '디타워점', 'SFC점', '종각점', '본점', '지점'];
+          suffixes.forEach(suffix => {
+            if (brand.includes(suffix)) {
+              brand = brand.replace(suffix, '').trim();
+            }
+          });
+          brand = brand.replace(/\s*\([^)]*\)\s*/g, '').trim();
+
+          if (!seenBrands.has(brand)) {
+            final.push(restaurant);
+            seenBrands.add(brand);
+          }
+          
+          if (final.length >= 10) break;
+        }
+
+        // 부족하면 채우기
+        if (final.length < 10) {
+          for (const r of allCandidates) {
+            if (!final.find(f => f.name === r.name)) {
+              final.push(r);
+              if (final.length >= 10) break;
+            }
+          }
+        }
+
+        console.log(`🎉 [최종 결과] ${final.length}개:`, final.map(r => 
+          `${r.name} (점수: ${r.score?.toFixed(1)}, ${r.matchCount}개 만족)`
+        ));
+
+        if (final.length === 0) {
+          setResults({ 
+            list: [], 
+            relaxedMsg: "😢 조건에 맞는 식당이 없어요. 다른 조건을 선택해보세요!" 
+          });
+        } else {
+          // LLM이 활성화되어 있으면 추천 이유를 LLM으로 생성
+          let finalList = final.slice(0, 10);
+          if (openai) {
+            try {
+              console.log('🤖 [LLM] Azure OpenAI로 추천 이유 생성 중...');
+              const llmResults = await getLLMRecommendations(
+                finalList,
+                { cuisine: 'all', weather: selections.weather, mood: selections.mood, people: selections.people, diet: selections.diet, budget: selections.budget },
+                recentSeen.current
+              );
+              if (llmResults && llmResults.length > 0) {
+                // LLM 결과의 reason을 recommendReason에 매핑
+                finalList = llmResults.map(lr => ({
+                  ...lr,
+                  recommendReason: lr.reason || lr.recommendReason
+                }));
+                // LLM이 반환하지 않은 식당도 채우기
+                for (const r of final.slice(0, 10)) {
+                  if (!finalList.find(f => f.name === r.name)) {
+                    finalList.push(r);
+                  }
+                }
+                finalList = finalList.slice(0, 10);
+                console.log('✅ [LLM] 추천 이유 생성 완료');
+              } else {
+                console.log('ℹ️ [LLM] 응답 없음 - 기본 알고리즘 추천 이유 사용');
+              }
+            } catch (llmError) {
+              console.warn('⚠️ [LLM] 호출 실패 - 기본 알고리즘 추천 이유 사용:', llmError.message);
+            }
+          }
+
+          setResults({ 
+            list: finalList, 
+            relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
+          });
+
+          // 최근 본 식당 기록 (DB 소진 시까지 중복 방지)
+          const newNames = final.slice(0, 10).map(r => r.name);
+          recentSeen.current = [...newNames, ...recentSeen.current].slice(0, restaurantDB.length);
+          console.log(`💾 [기록 업데이트] 총 ${recentSeen.current.length}개 식당 기록`);
+        }
+
       } catch(e) {
-        console.error(e);
-        setResults({ list: [], relaxedMsg: null });
+        console.error('❌ [추천 오류]', e);
+        setResults({ 
+          list: restaurantDB.sort(() => Math.random() - 0.5).slice(0, 10), 
+          relaxedMsg: "⚠️ 오류가 발생해 랜덤으로 보여드려요" 
+        });
       }
       setStep("results");
       setTimeout(() => {
@@ -2107,7 +1410,7 @@ export default function LunchRecommender() {
       }, 50);
     }, 600);
     return () => { clearInterval(interval); clearTimeout(timeout); };
-  }, [step]);
+  }, [step, selections]);
 
   const handleSelect = (group, value) => {
     setSelections(prev => ({ ...prev, [group]: value }));
@@ -2115,14 +1418,33 @@ export default function LunchRecommender() {
   };
 
   const handleRecommend = () => {
-    const allSelected = Object.entries(selections).filter(([k]) => k !== 'cuisine').every(([,v]) => v !== null);
-    if (!allSelected) { setShowAlert(true); return; }
+    const requiredFields = ['weather', 'mood', 'diet', 'people', 'budget'];
+    const allSelected = requiredFields.every(field => {
+      const value = selections[field];
+      return value !== null && value !== undefined && value !== '';
+    });
+    if (!allSelected) { 
+      setShowAlert(true); 
+      return; 
+    }
+    setStep("loading");
+  };
+
+  const handleRecommendAgain = () => {
+    // 현재 추천 결과를 recentSeen에 추가하여 다음 추천에서 제외
+    if (results.list && results.list.length > 0) {
+      const currentNames = results.list.map(r => r.name);
+      recentSeen.current = [...currentNames, ...recentSeen.current].slice(0, restaurantDB.length);
+      console.log(`🔄 [다시 추천] ${currentNames.length}개 식당 제외 목록에 추가`);
+    }
+    // 다시 추천 실행
     setStep("loading");
   };
 
   const handleReset = () => {
-    setSelections({ cuisine: 'all', weather: null, mood: null, people: null, diet: null, budget: null });
+    setSelections({ weather: 'hot', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
     setResults({ list: [], relaxedMsg: null });
+    shuffleQuickPresets(); // 빠른 추천 버튼도 다시 섞기
     setStep("form");
     setTimeout(() => {
       pageTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2130,169 +1452,327 @@ export default function LunchRecommender() {
   };
 
   return (
-    <div ref={pageTopRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", background: "#fafafa", minHeight: "100vh", color: "#0a0a0a" }}>
+    <div ref={pageTopRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)", minHeight: "100vh", color: "#0a0a0a" }}>
       {/* HEADER */}
-      <div style={{ background: "#0a0a0a", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontWeight: 900, fontSize: 22, color: "#E3001B", letterSpacing: 2 }}>KT</span>
-          <div style={{ width: 2, height: 20, background: "#333" }} />
-          <span style={{ color: "#aaa", fontSize: 13, fontWeight: 300 }}>광화문 점심 추천기</span>
+      <div style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)", padding: "20px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <span style={{ fontWeight: 900, fontSize: 24, color: "#E3001B", letterSpacing: 2 }}>KT</span>
+          <div style={{ width: 2, height: 24, background: "#E3001B" }} />
+          <span style={{ color: "#e0e0e0", fontSize: 14, fontWeight: 400 }}>광화문 점심 추천기</span>
+          {openai && (
+            <span style={{ 
+              background: "rgba(99, 102, 241, 0.2)", 
+              color: "rgba(99, 102, 241, 1)", 
+              fontSize: 10, 
+              fontWeight: 700, 
+              padding: "4px 10px", 
+              borderRadius: 12, 
+              marginLeft: 8,
+              border: "1px solid rgba(99, 102, 241, 0.3)",
+              letterSpacing: 0.5
+            }}>
+              🤖 AI
+            </span>
+          )}
         </div>
-        <span style={{ color: "#666", fontSize: 12 }}>{time}</span>
+        <span style={{ color: "#999", fontSize: 12, fontWeight: 300 }}>{time}</span>
       </div>
 
       {/* HERO */}
-      <div style={{ background: "#0a0a0a", padding: "50px 28px 64px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "-30%", left: "50%", transform: "translateX(-50%)", width: 500, height: 500, background: "radial-gradient(circle, rgba(227,0,27,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ display: "inline-block", background: "#E3001B", color: "white", fontSize: 10, fontWeight: 700, letterSpacing: 2, padding: "5px 14px", borderRadius: 20, marginBottom: 20, textTransform: "uppercase" }}>
-          🤖 AI Powered Lunch
+      <div style={{ background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #4338CA 100%)", backgroundSize: "200% 200%", animation: "gradientShift 15s ease infinite", padding: "40px 32px 48px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "-30%", left: "50%", transform: "translateX(-50%)", width: 500, height: 500, background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)", pointerEvents: "none", animation: "float 6s ease-in-out infinite" }} />
+        <div style={{ fontSize: "clamp(32px, 6vw, 48px)", fontWeight: 900, color: "white", letterSpacing: -0.5, lineHeight: 1.2, marginBottom: 8, textShadow: "0 2px 10px rgba(0,0,0,0.15)" }}>
+          오늘 뭐 먹지? 🍽️
         </div>
-        <div style={{ fontSize: "clamp(44px, 8vw, 72px)", fontWeight: 900, color: "white", letterSpacing: 2, lineHeight: 1, marginBottom: 14 }}>
-          오늘 뭐 <span style={{ color: "#E3001B" }}>먹지?</span>
+        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, fontWeight: 400, letterSpacing: 0.3, marginBottom: 20 }}>
+          KT 광화문 주변 {restaurantDB.length}개 맛집 · AI 맞춤 추천
         </div>
-        <div style={{ color: "#777", fontSize: 14, fontWeight: 300 }}>
-          광화문 맛집 데이터 기반 · 나만의 맞춤 추천
+        
+        {/* ⚡ 빠른 추천 버튼 */}
+        <button
+          className="quick-recommend-btn"
+          onClick={handleQuickRecommend}
+          style={{
+            background: "white",
+            color: "#6366F1",
+            border: "none",
+            borderRadius: 50,
+            padding: "14px 40px",
+            fontSize: 16,
+            fontWeight: 800,
+            cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            letterSpacing: 0.3,
+          }}
+          onMouseOver={e => {
+            e.currentTarget.style.transform = "translateY(-2px) scale(1.03)";
+            e.currentTarget.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.3)";
+          }}
+          onMouseOut={e => {
+            e.currentTarget.style.transform = "translateY(0) scale(1)";
+            e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.2)";
+          }}
+        >
+          ⚡ 바로 추천받기
+        </button>
+        <div style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 12, fontWeight: 400, marginTop: 10, letterSpacing: 0.3 }}>
+          현재 날씨·시간 기반 자동 추천
         </div>
       </div>
 
       {/* MAIN */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 20px 80px" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", padding: "28px 20px 80px" }}>
 
         {/* FORM */}
         {step === "form" && (
           <div>
+            {/* 메인 폼 카드 */}
+            <div style={{ background: "white", borderRadius: 24, padding: "28px 24px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)", marginBottom: 16 }}>
 
-            {/* ── 음식 종류 탭 (맨 위) ── */}
-            <div style={{ marginBottom: 36 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-                <span style={{ color: "#E3001B", fontWeight: 900, fontSize: 12, letterSpacing: 1 }}>00</span>
-                <span style={{ fontSize: 16, fontWeight: 700 }}>어떤 음식이 당겨요?</span>
-                <span style={{ fontSize: 11, color: "#aaa", marginLeft: 4 }}>선택 안 하면 전체 추천</span>
-              </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {CUISINE_TABS.map(tab => {
-                  const selected = selections.cuisine === tab.value;
-                  return (
+              {/* 날씨 섹션 */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
+                  ☀️ 오늘 날씨가 어때요?
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {OPTIONS.weather.map(opt => (
                     <button
-                      key={tab.value}
-                      onClick={() => handleSelect('cuisine', tab.value)}
+                      key={opt.value}
+                      onClick={() => handleSelect('weather', opt.value)}
                       style={{
-                        background: selected ? "#E3001B" : "white",
-                        color: selected ? "white" : "#0a0a0a",
-                        border: `2px solid ${selected ? "#E3001B" : "#e8e8e8"}`,
+                        background: selections.weather === opt.value ? "#6366F1" : "#f8fafc",
+                        color: selections.weather === opt.value ? "white" : "#475569",
+                        border: selections.weather === opt.value ? "2px solid #6366F1" : "2px solid #e2e8f0",
                         borderRadius: 50,
-                        padding: "10px 18px",
+                        padding: "8px 18px",
                         fontSize: 13,
-                        fontWeight: 700,
+                        fontWeight: 600,
                         cursor: "pointer",
-                        transition: "all 0.18s",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        boxShadow: selected ? "0 4px 14px rgba(227,0,27,0.25)" : "none",
-                        transform: selected ? "translateY(-1px)" : "none",
+                        transition: "all 0.15s ease",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      <span>{tab.emoji}</span>
-                      <span>{tab.label}</span>
+                      {opt.emoji} {opt.label}
                     </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div style={{ height: 1, background: "#e8e8e8", margin: "0 0 36px" }} />
-
-            {Object.entries(OPTIONS).map(([group, opts], gi) => (
-              <div key={group}>
-                <div style={{ marginBottom: 36 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-                    <span style={{ color: "#E3001B", fontWeight: 900, fontSize: 12, letterSpacing: 1 }}>0{gi+1}</span>
-                    <span style={{ fontSize: 16, fontWeight: 700 }}>{SECTION_TITLES[group]}</span>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10 }}>
-                    {opts.map(opt => {
-                      const selected = selections[group] === opt.value;
-                      return (
-                        <button
-                          key={opt.value}
-                          onClick={() => handleSelect(group, opt.value)}
-                          style={{
-                            background: selected ? "#fff5f5" : "white",
-                            border: `2px solid ${selected ? "#E3001B" : "#e8e8e8"}`,
-                            borderRadius: 14,
-                            padding: "16px 10px",
-                            textAlign: "center",
-                            cursor: "pointer",
-                            transition: "all 0.18s",
-                            position: "relative",
-                            boxShadow: selected ? "0 4px 16px rgba(227,0,27,0.12)" : "none",
-                            transform: selected ? "translateY(-2px)" : "none",
-                          }}
-                        >
-                          {selected && <span style={{ position: "absolute", top: 7, right: 9, fontSize: 10, color: "#E3001B", fontWeight: 700 }}>✓</span>}
-                          <div style={{ fontSize: 26, marginBottom: 7 }}>{opt.emoji}</div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: "#0a0a0a" }}>{opt.label}</div>
-                          <div style={{ fontSize: 11, color: "#999", marginTop: 3 }}>{opt.sub}</div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  ))}
                 </div>
-                {gi < Object.keys(OPTIONS).length - 1 && (
-                  <div style={{ height: 1, background: "#e8e8e8", margin: "0 0 36px" }} />
-                )}
               </div>
-            ))}
 
-            {/* CTA */}
-            <div style={{ textAlign: "center", marginTop: 40 }}>
+              {/* 기분 섹션 */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
+                  😊 오늘 기분은요?
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {OPTIONS.mood.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleSelect('mood', opt.value)}
+                      style={{
+                        background: selections.mood === opt.value ? "#6366F1" : "#f8fafc",
+                        color: selections.mood === opt.value ? "white" : "#475569",
+                        border: selections.mood === opt.value ? "2px solid #6366F1" : "2px solid #e2e8f0",
+                        borderRadius: 50,
+                        padding: "8px 16px",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {opt.emoji} {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 식단 섹션 */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
+                  🥗 식단 관리 중이에요?
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {OPTIONS.diet.map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleSelect('diet', opt.value)}
+                      style={{
+                        background: selections.diet === opt.value ? "#6366F1" : "#f8fafc",
+                        color: selections.diet === opt.value ? "white" : "#475569",
+                        border: selections.diet === opt.value ? "2px solid #6366F1" : "2px solid #e2e8f0",
+                        borderRadius: 50,
+                        padding: "8px 16px",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {opt.emoji} {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {/* 부족 카테고리 사전 안내 */}
+                {selections.diet && selections.diet !== 'nodiet' && (() => {
+                  const dietCounts = {
+                    vegetarian: restaurantDB.filter(r => r.diet && r.diet.includes('vegetarian')).length,
+                    diet: restaurantDB.filter(r => r.diet && r.diet.includes('diet')).length,
+                    light: restaurantDB.filter(r => r.diet && r.diet.includes('light')).length,
+                  };
+                  const count = dietCounts[selections.diet];
+                  if (count && count <= 15) {
+                    const dietLabel = OPTIONS.diet.find(o => o.value === selections.diet);
+                    return (
+                      <div style={{ marginTop: 8, padding: "8px 12px", background: "#FFFBEB", borderRadius: 10, border: "1px solid #FDE68A", fontSize: 12, color: "#92400E", display: "flex", alignItems: "center", gap: 6 }}>
+                        💡 {dietLabel?.label || selections.diet} 가능 식당은 현재 <b>{count}곳</b> 등록되어 있어요
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+
+              {/* 인원 슬라이더 */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}>👥 인원 수</span>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: "#6366F1" }}>{(selections.people || 2) >= 8 ? '8명+' : `${selections.people || 2}명`}</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="8"
+                  value={selections.people || 2}
+                  onChange={(e) => handleSelect('people', parseInt(e.target.value))}
+                  style={{ width: "100%", accentColor: "#6366F1", cursor: "pointer", height: 6 }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                  <span>혼밥</span>
+                  <span>8명+</span>
+                </div>
+              </div>
+
+              {/* 예산 슬라이더 */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}>💰 1인 예산</span>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: "#6366F1" }}>{(selections.budget || 15000) >= 30000 ? '30,000원+' : `${(selections.budget || 15000).toLocaleString()}원`}</span>
+                </div>
+                <input
+                  type="range"
+                  min="8000"
+                  max="30000"
+                  step="1000"
+                  value={selections.budget || 15000}
+                  onChange={(e) => handleSelect('budget', parseInt(e.target.value))}
+                  style={{ width: "100%", accentColor: "#6366F1", cursor: "pointer", height: 6 }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                  <span>8,000원</span>
+                  <span>30,000원+</span>
+                </div>
+              </div>
+
+              {/* 추천받기 버튼 */}
               <button
+                className="btn-primary"
                 onClick={handleRecommend}
                 style={{
-                  background: "#E3001B",
+                  width: "100%",
+                  background: "linear-gradient(135deg, #6366F1 0%, #818CF8 100%)",
                   color: "white",
                   border: "none",
-                  borderRadius: 50,
-                  padding: "18px 52px",
+                  borderRadius: 16,
+                  padding: "16px",
                   fontSize: 16,
                   fontWeight: 700,
                   cursor: "pointer",
-                  boxShadow: "0 8px 24px rgba(227,0,27,0.3)",
-                  letterSpacing: 0.5,
-                  transition: "all 0.2s",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 4px 16px rgba(99, 102, 241, 0.3)",
+                  letterSpacing: 0.3,
                 }}
-                onMouseOver={e => e.currentTarget.style.transform = "translateY(-3px)"}
-                onMouseOut={e => e.currentTarget.style.transform = "none"}
+                onMouseOver={e => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(99, 102, 241, 0.4)";
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(99, 102, 241, 0.3)";
+                }}
               >
                 🍽️ AI 점심 추천받기
               </button>
-              <div style={{ marginTop: 10, fontSize: 12, color: "#aaa" }}>광화문 맛집 {restaurantDB.length}곳 데이터 기반으로 추천해 드려요</div>
               {showAlert && (
-                <div style={{ marginTop: 14, background: "#fff5f5", border: "1px solid #ffcccc", borderRadius: 10, padding: "12px 20px", fontSize: 13, color: "#E3001B" }}>
+                <div style={{ marginTop: 12, background: "#EEF2FF", border: "1px solid #C7D2FE", borderRadius: 12, padding: "10px 14px", fontSize: 13, color: "#3730A3", textAlign: "center" }}>
                   ⚠️ 모든 항목을 선택해 주세요!
                 </div>
               )}
+            </div>
+
+            {/* 빠른 추천 프리셋 */}
+            <div style={{ background: "white", borderRadius: 24, padding: "20px 24px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
+                ⚡ 빠른 추천
+                <span style={{ fontSize: 11, fontWeight: 500, color: "#94a3b8" }}>탭 한번으로 조건 자동 설정</span>
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {quickPresets.map((preset, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const newSettings = {
+                        ...preset.settings,
+                        diet: selections.diet !== 'nodiet' ? selections.diet : preset.settings.diet,
+                      };
+                      setSelections(newSettings);
+                    }}
+                    style={{
+                      background: "#f8fafc",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 50,
+                      padding: "8px 14px",
+                      color: "#475569",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseOver={e => { e.currentTarget.style.background = "#6366F1"; e.currentTarget.style.color = "white"; e.currentTarget.style.borderColor = "#6366F1"; }}
+                    onMouseOut={e => { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.color = "#475569"; e.currentTarget.style.borderColor = "#e2e8f0"; }}
+                  >
+                    {preset.emoji} {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {/* LOADING */}
         {step === "loading" && (
-          <div style={{ textAlign: "center", padding: "80px 0" }}>
+          <div style={{ background: "white", borderRadius: 24, padding: "80px 40px", textAlign: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
             <div style={{ display: "flex", justifyContent: "center", gap: 10, marginBottom: 28 }}>
               {[0,1,2].map(i => (
-                <div key={i} style={{
-                  width: 13, height: 13,
-                  background: "#E3001B",
+                <div key={i} className="loading-dot" style={{
+                  width: 14, height: 14,
+                  background: "#6366F1",
                   borderRadius: "50%",
-                  opacity: loadingDot === i ? 1 : 0.3,
-                  transform: loadingDot === i ? "scale(1.3)" : "scale(0.8)",
-                  transition: "all 0.3s",
+                  opacity: loadingDot === i ? 1 : 0.2,
+                  transform: loadingDot === i ? "scale(1.3)" : "scale(0.9)",
+                  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                 }} />
               ))}
             </div>
-            <div style={{ fontSize: 15, color: "#666", fontWeight: 300 }}>광화문 맛집 데이터를 분석하고 있어요...</div>
-            <div style={{ fontSize: 12, color: "#aaa", marginTop: 8 }}>블루리본 · 네이버 평점 · 카카오맵 참고 중</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 8 }}>
+              광화문 맛집 데이터를 분석하고 있어요...
+            </div>
+            <div style={{ fontSize: 13, color: "#94a3b8" }}>
+              블루리본 · 네이버 평점 · 카카오맵 참고 중
+            </div>
           </div>
         )}
 
@@ -2300,146 +1780,327 @@ export default function LunchRecommender() {
         {step === "results" && (
           <div ref={resultsTopRef}>
             {/* 결과 헤더 */}
-            <div style={{ background: "#0a0a0a", borderRadius: 20, padding: "26px 28px", marginBottom: 24, position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, background: "radial-gradient(circle, rgba(227,0,27,0.3), transparent 70%)" }} />
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: "#E3001B", textTransform: "uppercase", marginBottom: 8 }}>AI 추천 결과</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "white", lineHeight: 1.4 }}>
-                {LABELS.mood[selections.mood]}인 오늘, 광화문 맛집 TOP 10 🍽️
+            <div style={{ background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)", borderRadius: 20, padding: "20px 24px", marginBottom: 20, position: "relative", overflow: "hidden" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, color: "rgba(255,255,255,0.8)" }}>
+                  ✨ AI 추천 결과
+                </div>
+                <button
+                  onClick={handleReset}
+                  style={{
+                    background: "rgba(255,255,255,0.15)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    borderRadius: 50,
+                    padding: "5px 14px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    color: "rgba(255,255,255,0.9)",
+                    letterSpacing: 0.3,
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.transform = "scale(1.05)";
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                >
+                  🏠 처음으로
+                </button>
               </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
-                {Object.entries(selections).filter(([k,v]) => k !== 'cuisine' || v !== 'all').map(([k, v]) => (
-                  <span key={k} style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", fontSize: 11, padding: "3px 11px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.15)" }}>
-                    {LABELS[k]?.[v] ?? v}
-                  </span>
-                ))}
+              <div style={{ fontSize: 18, fontWeight: 700, color: "white", lineHeight: 1.4 }}>
+                {LABELS.mood[selections.mood]}인 오늘, 맛집 TOP 10
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+                {Object.entries(selections).filter(([k,v]) => k !== 'cuisine' || v !== 'all').map(([k, v]) => {
+                  let displayLabel = LABELS[k]?.[v] ?? v;
+                  if (k === 'people') displayLabel = v >= 8 ? '8명+' : `${v}명`;
+                  if (k === 'budget') displayLabel = v >= 30000 ? '30,000원+' : `${v.toLocaleString()}원`;
+                  return (
+                    <span key={k} style={{ background: "rgba(255,255,255,0.2)", color: "white", fontSize: 11, padding: "3px 10px", borderRadius: 50, fontWeight: 500 }}>
+                      {displayLabel}
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
             {/* 조건 완화 안내 배너 */}
             {results.relaxedMsg && (
-              <div style={{ background: "#fffbf0", border: "1px solid #ffe082", borderRadius: 14, padding: "12px 18px", marginBottom: 16, fontSize: 13, color: "#7a5c00", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ background: "rgb(255, 251, 240)", border: "1px solid rgb(255, 224, 130)", borderRadius: 16, padding: "12px 18px", marginBottom: 16, fontSize: 13, color: "rgb(122, 92, 0)", display: "flex", alignItems: "center", gap: 8 }}>
                 {results.relaxedMsg}
               </div>
             )}
 
-            {/* 결과 없음 (식단 조건이 너무 엄격할 때) */}
+            {/* 결과 없음 */}
             {results.list.length === 0 && (
-              <div style={{ background: "white", border: "2px dashed #e8e8e8", borderRadius: 20, padding: 32, textAlign: "center", marginBottom: 16 }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>😅</div>
-                <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}>조건에 맞는 식당이 없어요</div>
-                <div style={{ fontSize: 13, color: "#999", lineHeight: 1.6 }}>
-                  선택하신 식단 조건이 현재 DB의 식당과 맞지 않아요.<br/>
+              <div style={{ background: "white", border: "2px dashed rgb(226, 232, 240)", borderRadius: 24, padding: 40, textAlign: "center", marginBottom: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>😅</div>
+                <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 10, color: "rgb(15, 23, 42)" }}>조건에 맞는 식당이 없어요</div>
+                <div style={{ fontSize: 14, color: "rgb(100, 116, 139)", lineHeight: 1.7 }}>
+                  선택하신 조건이 현재 DB의 식당과 맞지 않아요.<br/>
                   식단 조건을 바꾸거나, 조건을 완화해 다시 시도해보세요!
                 </div>
               </div>
             )}
 
+            {/* 결과 부족 안내 */}
+            {results.list.length > 0 && results.list.length < 5 && (
+              <div style={{ background: "#FFFBEB", borderRadius: 12, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: "#92400E", border: "1px solid #FDE68A", display: "flex", alignItems: "center", gap: 6, lineHeight: 1.5 }}>
+                💡 조건에 맞는 식당이 <b>{results.list.length}곳</b>만 있어요. 더 많은 결과를 원하시면 식단이나 예산 조건을 완화해보세요!
+              </div>
+            )}
+
             {/* 맛집 카드 */}
-            {results.list.map((r, i) => (
-              <div key={r.name} style={{
+            {results.list.length > 0 && (
+              <div style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 8, letterSpacing: 0.5 }}>
+                🏆 TOP 3 추천
+              </div>
+            )}
+            {results.list.map((r, i) => {
+              const isTop3 = i < 3;
+              const rankColors = ['#6366F1', '#F59E0B', '#14B8A6'];
+              const rankColor = rankColors[i] || '#e2e8f0';
+              const rankTextColor = i < 3 ? 'white' : '#64748b';
+
+              // TOP 3: 풀 디테일 카드
+              if (isTop3) return (
+              <div key={r.name} className="card-hover" style={{
                 background: "white",
-                border: `2px solid ${i === 0 ? "#E3001B" : "#e8e8e8"}`,
                 borderRadius: 20,
                 padding: 24,
-                marginBottom: 16,
-                boxShadow: i === 0 ? "0 8px 32px rgba(227,0,27,0.1)" : "0 2px 12px rgba(0,0,0,0.05)",
+                marginBottom: i === 2 ? 24 : 12,
+                boxShadow: i === 0 ? "0 4px 20px rgba(99,102,241,0.15)" : "0 2px 8px rgba(0,0,0,0.06)",
+                border: `2px solid ${rankColor}`,
+                position: "relative",
+                transition: "all 0.2s ease",
               }}>
-                {/* 상단 */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                  <span style={{ fontWeight: 900, fontSize: 40, color: i === 0 ? "rgba(227,0,27,0.25)" : "#eee", lineHeight: 1 }}>0{i+1}</span>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                    {r.ribbon && <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#fff3e0", color: "#e65100" }}>🎀 블루리본</span>}
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#e8f5e9", color: "#2e7d32" }}>⭐ {r.rating}</span>
-                    {parseFloat(r.rating) >= 4.5 && <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#fce4ec", color: "#c62828" }}>🔥 인기</span>}
-                    {r.calorie && <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: r.calorie.color + "22", color: r.calorie.color }}>{r.calorie.emoji} {r.calorie.label}</span>}
-                    {r.diet.includes("vegetarian") && (
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#e8f5e9", color: "#2e7d32" }}>🌿 채식 가능</span>
-                    )}
-                    {r.diet.includes("diet") && !r.diet.includes("vegetarian") && (
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#e3f2fd", color: "#1565c0" }}>💪 다이어트</span>
-                    )}
-                    {r.diet.includes("light") && !r.diet.includes("diet") && !r.diet.includes("vegetarian") && (
-                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: "#f3e5f5", color: "#6a1b9a" }}>🥗 저칼로리</span>
-                    )}
+                {/* 순위 + 이름 + 평점 */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <div style={{ 
+                    minWidth: 36, height: 36, 
+                    background: rankColor,
+                    color: "white",
+                    borderRadius: 10, 
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 15, fontWeight: 800,
+                  }}>
+                    {i + 1}
                   </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                        {r.name}
+                      </h3>
+                      {r.ribbon && (
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 50, background: "#FFF3E0", color: "#E65100" }}>
+                          🌟 블루리본
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                      {r.category} · ⭐ {r.rating} · {r.walk || r.priceNote}
+                    </div>
+                  </div>
+                  {r.score && (
+                    <div style={{ fontSize: 13, fontWeight: 800, color: rankColor }}>
+                      {Math.round(r.score || 0)}점
+                    </div>
+                  )}
                 </div>
 
-                <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 3 }}>{r.name}</div>
-                <div style={{ fontSize: 13, color: "#999", marginBottom: 12 }}>{r.category}</div>
-
-                {/* 메타 */}
-                <div style={{ display: "flex", gap: 18, marginBottom: 14, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 13, color: "#555" }}>🚶 {r.walk}</span>
-                  <span style={{ fontSize: 13, color: "#E3001B", fontWeight: 700 }}>👤 {r.priceNote}</span>
+                {/* 매칭 배지 */}
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                  {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#F57F17" }}>
+                      {OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 날씨 딱
+                    </span>
+                  )}
+                  {r.mood && Array.isArray(r.mood) && (() => {
+                    const moodMapping = { 'great': ['exciting', 'executive'], 'normal': ['safe'], 'tired': ['hearty', 'hangover'], 'stressed': ['sad', 'hearty'] };
+                    let mapped = [...r.mood];
+                    for (let mood in moodMapping) { if (r.mood.includes(mood)) mapped = [...mapped, ...moodMapping[mood]]; }
+                    if (r.people && Array.isArray(r.people) && r.people.includes('large')) mapped.push('team');
+                    if (r.category && (r.category.includes('국밥') || r.category.includes('해장') || r.category.includes('탕'))) mapped.push('hangover');
+                    if (r.ribbon && r.budget && Array.isArray(r.budget) && r.budget.includes('expensive')) mapped.push('executive');
+                    return mapped.includes(selections.mood);
+                  })() && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#EDE9FE", color: "#6D28D9" }}>
+                      {OPTIONS.mood.find(o=>o.value===selections.mood)?.emoji} 기분 맞춤
+                    </span>
+                  )}
+                  {r.people && Array.isArray(r.people) && r.people.some(p => {
+                    const peopleMap = { 1: 'solo', 2: 'small', 3: 'small', 4: 'medium', 5: 'medium', 6: 'medium', 7: 'large', 8: 'large' };
+                    return p === peopleMap[selections.people];
+                  }) && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8EAF6", color: "#283593" }}>
+                      👥 인원 적합
+                    </span>
+                  )}
+                  {parseFloat(r.rating) >= 4.5 && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#E65100" }}>🔥 인기</span>
+                  )}
+                  {r.diet && Array.isArray(r.diet) && r.diet.includes("vegetarian") && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8F5E9", color: "#2E7D32" }}>🌿 채식가능</span>
+                  )}
+                  {r.diet && Array.isArray(r.diet) && r.diet.includes("diet") && (
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E3F2FD", color: "#1565C0" }}>💪 다이어트</span>
+                  )}
                 </div>
 
-                {/* 메뉴 */}
-                <div style={{ background: "#f4f4f4", borderRadius: 12, padding: "11px 15px", marginBottom: 14 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#aaa", letterSpacing: 1, textTransform: "uppercase", marginBottom: 5 }}>추천 메뉴</div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>{r.menus.join(" · ")}</div>
+                {/* 대표메뉴 + 가격 */}
+                <div style={{ fontSize: 13, color: "#475569", marginBottom: 10, lineHeight: 1.6 }}>
+                  🍽️ {r.menus && Array.isArray(r.menus) ? r.menus.join(", ") : '-'}
+                  {r.priceNote && r.walk && <span style={{ color: "#94a3b8" }}> · 💰 {r.priceNote}</span>}
                 </div>
 
                 {/* 추천 이유 */}
-                <div style={{ fontSize: 13, color: "#555", lineHeight: 1.6, borderLeft: "3px solid #E3001B", paddingLeft: 12, marginBottom: 14 }}>
-                  {r.reason}
+                {r.recommendReason && (
+                  <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
+                    {r.recommendReason}
+                  </div>
+                )}
+
+                {/* 예약/지도 링크 */}
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+                  {r.reservation && Array.isArray(r.reservation) && r.reservation.map((res, ri) => (
+                    <a key={ri} href={res.url} target="_blank" rel="noreferrer"
+                      style={{ display: "inline-flex", alignItems: "center", gap: 4, background: res.color, color: "white", textDecoration: "none", fontSize: 11, fontWeight: 600, padding: "6px 12px", borderRadius: 50, transition: "opacity 0.2s" }}
+                      onMouseOver={e => e.currentTarget.style.opacity = "0.85"} onMouseOut={e => e.currentTarget.style.opacity = "1"}
+                    >{res.label === "캐치테이블" ? "🪑" : "📅"} {res.label}</a>
+                  ))}
+                  {r.reservation && typeof r.reservation === 'boolean' && r.reservation && (
+                    <span style={{ fontSize: 11, color: "#22c55e", padding: "6px 0", display: "flex", alignItems: "center", gap: 4 }}>📅 예약 가능</span>
+                  )}
+                  {(!r.reservation || (Array.isArray(r.reservation) && r.reservation.length === 0)) && (
+                    <span style={{ fontSize: 11, color: "#94a3b8", padding: "6px 0", display: "flex", alignItems: "center", gap: 4 }}>✅ 예약 불필요 · 바로 방문</span>
+                  )}
+                  <a href={r.naver} target="_blank" rel="noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#f8fafc", color: "#475569", textDecoration: "none", fontSize: 11, fontWeight: 600, padding: "6px 12px", borderRadius: 50, border: "1px solid #e2e8f0", transition: "all 0.2s" }}
+                    onMouseOver={e => e.currentTarget.style.background = "#e2e8f0"} onMouseOut={e => e.currentTarget.style.background = "#f8fafc"}
+                  >🗺️ 네이버 지도</a>
                 </div>
 
-                {/* 조건 매칭 배지 */}
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-                  {r.weather.includes(selections.weather) && (
-                    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: "#fffde7", color: "#f57f17", border: "1px solid #ffe082", fontWeight: 600 }}>
-                      {OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 오늘 날씨 딱
-                    </span>
-                  )}
-                  {r.mood.includes(selections.mood) && (
-                    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: "#fce4ec", color: "#c62828", border: "1px solid #f48fb1", fontWeight: 600 }}>
-                      {OPTIONS.mood.find(o=>o.value===selections.mood)?.emoji} 오늘 기분 맞춤
-                    </span>
-                  )}
-                  {r.people.includes(selections.people) && (
-                    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: "#e8eaf6", color: "#283593", border: "1px solid #9fa8da", fontWeight: 600 }}>
-                      {OPTIONS.people.find(o=>o.value===selections.people)?.emoji} 인원 최적
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
-                  {r.reservation && r.reservation.map((res, ri) => (
-                    <a
-                      key={ri}
-                      href={res.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ display: "inline-flex", alignItems: "center", gap: 5, background: res.color, color: "white", textDecoration: "none", fontSize: 12, fontWeight: 700, padding: "9px 16px", borderRadius: 20 }}
-                    >
-                      {res.label === "캐치테이블" ? "🪑" : "📅"} {res.label}
-                    </a>
-                  ))}
-                  {r.reservation && r.reservation.length === 0 && (
-                    <span style={{ fontSize: 12, color: "#aaa", padding: "9px 0", display: "flex", alignItems: "center", gap: 4 }}>
-                      ✅ 예약 불필요 · 바로 방문
-                    </span>
-                  )}
-                  <a
-                    href={r.naver}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "#f4f4f4", color: "#555", textDecoration: "none", fontSize: 12, fontWeight: 600, padding: "9px 16px", borderRadius: 20 }}
-                  >
-                    🗺️ 네이버 지도
-                  </a>
+                {/* 피드백 버튼 */}
+                <div style={{ display: "flex", gap: 8, paddingTop: 12, borderTop: "1px solid #f1f5f9" }}>
+                  <button onClick={() => { const ok = saveFeedback(r.name, 'like', { weather: selections.weather, mood: selections.mood, people: selections.people, diet: selections.diet, budget: selections.budget }); if (ok) { alert(`👍 "${r.name}"을(를) 좋아요 했어요! 다음 추천에 반영됩니다.`); saveVisit(r.name, r.category, r.cuisine); } }}
+                    style={{ flex: 1, background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: 10, padding: "10px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s ease", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                    onMouseOver={e => { e.currentTarget.style.background = "#dcfce7"; }} onMouseOut={e => { e.currentTarget.style.background = "#f0fdf4"; }}
+                  >👍 좋아요</button>
+                  <button onClick={() => { const ok = saveFeedback(r.name, 'dislike', { weather: selections.weather, mood: selections.mood, people: selections.people, diet: selections.diet, budget: selections.budget }); if (ok) { alert(`👎 "${r.name}"을(를) 별로예요 했어요. 다음 추천에 반영됩니다.`); } }}
+                    style={{ flex: 1, background: "#f8fafc", color: "#64748b", border: "1px solid #e2e8f0", borderRadius: 10, padding: "10px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s ease", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+                    onMouseOver={e => { e.currentTarget.style.background = "#f1f5f9"; }} onMouseOut={e => { e.currentTarget.style.background = "#f8fafc"; }}
+                  >👎 별로예요</button>
                 </div>
               </div>
-            ))}
+              );
 
-            {/* 다시 추천받기 */}
-            <div style={{ textAlign: "center", marginTop: 32 }}>
+              // 4위~10위: 컴팩트 카드
+              return (
+              <div key={r.name}>
+                {i === 3 && (
+                  <div style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 8, marginTop: 4, letterSpacing: 0.5 }}>
+                    📋 그 외 추천
+                  </div>
+                )}
+                <div className="card-hover" style={{
+                  background: "white",
+                  borderRadius: 14,
+                  padding: "14px 18px",
+                  marginBottom: 8,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                  border: "1px solid #f1f5f9",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={() => window.open(r.naver, '_blank')}
+                >
+                  <div style={{ minWidth: 28, height: 28, background: "#f1f5f9", color: "#94a3b8", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800 }}>
+                    {i + 1}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</span>
+                      {r.ribbon && <span style={{ fontSize: 10, padding: "1px 5px", borderRadius: 50, background: "#FFF3E0", color: "#E65100", fontWeight: 700 }}>🌟</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {r.category} · ⭐ {r.rating} · {r.priceNote || r.price}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
+                      <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#FFFDE7", color: "#F57F17" }}>🌤️</span>
+                    )}
+                    {r.mood && Array.isArray(r.mood) && r.mood.includes(selections.mood) && (
+                      <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#EDE9FE", color: "#6D28D9" }}>😊</span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0 }}>🗺️</span>
+                </div>
+              </div>
+              );
+            })}
+
+            {/* 다시 추천받기 & 처음으로 버튼 */}
+            <div style={{ textAlign: "center", marginTop: 28, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+              <button
+                className="btn-primary"
+                onClick={handleRecommendAgain}
+                style={{ 
+                  background: "linear-gradient(135deg, #6366F1 0%, #818CF8 100%)", 
+                  border: "none", 
+                  borderRadius: 16, 
+                  padding: "14px 40px", 
+                  fontSize: 15, 
+                  fontWeight: 700, 
+                  cursor: "pointer", 
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", 
+                  color: "white",
+                  boxShadow: "0 4px 16px rgba(99, 102, 241, 0.3)",
+                  letterSpacing: 0.3,
+                  width: "100%",
+                  maxWidth: 360,
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(99, 102, 241, 0.4)";
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(99, 102, 241, 0.3)";
+                }}
+              >
+                🔄 다른 맛집 추천받기
+              </button>
               <button
                 onClick={handleReset}
-                style={{ background: "transparent", border: "2px solid #0a0a0a", borderRadius: 50, padding: "14px 40px", fontSize: 14, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
-                onMouseOver={e => { e.currentTarget.style.background = "#0a0a0a"; e.currentTarget.style.color = "white"; }}
-                onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0a0a0a"; }}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  padding: "8px 16px", 
+                  fontSize: 13, 
+                  fontWeight: 500, 
+                  cursor: "pointer", 
+                  transition: "all 0.2s ease", 
+                  color: "rgb(100, 116, 139)",
+                  letterSpacing: 0.3,
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.color = "#6366F1";
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.color = "rgb(100, 116, 139)";
+                }}
               >
-                🔄 다시 추천받기
+                🏠 처음부터 다시 선택하기
               </button>
             </div>
           </div>
@@ -2447,16 +2108,19 @@ export default function LunchRecommender() {
       </div>
 
       {/* FOOTER */}
-      <div style={{ background: "#0a0a0a", padding: "22px", textAlign: "center", color: "#555", fontSize: 12 }}>
-        📍 KT 광화문 West·East 빌딩 반경 700m 실제 맛집 · 네이버 플레이스 평점 기반
+      <div style={{ background: "#1a1a2e", padding: "28px 20px", textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 12 }}>
+        <div style={{ marginBottom: 6, fontWeight: 500, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
+          📍 KT 광화문 West·East 빌딩 반경 700m 실제 맛집
+        </div>
+        <div>
+          네이버 플레이스 평점 기반 · 블루리본 가이드 참고
+        </div>
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
       `}</style>
     </div>
   );

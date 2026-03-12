@@ -1,0 +1,1657 @@
+[
+  {
+    "index": 1,
+    "name": "파이프그라운드 광화문점",
+    "category": "이탈리안 · 피자/파스타",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 2,
+    "name": "무탄 광화문점",
+    "category": "중식 · 프리미엄 짜장/유린기",
+    "cuisine": "chinese",
+    "oldMood": [
+      "great",
+      "stressed"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 3,
+    "name": "광화문석갈비 D타워점",
+    "category": "한식 · 갈비/구이",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 4,
+    "name": "이치규 광화문점",
+    "category": "일식 · 규카츠",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 5,
+    "name": "일품 광화문점",
+    "category": "일식 · 카이센동/스시",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 6,
+    "name": "쌤쌤쌤 광화문점",
+    "category": "양식 · 파스타/뇨끼/라자냐",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 7,
+    "name": "광화문뚝감",
+    "category": "한식 · 감자탕/뼈해장국",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 8,
+    "name": "종로빈대떡 광화문점",
+    "category": "한식 · 전/막걸리",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 9,
+    "name": "우하나 종각역점",
+    "category": "한식 · 한우 오마카세",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 10,
+    "name": "모던샤브하우스 광화문D타워점",
+    "category": "한식 · 프리미엄 샤브샤브/스키야키 무한리필",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 11,
+    "name": "광화문국밥",
+    "category": "한식 · 돼지국밥/평양냉면",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 12,
+    "name": "무교동북어국집",
+    "category": "한식 · 북어해장국 (1968년 노포)",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed"
+    ],
+    "newMood": [
+      "hangover",
+      "executive"
+    ],
+    "change": true
+  },
+  {
+    "index": 13,
+    "name": "서린낙지",
+    "category": "한식 · 낙지볶음/조개탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "great"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 14,
+    "name": "정원 백반",
+    "category": "한식 · 가정식 백반",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "hearty",
+      "team",
+      "sad"
+    ],
+    "change": true
+  },
+  {
+    "index": 15,
+    "name": "꼬꼬뚝닭",
+    "category": "한식 · 닭볶음탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 16,
+    "name": "그린앤그레인",
+    "category": "샐러드 · 슈퍼곡물 샐러드/포케",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 17,
+    "name": "요지트 광화문점",
+    "category": "카페·디저트 · 그릭요거트/프로틴볼",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 18,
+    "name": "커피원",
+    "category": "카페·브런치 · 수제 샌드위치/베이커리",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 19,
+    "name": "시래기담은",
+    "category": "한식 · 시래기 정식/채식 한식",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 20,
+    "name": "슬로우캘리 광화문",
+    "category": "샐러드·포케 · 하와이안 포케볼/샐러드랩",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 21,
+    "name": "스윗샐러드",
+    "category": "샐러드 전문점 · 프리미엄 토핑 샐러드",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 22,
+    "name": "허니떡볶이",
+    "category": "분식 · 즉석떡볶이",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 23,
+    "name": "성가백암순대",
+    "category": "한식 · 순대국밥",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 24,
+    "name": "진중 우육면관 광화문점",
+    "category": "중식 · 대만식 우육면",
+    "cuisine": "chinese",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hearty"
+    ],
+    "change": true
+  },
+  {
+    "index": 25,
+    "name": "금금 스타필드애비뉴 그랑서울점",
+    "category": "한식 · 한식 기반 솥밥/덮밥",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 26,
+    "name": "양산도 광화문점",
+    "category": "일식 · 민물장어덮밥/히츠마부시",
+    "cuisine": "japanese",
+    "oldMood": [
+      "tired",
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 27,
+    "name": "강촌숯불닭갈비 종각",
+    "category": "한식 · 숯불 닭갈비",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 28,
+    "name": "진순대",
+    "category": "한식 · 순대국+라면",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed"
+    ],
+    "newMood": [
+      "hangover"
+    ],
+    "change": true
+  },
+  {
+    "index": 29,
+    "name": "코끼리초밥 광화문점",
+    "category": "일식 · 초밥 세트/런치",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 30,
+    "name": "덕후선생 광화문디타워점",
+    "category": "중식 · 북경오리/중화요리",
+    "cuisine": "chinese",
+    "oldMood": [
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 31,
+    "name": "VIP참치 광화문점",
+    "category": "일식 · 참치회/코스",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 32,
+    "name": "VIP참치 종로구청점",
+    "category": "일식 · 참치회/코스",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 33,
+    "name": "한일관 광화문점",
+    "category": "한식 · 한국 전통 불고기/갈비탕 (1939년 노포)",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 34,
+    "name": "이문설렁탕 종각점",
+    "category": "한식 · 설렁탕/곰국수 (1904년 노포)",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 35,
+    "name": "미도갈비",
+    "category": "한식 · 한돈 수제 돼지갈비/와규",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 36,
+    "name": "동해도 광화문점",
+    "category": "일식 · 무한리필 회전초밥/오마카세",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 37,
+    "name": "곰국시집 종각",
+    "category": "한식 · 곰국수/수육",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 38,
+    "name": "카페이마",
+    "category": "양식·카페 · 함박스테이크/와플",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 39,
+    "name": "송백부대찌개",
+    "category": "한식 · 부대찌개",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "team",
+      "sad"
+    ],
+    "change": true
+  },
+  {
+    "index": 40,
+    "name": "오감부대",
+    "category": "한식 · 부대찌개/소시지전골",
+    "cuisine": "korean",
+    "oldMood": [
+      "stressed",
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "team",
+      "sad"
+    ],
+    "change": true
+  },
+  {
+    "index": 41,
+    "name": "도치피자 광화문",
+    "category": "이탈리안 · 화덕피자",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 42,
+    "name": "광화문나폴리",
+    "category": "이탈리안 · 화덕피자/파스타",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal",
+      "birthday"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 43,
+    "name": "광화문집 (김치찌개/제육볶음)",
+    "category": "한식 · 김치찌개/제육볶음",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "team",
+      "sad"
+    ],
+    "change": true
+  },
+  {
+    "index": 44,
+    "name": "부산식당",
+    "category": "한식 · 생태탕/대구탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 45,
+    "name": "화목순대국전문 광화문1호점",
+    "category": "한식 · 순대국/내장탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 46,
+    "name": "관북 순대국 (종각)",
+    "category": "한식 · 순대국/수육",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 47,
+    "name": "청진동 장터순대국",
+    "category": "한식 · 순대국/해장국",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 48,
+    "name": "청진옥",
+    "category": "한식 · 해장국/설렁탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 49,
+    "name": "스모야 (종각·돌솥밥)",
+    "category": "한식 · 돌솥밥",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "great",
+      "tired"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 50,
+    "name": "애성회관 (한우곰탕)",
+    "category": "한식 · 한우곰탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 51,
+    "name": "가봉루",
+    "category": "중식 · 고기튀김/짜장면",
+    "cuisine": "chinese",
+    "oldMood": [
+      "great",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 52,
+    "name": "차이니즈키친홍성원 본점",
+    "category": "중식 · 짜장면/탕수육",
+    "cuisine": "chinese",
+    "oldMood": [
+      "normal",
+      "stressed",
+      "great"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 53,
+    "name": "신신원",
+    "category": "중식 · 부추짜장/중화요리",
+    "cuisine": "chinese",
+    "oldMood": [
+      "great",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 54,
+    "name": "차알 광화문 디타워점",
+    "category": "중식 · 모던 중식/마라탕면",
+    "cuisine": "chinese",
+    "oldMood": [
+      "great",
+      "stressed",
+      "normal"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 55,
+    "name": "웰믹스 광화문점",
+    "category": "샐러드·비건 · 믹스볼 전문",
+    "cuisine": "salad",
+    "oldMood": [
+      "diet",
+      "light",
+      "normal"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 56,
+    "name": "점점점 샐러드",
+    "category": "샐러드 · 웜플레이트/샐러드볼 전문",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 57,
+    "name": "카페마마스 광화문점",
+    "category": "샐러드 · 리코타샐러드/파니니/브런치",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 58,
+    "name": "슬로우캘리 종각역",
+    "category": "샐러드 · 포케/샐러드볼/그릴보울",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 59,
+    "name": "광화문옥희",
+    "category": "일식/참치·해산물",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 60,
+    "name": "키보 아츠아츠 (KT West)",
+    "category": "일식/경양식·돈카츠",
+    "cuisine": "japanese",
+    "oldMood": [
+      "normal",
+      "stressed",
+      "great"
+    ],
+    "newMood": [
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 61,
+    "name": "난포 (KT West)",
+    "category": "한식/퓨전한식",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 62,
+    "name": "보보식당 (KT West)",
+    "category": "중식/마라·동파육",
+    "cuisine": "chinese",
+    "oldMood": [
+      "great",
+      "celebrate",
+      "normal"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 63,
+    "name": "타코챔피언 (KT West)",
+    "category": "양식/멕시칸·타코",
+    "cuisine": "mexican",
+    "oldMood": [
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 64,
+    "name": "덴푸라 감춘 (KT West)",
+    "category": "일식/튀김·덴푸라",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "celebrate"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 65,
+    "name": "오리지널팬케이크하우스 다이너 광화문점",
+    "category": "양식/브런치·팬케이크",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal",
+      "date"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 66,
+    "name": "도우룸 (KT West 2층)",
+    "category": "양식/피자·카페",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "celebrate",
+      "date"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 67,
+    "name": "야마야 광화문 디타워점",
+    "category": "일식/이자카야·모츠나베/정식",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "celebrate",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 68,
+    "name": "타마린드 디타워점",
+    "category": "아시안/베트남·태국",
+    "cuisine": "asian",
+    "oldMood": [
+      "great",
+      "celebrate",
+      "date"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 69,
+    "name": "주유별장 광화문점",
+    "category": "한식/퓨전한식·전통주",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "celebrate",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 70,
+    "name": "매드포갈릭 광화문D타워",
+    "category": "양식/이탈리안·갈릭",
+    "cuisine": "western",
+    "oldMood": [
+      "celebrate",
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "safe",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 71,
+    "name": "브루클린더버거조인트 디타워점",
+    "category": "양식/수제버거",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 72,
+    "name": "다운타우너 (SFC몰)",
+    "category": "양식 · 수제버거",
+    "cuisine": "western",
+    "oldMood": [
+      "great",
+      "normal",
+      "stressed"
+    ],
+    "newMood": [
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 73,
+    "name": "라멘 시미즈",
+    "category": "일식 · 시오/쇼유라멘",
+    "cuisine": "japanese",
+    "oldMood": [
+      "tired",
+      "normal",
+      "solo_ok"
+    ],
+    "newMood": [
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 74,
+    "name": "아오리의행방불명 광화문센트럴점",
+    "category": "일식 · 돈코츠/미소라멘",
+    "cuisine": "japanese",
+    "oldMood": [
+      "tired",
+      "normal"
+    ],
+    "newMood": [
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 75,
+    "name": "평가옥 (광화문점)",
+    "category": "한식 · 평양냉면/어복쟁반",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 76,
+    "name": "필경재 종각점",
+    "category": "한식 · 하남냉면/족발",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 77,
+    "name": "동광원",
+    "category": "한식 · 평양냉면/불고기",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 78,
+    "name": "진미평양냉면 종로점",
+    "category": "한식 · 평양냉면/만두",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 79,
+    "name": "류경회관 광화문점",
+    "category": "한식 · 냉면/평양음식",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 80,
+    "name": "큰손함흥냉면",
+    "category": "한식 · 함흥냉면 전문",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 81,
+    "name": "능라도",
+    "category": "한식 · 평양냉면 전문",
+    "cuisine": "korean",
+    "oldMood": [
+      "great",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 82,
+    "name": "성산옥",
+    "category": "한식 · 평양냉면/설렁탕",
+    "cuisine": "korean",
+    "oldMood": [
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "hangover",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 83,
+    "name": "후라토식당 경복궁 본점",
+    "category": "일식 · 규카츠/오므라이스",
+    "cuisine": "japanese",
+    "oldMood": [
+      "great",
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 84,
+    "name": "샐러드로우앤트라타 광화문점",
+    "category": "양식 · 샐러드/타코/부리또",
+    "cuisine": "salad",
+    "oldMood": [
+      "great",
+      "normal",
+      "tired"
+    ],
+    "newMood": [
+      "safe",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 85,
+    "name": "고우가 광화문점",
+    "category": "한식 · 한우 오마카세",
+    "cuisine": "korean",
+    "oldMood": [
+      "special",
+      "business",
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 86,
+    "name": "일품진진수라 광화문점",
+    "category": "한식 · 한정식",
+    "cuisine": "korean",
+    "oldMood": [
+      "special",
+      "business",
+      "normal",
+      "great"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 87,
+    "name": "울프강 스테이크하우스 광화문점",
+    "category": "양식 · 스테이크",
+    "cuisine": "western",
+    "oldMood": [
+      "special",
+      "business"
+    ],
+    "newMood": [
+      "executive",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 88,
+    "name": "친니",
+    "category": "중식 · 탕수육·코스",
+    "cuisine": "chinese",
+    "oldMood": [
+      "special",
+      "business",
+      "normal"
+    ],
+    "newMood": [
+      "executive",
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 89,
+    "name": "스시산원 궁",
+    "category": "일식 · 스시오마카세",
+    "cuisine": "japanese",
+    "oldMood": [
+      "special",
+      "business"
+    ],
+    "newMood": [
+      "executive",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 90,
+    "name": "라브리",
+    "category": "양식 · 프렌치",
+    "cuisine": "western",
+    "oldMood": [
+      "special",
+      "business"
+    ],
+    "newMood": [
+      "executive",
+      "safe"
+    ],
+    "change": true
+  },
+  {
+    "index": 91,
+    "name": "신승관",
+    "category": "중식 · 정통중화요리",
+    "cuisine": "chinese",
+    "oldMood": [
+      "daily",
+      "business"
+    ],
+    "newMood": [
+      "hearty",
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 92,
+    "name": "온더보더 광화문D타워점",
+    "category": "멕시칸 · 텍스멕스",
+    "cuisine": "mexican",
+    "oldMood": [
+      "daily",
+      "fun"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 93,
+    "name": "타코챔피언 광화문",
+    "category": "멕시칸 · 타코",
+    "cuisine": "mexican",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 94,
+    "name": "쿠차라 광화문점",
+    "category": "멕시칸 · 남미음식",
+    "cuisine": "mexican",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 95,
+    "name": "쿠차라 SFC점",
+    "category": "멕시칸 · 남미음식",
+    "cuisine": "mexican",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 96,
+    "name": "옴레스토랑 광화문점",
+    "category": "인도음식 · 커리",
+    "cuisine": "indian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 97,
+    "name": "두르가 광화문점",
+    "category": "인도음식 · 커리",
+    "cuisine": "indian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 98,
+    "name": "강가 무교점",
+    "category": "인도음식 · 커리",
+    "cuisine": "indian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 99,
+    "name": "크루아타이커진 스타필드 애비뉴 그랑서울점",
+    "category": "아시안 · 태국커리/코스",
+    "cuisine": "asian",
+    "oldMood": [
+      "special",
+      "daily"
+    ],
+    "newMood": [
+      "executive",
+      "team",
+      "exciting"
+    ],
+    "change": true
+  },
+  {
+    "index": 100,
+    "name": "깐깐 스타필드애비뉴 그랑서울점",
+    "category": "아시안 · 베트남쌀국수/분짜",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 101,
+    "name": "까몬 광화문점",
+    "category": "아시안 · 베트남쌀국수/분짜",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 102,
+    "name": "쿠아타이푸드",
+    "category": "아시안 · 태국음식/팟타이",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 103,
+    "name": "니욤",
+    "category": "아시안 · 태국음식/똠얌꿍",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 104,
+    "name": "생어거스틴 광화문파이낸스점",
+    "category": "아시안 · 동남아요리",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 105,
+    "name": "반포식스 광화문점",
+    "category": "아시안 · 베트남쌀국수/반미",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 106,
+    "name": "띤띤 SFC",
+    "category": "아시안 · 베트남분짜/쌀국수",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily",
+      "special"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 107,
+    "name": "벳남미식 경희궁직영점",
+    "category": "아시안 · 베트남쌀국수/분짜",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  },
+  {
+    "index": 108,
+    "name": "미소쌀국수 광화문점",
+    "category": "아시안 · 베트남쌀국수",
+    "cuisine": "asian",
+    "oldMood": [
+      "daily"
+    ],
+    "newMood": [
+      "team"
+    ],
+    "change": true
+  }
+]
