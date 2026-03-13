@@ -207,11 +207,13 @@ export default function LunchRecommender() {
         const matchMood = (r) => {
           if (!selections.mood) return false;
           
-          // 해장: mood에 'hangover'가 있거나 카테고리에 국밥/해장/탕 등 포함
+          // 해장: mood에 'hangover'가 있거나 카테고리에 국밥/해장/탕 등 포함 (카페/디저트/브런치 제외)
           if (selections.mood === 'hangover') {
             const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('hangover');
-            const hasHangoverCategory = r.category && 
-              /(국밥|순대국|해장국|해장|육개장|감자탕|뼈다귀|곰탕|설렁탕|갈비탕|닭볶음탕|매운탕|추어탕|삼계탕|찌개)/.test(r.category);
+            const category = r.category || '';
+            const isCafeOrBrunch = /(카페|디저트|브런치|팬케이크|베이커리|빵|샐러드)/.test(category);
+            if (isCafeOrBrunch) return false;
+            const hasHangoverCategory = /(국밥|순대국|해장국|해장|육개장|감자탕|뼈다귀|곰탕|설렁탕|갈비탕|닭볶음탕|매운탕|추어탕|삼계탕|찌개)/.test(category);
             return hasMoodTag || hasHangoverCategory;
           }
           
