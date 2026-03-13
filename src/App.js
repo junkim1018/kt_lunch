@@ -512,7 +512,7 @@ export default function LunchRecommender() {
           }
 
           const recommendReason = reasons.length > 0 
-            ? reasons.slice(0, 5).join(' · ') 
+            ? reasons.slice(0, 3).join(' · ') 
             : r.reason || '추천 맛집';
 
           return { 
@@ -666,8 +666,8 @@ export default function LunchRecommender() {
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
 
-          // 4~10위는 1.5초 후 공개
-          setTimeout(() => setShowAll(true), 1500);
+          // 4~10위는 1초 후 공개
+          setTimeout(() => setShowAll(true), 1000);
 
           // 최근 본 식당 기록 (DB 소진 시까지 중복 방지)
           const newNames = final.slice(0, 10).map(r => r.name);
@@ -685,7 +685,7 @@ export default function LunchRecommender() {
       setTimeout(() => {
         resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 50);
-    }, 300);
+    }, 900);
     return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [step, selections]);
 
@@ -1195,43 +1195,32 @@ export default function LunchRecommender() {
                   )}
                 </div>
 
-                {/* 매칭 배지 */}
+                {/* 매칭 배지 (최대 3개) */}
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
-                  {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>
-                      {OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 날씨 딱
-                    </span>
-                  )}
-                  {r.mood && Array.isArray(r.mood) && (() => {
-                    const moodMapping = { 'great': ['exciting', 'executive'], 'normal': ['safe'], 'tired': ['hearty', 'hangover'], 'stressed': ['sad', 'hearty'] };
-                    let mapped = [...r.mood];
-                    for (let mood in moodMapping) { if (r.mood.includes(mood)) mapped = [...mapped, ...moodMapping[mood]]; }
-                    if (r.people && Array.isArray(r.people) && r.people.includes('large')) mapped.push('team');
-                    if (r.category && (r.category.includes('국밥') || r.category.includes('해장') || r.category.includes('탕'))) mapped.push('hangover');
-                    if (r.ribbon && r.budget && Array.isArray(r.budget) && r.budget.includes('expensive')) mapped.push('executive');
-                    return mapped.includes(selections.mood);
-                  })() && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#EDE9FE", color: "#6D28D9" }}>
-                      {OPTIONS.mood.find(o=>o.value===selections.mood)?.emoji} 기분 맞춤
-                    </span>
-                  )}
-                  {r.people && Array.isArray(r.people) && r.people.some(p => {
-                    const peopleMap = { 1: 'solo', 2: 'small', 3: 'small', 4: 'medium', 5: 'medium', 6: 'medium', 7: 'large', 8: 'large' };
-                    return p === peopleMap[selections.people];
-                  }) && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8EAF6", color: "#283593" }}>
-                      👥 인원 적합
-                    </span>
-                  )}
-                  {parseFloat(r.rating) >= 4.5 && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C" }}>🔥 인기</span>
-                  )}
-                  {r.diet && Array.isArray(r.diet) && r.diet.includes("vegetarian") && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8F5E9", color: "#2E7D32" }}>🌿 채식가능</span>
-                  )}
-                  {r.diet && Array.isArray(r.diet) && r.diet.includes("diet") && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E3F2FD", color: "#1565C0" }}>💪 다이어트</span>
-                  )}
+                  {(() => {
+                    const badges = [];
+                    if (r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather))
+                      badges.push(<span key="w" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>{OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 날씨 딱</span>);
+                    if (r.mood && Array.isArray(r.mood) && (() => {
+                      const moodMapping = { 'great': ['exciting', 'executive'], 'normal': ['safe'], 'tired': ['hearty', 'hangover'], 'stressed': ['sad', 'hearty'] };
+                      let mapped = [...r.mood];
+                      for (let mood in moodMapping) { if (r.mood.includes(mood)) mapped = [...mapped, ...moodMapping[mood]]; }
+                      if (r.people && Array.isArray(r.people) && r.people.includes('large')) mapped.push('team');
+                      if (r.category && (r.category.includes('국밥') || r.category.includes('해장') || r.category.includes('탕'))) mapped.push('hangover');
+                      if (r.ribbon && r.budget && Array.isArray(r.budget) && r.budget.includes('expensive')) mapped.push('executive');
+                      return mapped.includes(selections.mood);
+                    })())
+                      badges.push(<span key="m" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#EDE9FE", color: "#6D28D9" }}>{OPTIONS.mood.find(o=>o.value===selections.mood)?.emoji} 기분 맞춤</span>);
+                    if (r.people && Array.isArray(r.people) && r.people.some(p => { const peopleMap = { 1: 'solo', 2: 'small', 3: 'small', 4: 'medium', 5: 'medium', 6: 'medium', 7: 'large', 8: 'large' }; return p === peopleMap[selections.people]; }))
+                      badges.push(<span key="p" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8EAF6", color: "#283593" }}>👥 인원 적합</span>);
+                    if (parseFloat(r.rating) >= 4.5)
+                      badges.push(<span key="r" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C" }}>🔥 인기</span>);
+                    if (r.diet && Array.isArray(r.diet) && r.diet.includes("vegetarian"))
+                      badges.push(<span key="v" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8F5E9", color: "#2E7D32" }}>🌿 채식가능</span>);
+                    if (r.diet && Array.isArray(r.diet) && r.diet.includes("diet"))
+                      badges.push(<span key="d" style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E3F2FD", color: "#1565C0" }}>💪 다이어트</span>);
+                    return badges.slice(0, 3);
+                  })()}
                 </div>
 
                 {/* 대표메뉴 + 가격 */}
@@ -1319,7 +1308,8 @@ export default function LunchRecommender() {
                         {r.category} · ⭐ {r.rating} · {r.priceNote || r.price}
                       </div>
                     </div>
-                    <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1" }}>{r.score100}점</span>
                       {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
                         <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>🌤️</span>
                       )}
