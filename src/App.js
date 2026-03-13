@@ -815,7 +815,9 @@ export default function LunchRecommender() {
                         fontSize: 13,
                         fontWeight: 600,
                         cursor: "pointer",
-                        transition: "all 0.15s ease",
+                        transform: selections.weather === opt.value ? "scale(1.03)" : "scale(1)",
+                        boxShadow: selections.weather === opt.value ? "0 2px 8px rgba(99,102,241,0.25)" : "none",
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -846,7 +848,9 @@ export default function LunchRecommender() {
                         fontSize: 13,
                         fontWeight: 600,
                         cursor: "pointer",
-                        transition: "all 0.15s ease",
+                        transform: selections.mood === opt.value ? "scale(1.03)" : "scale(1)",
+                        boxShadow: selections.mood === opt.value ? "0 2px 8px rgba(99,102,241,0.25)" : "none",
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -877,7 +881,9 @@ export default function LunchRecommender() {
                         fontSize: 13,
                         fontWeight: 600,
                         cursor: "pointer",
-                        transition: "all 0.15s ease",
+                        transform: selections.diet === opt.value ? "scale(1.03)" : "scale(1)",
+                        boxShadow: selections.diet === opt.value ? "0 2px 8px rgba(99,102,241,0.25)" : "none",
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -922,7 +928,7 @@ export default function LunchRecommender() {
                   aria-valuetext={`${(selections.people || 2) >= 8 ? '8명 이상' : `${selections.people || 2}명`}`}
                   style={{ width: "100%", accentColor: "#6366F1", cursor: "pointer", height: 6 }}
                 />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginTop: 4 }}>
                   <span>혼밥</span>
                   <span>8명+</span>
                 </div>
@@ -948,7 +954,7 @@ export default function LunchRecommender() {
                   aria-valuetext={`${(selections.budget || 15000) >= 30000 ? '3만원 이상' : `${(selections.budget || 15000).toLocaleString()}원`}`}
                   style={{ width: "100%", accentColor: "#6366F1", cursor: "pointer", height: 6 }}
                 />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#64748b", marginTop: 4 }}>
                   <span>8,000원</span>
                   <span>30,000원+</span>
                 </div>
@@ -994,7 +1000,7 @@ export default function LunchRecommender() {
             <div style={{ background: "white", borderRadius: 24, padding: "20px 24px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
               <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
                 ⚡ 빠른 추천
-                <span style={{ fontSize: 11, fontWeight: 500, color: "#94a3b8" }}>탭 한번으로 조건 자동 설정</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: "#64748b" }}>탭 한번으로 조건 자동 설정</span>
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {quickPresets.map((preset, idx) => (
@@ -1044,7 +1050,7 @@ export default function LunchRecommender() {
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 8 }}>
               광화문 맛집 데이터를 분석하고 있어요...
             </div>
-            <div style={{ fontSize: 13, color: "#94a3b8" }}>
+            <div style={{ fontSize: 13, color: "#64748b" }}>
               블루리본 · 네이버 평점 · 카카오맵 참고 중
             </div>
           </div>
@@ -1132,7 +1138,7 @@ export default function LunchRecommender() {
 
             {/* 맛집 카드 */}
             {results.list.length > 0 && (
-              <div style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 8, letterSpacing: 0.5 }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 8, letterSpacing: 0.5 }}>
                 🏆 TOP 3 추천
               </div>
             )}
@@ -1173,12 +1179,12 @@ export default function LunchRecommender() {
                         {r.name}
                       </h3>
                       {r.ribbon && (
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 50, background: "#FFF3E0", color: "#E65100" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C" }}>
                           🌟 블루리본
                         </span>
                       )}
                     </div>
-                    <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
                       {r.category} · ⭐ {r.rating} · {r.walk || r.priceNote}
                     </div>
                   </div>
@@ -1192,7 +1198,7 @@ export default function LunchRecommender() {
                 {/* 매칭 배지 */}
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
                   {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#F57F17" }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>
                       {OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 날씨 딱
                     </span>
                   )}
@@ -1218,7 +1224,7 @@ export default function LunchRecommender() {
                     </span>
                   )}
                   {parseFloat(r.rating) >= 4.5 && (
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#E65100" }}>🔥 인기</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C" }}>🔥 인기</span>
                   )}
                   {r.diet && Array.isArray(r.diet) && r.diet.includes("vegetarian") && (
                     <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8F5E9", color: "#2E7D32" }}>🌿 채식가능</span>
@@ -1231,7 +1237,7 @@ export default function LunchRecommender() {
                 {/* 대표메뉴 + 가격 */}
                 <div style={{ fontSize: 13, color: "#475569", marginBottom: 10, lineHeight: 1.6 }}>
                   🍽️ {r.menus && Array.isArray(r.menus) ? r.menus.join(", ") : '-'}
-                  {r.priceNote && r.walk && <span style={{ color: "#94a3b8" }}> · 💰 {r.priceNote}</span>}
+                  {r.priceNote && r.walk && <span style={{ color: "#64748b" }}> · 💰 {r.priceNote}</span>}
                 </div>
 
                 {/* 추천 이유 */}
@@ -1253,7 +1259,7 @@ export default function LunchRecommender() {
                     <span style={{ fontSize: 11, color: "#22c55e", padding: "6px 0", display: "flex", alignItems: "center", gap: 4 }}>📅 예약 가능</span>
                   )}
                   {(!r.reservation || (Array.isArray(r.reservation) && r.reservation.length === 0)) && (
-                    <span style={{ fontSize: 11, color: "#94a3b8", padding: "6px 0", display: "flex", alignItems: "center", gap: 4 }}>✅ 예약 불필요 · 바로 방문</span>
+                    <span style={{ fontSize: 11, color: "#64748b", padding: "6px 0", display: "flex", alignItems: "center", gap: 4 }}>✅ 예약 불필요 · 바로 방문</span>
                   )}
                   <a href={r.naver} target="_blank" rel="noreferrer"
                     style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#f8fafc", color: "#475569", textDecoration: "none", fontSize: 11, fontWeight: 600, padding: "6px 12px", borderRadius: 50, border: "1px solid #e2e8f0", transition: "all 0.2s" }}
@@ -1282,7 +1288,7 @@ export default function LunchRecommender() {
               return (
               <div key={r.name} style={{ animation: 'fadeIn 0.3s ease', animationDelay: `${(i - 3) * 0.08}s`, animationFillMode: 'both' }}>
                 {i === 3 && (
-                  <div style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600, marginBottom: 8, marginTop: 4, letterSpacing: 0.5 }}>
+                  <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 8, marginTop: 4, letterSpacing: 0.5 }}>
                     📋 그 외 추천
                   </div>
                 )}
@@ -1301,27 +1307,27 @@ export default function LunchRecommender() {
                 >
                   {/* 컴팩트 헤더 (항상 보임) */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div style={{ minWidth: 28, height: 28, background: "#f1f5f9", color: "#94a3b8", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800 }}>
+                    <div style={{ minWidth: 28, height: 28, background: "#f1f5f9", color: "#64748b", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800 }}>
                       {i + 1}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</span>
-                        {r.ribbon && <span style={{ fontSize: 10, padding: "1px 5px", borderRadius: 50, background: "#FFF3E0", color: "#E65100", fontWeight: 700 }}>🌟</span>}
+                        {r.ribbon && <span style={{ fontSize: 10, padding: "1px 5px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C", fontWeight: 700 }}>🌟</span>}
                       </div>
-                      <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <div style={{ fontSize: 11, color: "#64748b", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {r.category} · ⭐ {r.rating} · {r.priceNote || r.price}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                       {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
-                        <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#FFFDE7", color: "#F57F17" }}>🌤️</span>
+                        <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>🌤️</span>
                       )}
                       {r.mood && Array.isArray(r.mood) && r.mood.includes(selections.mood) && (
                         <span style={{ fontSize: 10, padding: "2px 6px", borderRadius: 50, background: "#EDE9FE", color: "#6D28D9" }}>😊</span>
                       )}
                     </div>
-                    <span style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0, transition: "transform 0.2s", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
+                    <span style={{ fontSize: 11, color: "#64748b", flexShrink: 0, transition: "transform 0.2s", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
                   </div>
 
                   {/* 펼쳐진 상세 정보 */}
@@ -1330,7 +1336,7 @@ export default function LunchRecommender() {
                       {/* 매칭 배지 */}
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
                         {r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather) && (
-                          <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#F57F17" }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFFDE7", color: "#B45309" }}>
                             {OPTIONS.weather.find(o=>o.value===selections.weather)?.emoji} 날씨 딱
                           </span>
                         )}
@@ -1341,14 +1347,14 @@ export default function LunchRecommender() {
                           <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#E8EAF6", color: "#283593" }}>👥 인원 적합</span>
                         )}
                         {parseFloat(r.rating) >= 4.5 && (
-                          <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#E65100" }}>🔥 인기</span>
+                          <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 50, background: "#FFF3E0", color: "#C2410C" }}>🔥 인기</span>
                         )}
                       </div>
 
                       {/* 대표메뉴 + 가격 */}
                       <div style={{ fontSize: 13, color: "#475569", marginBottom: 10, lineHeight: 1.6 }}>
                         🍽️ {r.menus && Array.isArray(r.menus) ? r.menus.join(", ") : '-'}
-                        {r.priceNote && r.walk && <span style={{ color: "#94a3b8" }}> · 💰 {r.priceNote}</span>}
+                        {r.priceNote && r.walk && <span style={{ color: "#64748b" }}> · 💰 {r.priceNote}</span>}
                       </div>
 
                       {/* 추천 이유 */}
@@ -1382,7 +1388,7 @@ export default function LunchRecommender() {
 
             {/* 나머지 로딩 중 표시 */}
             {!showAll && results.list.length > 3 && (
-              <div style={{ textAlign: "center", padding: "16px 0", color: "#94a3b8", fontSize: 13, fontWeight: 500 }}>
+              <div style={{ textAlign: "center", padding: "16px 0", color: "#64748b", fontSize: 13, fontWeight: 500 }}>
                 <span style={{ display: "inline-block", animation: "pulse 1.5s ease-in-out infinite" }}>✨ 나머지 추천도 곧 보여드릴게요...</span>
               </div>
             )}
@@ -1447,7 +1453,7 @@ export default function LunchRecommender() {
 
       {/* FOOTER */}
       <div style={{ background: "#1a1a2e", padding: "28px 20px", textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 12 }}>
-        <div style={{ marginBottom: 6, fontWeight: 500, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
+        <div style={{ marginBottom: 6, fontWeight: 500, fontSize: 13, color: "rgba(255,255,255,0.9)" }}>
           📍 KT 광화문 West·East 빌딩 반경 700m 실제 맛집
         </div>
         <div>
