@@ -535,6 +535,7 @@ export default function LunchRecommender() {
             matchCount, 
             isRecent, 
             rating,
+            moodMatched: matches[1], // 기분 매칭 여부 (해장/격식 필수 필터용)
             dietMatched: matches[3], // 식단 매칭 여부 (필수 필터용)
             score: totalScore, // 🎯 Phase B: 종합 점수 추가
             recommendReason 
@@ -544,9 +545,13 @@ export default function LunchRecommender() {
         // 🎯 3단계 필터링
         // 식단 조건 설정 시(채식/다이어트/가볍게), diet 미매칭 식당은 반드시 제외
         const hasDietFilter = selections.diet && selections.diet !== 'nodiet';
-        const candidates = hasDietFilter
-          ? withMatches.filter(r => r.dietMatched)
-          : withMatches;
+        // 해장/격식 선택 시, mood 미매칭 식당은 반드시 제외 (메뉴 적합성 최우선)
+        const hasMoodFilter = selections.mood && ['hangover', 'executive'].includes(selections.mood);
+        const candidates = withMatches.filter(r => {
+          if (hasDietFilter && !r.dietMatched) return false;
+          if (hasMoodFilter && !r.moodMatched) return false;
+          return true;
+        });
         
         // 1단계: 모든 조건 만족 (5개)
         let tier1 = candidates.filter(r => r.matchCount === 5);
