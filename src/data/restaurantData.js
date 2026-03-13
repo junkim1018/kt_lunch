@@ -2405,4 +2405,30 @@ export const restaurantDB = [
     naver: "https://map.naver.com/v5/search/띤띤+SFC",
     reservation: false,
   },
+
+  // ── 🆕 5차 확장: 추가 맛집 ─────────────────────────────
+
+  {
+    name: "엄용백 돼지국밥 종각점",
+    category: "한식 · 돼지국밥",
+    cuisine: "korean",
+    coords: { lat: 37.5719, lng: 126.9858 },
+    menus: ["맑은 엄용백 돼지국밥 13,000원", "진한 엄용백 돼지국밥 13,000원", "부산식 돼지국밥(맑은 국물) 13,000원", "항정·가브리살 수육과 간장국수 18,000원"],
+    price: "13,000~39,000원",
+    priceNote: "1인 평균 1.5만원",
+    walk: "도보 8분 (인사동3길 20)",
+    rating: "4.6",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["cold","rainy","mild"],
+    mood: ["hangover","hearty","executive","team"],
+    people: ["solo","small","medium","large"],
+    budget: ["normal"],
+    waiting: true,
+    coords: { lat: 37.5719, lng: 126.9858 },
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "SBS 생활의 달인 부산식수육 달인 출연. 인사동 한옥 분위기에서 정갈한 돼지국밥. 맑은/진한 두 가지 스타일. 리뷰 1,800+개의 검증된 맛집.",
+    naver: "https://map.naver.com/v5/search/엄용백+돼지국밥+인사동",
+    reservation: [],
+  },
 ];
