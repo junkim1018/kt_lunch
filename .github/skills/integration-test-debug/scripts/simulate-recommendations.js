@@ -51,14 +51,17 @@ function matchMood(r, mood) {
   
   if (mood === 'hangover') {
     const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('hangover');
-    const hasCat = r.category && (r.category.includes('국밥') || r.category.includes('해장') || 
-      r.category.includes('탕') || r.category.includes('찌개') || r.category.includes('국'));
-    return hasMoodTag || hasCat;
+    const hasHangoverCategory = r.category && 
+      /(국밥|순대국|해장국|해장|육개장|감자탕|뼈다귀|곰탕|설렁탕|탕|찌개)/.test(r.category);
+    return hasMoodTag || hasHangoverCategory;
   }
   
   if (mood === 'executive') {
     const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('executive');
-    return hasMoodTag || r.ribbon || (r.budget && Array.isArray(r.budget) && r.budget.includes('expensive'));
+    const isUpscale = r.ribbon || (r.budget && Array.isArray(r.budget) && r.budget.includes('expensive'));
+    const category = r.category || '';
+    const isCasual = /(순대|분식|떡볶이|김밥|국밥|백반|푸드코트)/.test(category);
+    return hasMoodTag || (isUpscale && !isCasual);
   }
   
   if (mood === 'team') {
@@ -94,7 +97,8 @@ function matchMood(r, mood) {
       category.includes('삼겹') || category.includes('돈까스') || category.includes('카츠') ||
       category.includes('육') || category.includes('불고기') || category.includes('곱창');
     const isHighCal = r.calorie && r.calorie.label === '고칼로리';
-    return hasMoodTag || isHearty || isHighCal;
+    const isCafeOrBrunch = /(카페|디저트|브런치|팬케이크|베이커리|빵)/.test(category);
+    return hasMoodTag || isHearty || (isHighCal && !isCafeOrBrunch);
   }
   
   if (mood === 'stressed') {
@@ -106,9 +110,7 @@ function matchMood(r, mood) {
       category.includes('떡볶이') || category.includes('닭갈비') ||
       category.includes('곱창') || category.includes('삼겹');
     const hasSpicyMenu = /매운|불닭|마라|떡볶이|쭈꾸미|닭발|엽기/.test(menuText);
-    const isComfort = r.mood && Array.isArray(r.mood) && 
-      (r.mood.includes('hearty') || r.mood.includes('great'));
-    return hasMoodTag || isStressRelief || hasSpicyMenu || isComfort;
+    return hasMoodTag || isStressRelief || hasSpicyMenu;
   }
   
   // 나머지 mood: 직접 매칭 (safe 등)

@@ -49,6 +49,11 @@ body {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -333,4 +338,30 @@ body {
 
 .loading-dot:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+/* ============================================
+   ♿ Accessibility (a11y)
+   ============================================ */
+
+/* Focus-visible: 키보드 포커스 시 아웃라인 표시 */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 모션 감소 선호 사용자 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

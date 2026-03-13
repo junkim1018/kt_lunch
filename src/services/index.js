@@ -16,9 +16,22 @@ export {
   recommendationService 
 } from './RecommendationService.js';
 
-// LLM 서비스
-export { 
-  LLMService, 
-  llmService,
-  createLLMService 
-} from './LLMService.js';
+// 점수 계산 서비스
+export {
+  getTimeContextScore,
+  calculateMMRScore
+} from './ScoringService.js';
+
+// 피드백 서비스
+export {
+  getUserFeedback,
+  saveFeedback,
+  getFeedbackScore
+} from './FeedbackService.js';
+
+// 개인화 서비스
+export {
+  getVisitHistory,
+  saveVisit,
+  getPersonalizationScore
+} from './PersonalizationService.js';
