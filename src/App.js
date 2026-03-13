@@ -657,12 +657,23 @@ export default function LunchRecommender() {
           // TOP 3 + 4~10위 즉시 표시
           const finalList = final.slice(0, 10);
 
-          // 점수를 100점 만점으로 정규화
+          // 점수를 100점 만점으로 정규화 (순위 순서와 일치하도록)
           const maxScore = Math.max(...finalList.map(r => r.score || 0), 1);
-          const normalizedList = finalList.map(r => ({
-            ...r,
-            score100: Math.min(100, Math.round(((r.score || 0) / maxScore) * 100))
-          }));
+          const normalizedList = finalList.map((r, idx) => {
+            // 원래 점수 기반 정규화
+            const rawScore100 = Math.min(100, Math.round(((r.score || 0) / maxScore) * 100));
+            // 순위에 맞게 보정: 앞 순위보다 높지 않도록
+            return {
+              ...r,
+              score100: rawScore100
+            };
+          });
+          // 순위 순서 보정: 앞 순위보다 높으면 앞 순위와 같게 조정
+          for (let idx = 1; idx < normalizedList.length; idx++) {
+            if (normalizedList[idx].score100 > normalizedList[idx - 1].score100) {
+              normalizedList[idx].score100 = normalizedList[idx - 1].score100;
+            }
+          }
 
           setShowAll(false);
           setFeedbackGiven({});
