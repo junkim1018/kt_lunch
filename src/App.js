@@ -59,16 +59,55 @@ export default function LunchRecommender() {
     return () => clearInterval(t);
   }, []);
 
-  // 빠른 추천 버튼을 섞는 함수
+  // 빠른 추천 버튼을 섞는 함수 (현재 시간/계절에 맞게 필터링)
   const shuffleQuickPresets = () => {
-    const shuffled = [...QUICK_PRESETS];
-    // Fisher-Yates shuffle 알고리즘
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    const now = new Date();
+    const hour = now.getHours();
+    const month = now.getMonth() + 1;
+
+    // 현재 계절에 맞는 날씨 판단
+    let currentWeather = 'mild';
+    if (month >= 6 && month <= 8) currentWeather = 'hot';
+    else if (month >= 12 || month <= 2) currentWeather = 'cold';
+
+    // 프리셋의 날씨를 현재 날씨로 덮어쓰기 (비/해장 등 날씨 고정 프리셋 제외)
+    const weatherFixed = new Set(['rainy']);
+    const adjusted = QUICK_PRESETS.map(p => {
+      if (weatherFixed.has(p.settings.weather)) return p;
+      return { ...p, settings: { ...p.settings, weather: currentWeather } };
+    });
+
+    // 현재 시간대에 어울리는 프리셋 우선 (점심피크: 든든, 오후: 가볍게)
+    const preferred = new Set();
+    if (hour >= 11 && hour < 13) {
+      preferred.add('hearty'); preferred.add('team');
+    } else if (hour >= 14) {
+      preferred.add('safe'); preferred.add('sad');
     }
-    const selected = shuffled.slice(0, 4);
-    setQuickPresets(selected);
+    if (currentWeather === 'hot') preferred.add('safe');
+    if (currentWeather === 'cold') preferred.add('hearty');
+
+    // 우선 프리셋과 나머지를 분리
+    const priority = adjusted.filter(p => preferred.has(p.settings.mood));
+    const rest = adjusted.filter(p => !preferred.has(p.settings.mood));
+
+    // 각각 셔플
+    const shuffle = (arr) => {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    // 우선 프리셋에서 2개, 나머지에서 2개 선택 (부족하면 나머지에서 채움)
+    const picked = [...shuffle(priority).slice(0, 2), ...shuffle(rest).slice(0, 2)];
+    if (picked.length < 4) {
+      const extra = shuffle(rest).filter(p => !picked.includes(p));
+      picked.push(...extra.slice(0, 4 - picked.length));
+    }
+    setQuickPresets(shuffle(picked).slice(0, 4));
   };
 
   // 컴포넌트 마운트 시 빠른 추천 버튼 랜덤 선택
