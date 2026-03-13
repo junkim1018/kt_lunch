@@ -676,10 +676,9 @@ export default function LunchRecommender() {
         }
 
       } catch(e) {
-        console.error('❌ [추천 오류]', e);
         setResults({ 
-          list: restaurantDB.sort(() => Math.random() - 0.5).slice(0, 10), 
-          relaxedMsg: "⚠️ 오류가 발생해 랜덤으로 보여드려요" 
+          list: [], 
+          relaxedMsg: "⚠️ 추천 중 오류가 발생했어요. 조건을 변경하거나 다시 시도해주세요." 
         });
       }
       setStep("results");
