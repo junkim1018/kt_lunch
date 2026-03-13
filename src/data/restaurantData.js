@@ -22,7 +22,7 @@ export const restaurantDB = [
     reason: "KT West 건물 지하 바로! 블루리본·네이버 4.9. 옥수수피자 시그니처. 점심엔 웨이팅 필수.",
     naver: "https://map.naver.com/v5/search/파이프그라운드+광화문",
     reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/maison_pipeground", color: "#FF6B35" },
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/pipeground_gwanghwamun", color: "#FF6B35" },
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/파이프그라운드+광화문", color: "#03C75A" },
     ]
   },
@@ -508,7 +508,7 @@ export const restaurantDB = [
     budget: ["normal"],
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
     reason: "광화문 직장인 법무팀 차장이 극찬한 대만 본토 우육면. 진한 소고기 국물에 쫄깃한 면발. 뉴로미엔관과 함께 광화문 양대 우육면 맛집.",
-    naver: "https://map.naver.com/v5/search/우육면관+광화문",
+    naver: "https://map.naver.com/v5/search/진중+우육면관+광화문",
     reservation: []
   },
 
@@ -676,7 +676,7 @@ export const restaurantDB = [
     budget: ["normal","expensive"],
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
     reason: "🦐 어향동고(표고버섯+새우+어향소스) 시그니처 메뉴. 룸식당으로 회식·모임에 최적. 주차 가능. 방문자 리뷰 1,176개.",
-    naver: "https://map.naver.com/p/search/%EC%9D%BC%EC%9D%BC%ED%96%A5/place/1784877604",
+    naver: "https://map.naver.com/v5/search/일일향+광화문점",
     reservation: []
   },
 
@@ -1174,7 +1174,7 @@ export const restaurantDB = [
     budget: ["normal"],
     calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
     reason: "망고플레이트 4.4점, 4만명 방문 희망! 꾸덕꾸덕 진한 간짜장 소스가 킥. 삼선간짜장·차돌짬뽕 모두 추천. 탕수육은 잡내 없이 바삭. 종각 직장인 짜장 생각날 때 1순위.",
-    naver: "https://map.naver.com/v5/search/홍성원+종각",
+    naver: "https://map.naver.com/v5/search/차이니즈키친홍성원+종각",
     reservation: []
   },
 
@@ -1948,7 +1948,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🔴", label: "고칼로리", color: "#e74c3c" },
     reason: "SFC몰 지하 전 좌석 프라이빗룸 한우 오마카세. 런치 A코스부터 접대·기념일·비즈니스 미팅에 최적. 콜키지 프리, 기념일 서비스 제공.",
-    naver: "https://map.naver.com/p/search/고우가%20광화문",
+    naver: "https://map.naver.com/v5/search/고우가+광화문",
     reservation: true,
   },
   {
@@ -1970,7 +1970,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "타워8빌딩 B2 고급 한정식. 전 좌석 룸으로 VIP 접대·상견례·비즈니스 런치에 최적. 궁중식 한상차림, 예약 권장.",
-    naver: "https://map.naver.com/p/search/진진수라%20광화문",
+    naver: "https://map.naver.com/v5/search/일품진진수라+광화문",
     reservation: true,
   },
   {
@@ -1992,7 +1992,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🔴", label: "높음", color: "#e74c3c" },
     reason: "미국 3대 스테이크하우스 울프강의 광화문점. USDA 프라임 28일 드라이에이징 스테이크. 접대·기념일·특별한 날 최적. 런치코스 예약 필수.",
-    naver: "https://map.naver.com/p/search/울프강스테이크하우스광화문",
+    naver: "https://map.naver.com/v5/search/울프강+스테이크하우스+광화문",
     reservation: true,
   },
   {
@@ -2014,7 +2014,7 @@ export const restaurantDB = [
     waiting: true,
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "세종문화회관 지하 중식당. 수요미식회·맛있는녀석들 출연 탕수육 맛집. 점심 단품 2만원대부터 코스까지 다양. 단체·접대·모임에 적합.",
-    naver: "https://map.naver.com/p/search/친니광화문",
+    naver: "https://map.naver.com/v5/search/친니+광화문",
     reservation: true,
   },
   {
@@ -2036,7 +2036,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "스시산원 4번째 브랜드 광화문점. 산지 직송 자연산 수산물 오마카세. 런치 6만원으로 미들급 오마카세 중 가성비 우수. 다찌 좌석 구성.",
-    naver: "https://map.naver.com/p/search/스시산원궁광화문",
+    naver: "https://map.naver.com/v5/search/스시산원+궁+광화문",
     reservation: true,
   },
   {
@@ -2058,7 +2058,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "광화문 교보빌딩 2층의 30년 전통 정통 프렌치 레스토랑. 대사관·외교부·대기업 임직원 단골 맛집. 런치 코스 6~8만원으로 프라이빗한 비즈니스 점심·기념일에 최적.",
-    naver: "https://map.naver.com/p/search/라브리%20광화문",
+    naver: "https://map.naver.com/v5/search/라브리+광화문",
     reservation: true,
   },
   {
@@ -2080,7 +2080,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "화교 3대째 운영하는 60년 전통 정통 중화요리. 48시간 숙성 수제면, 직접 만든 소스가 특징. 룸 6개 완비로 회식·모임에 최적. 콜키지프리.",
-    naver: "https://map.naver.com/p/search/신승관%20광화문",
+    naver: "https://map.naver.com/v5/search/신승관+광화문",
     reservation: false,
   },
   {
@@ -2102,7 +2102,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🔴", label: "높음", color: "#e74c3c" },
     reason: "미국식 멕시칸 레스토랑 체인. 시즐링 파히타와 나초가 시그니처. 넓은 홀과 경쾌한 분위기로 팀 회식이나 친구 모임에 좋음.",
-    naver: "https://map.naver.com/p/search/온더보더%20광화문D타워",
+    naver: "https://map.naver.com/v5/search/온더보더+광화문+디타워",
     reservation: false,
   },
   {
@@ -2124,7 +2124,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "가성비 좋은 멕시칸 타코 전문점. 신선한 재료와 빠른 서빙. 혼밥하기 좋고 테이크아웃도 인기.",
-    naver: "https://map.naver.com/p/search/타코챔피언%20광화문",
+    naver: "https://map.naver.com/v5/search/타코챔피언+광화문",
     reservation: false,
   },
   {
@@ -2146,7 +2146,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "신선한 재료로 만드는 건강한 멕시칸. 채소가 풍부하고 깔끔한 맛. 테이크아웃도 가능.",
-    naver: "https://map.naver.com/p/search/쿠차라%20광화문",
+    naver: "https://map.naver.com/v5/search/쿠차라+광화문",
     reservation: false,
   },
   {
@@ -2168,7 +2168,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "신선한 재료로 만드는 건강한 멕시칸. 채소가 풍부하고 깔끔한 맛. 테이크아웃도 가능.",
-    naver: "https://map.naver.com/p/search/쿠차라%20SFC",
+    naver: "https://map.naver.com/v5/search/쿠차라+SFC",
     reservation: false,
   },
   {
@@ -2190,7 +2190,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "정통 인도 커리 전문점. 버터치킨과 탄두리가 시그니처. 갓 구운 난과 향신료 가득한 커리로 이국적인 점심 경험.",
-    naver: "https://map.naver.com/p/search/옴레스토랑%20광화문",
+    naver: "https://map.naver.com/v5/search/옴레스토랑+광화문",
     reservation: false,
   },
   {
@@ -2212,7 +2212,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "정통 인도 커리와 난. 진한 향신료와 깊은 맛이 특징. 네이버 예약시 할인 쿠폰 제공.",
-    naver: "https://map.naver.com/p/search/두르가%20광화문",
+    naver: "https://map.naver.com/v5/search/두르가+광화문",
     reservation: true,
   },
   {
@@ -2234,7 +2234,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9835 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "정통 인도 커리 전문점. 버터치킨과 비리야니가 인기. 휠체어 출입 가능한 접근성 좋은 인도 레스토랑.",
-    naver: "https://map.naver.com/p/search/강가%20무교점",
+    naver: "https://map.naver.com/v5/search/강가+무교점",
     reservation: false,
   },
   {
@@ -2255,7 +2255,7 @@ export const restaurantDB = [
     coords: { lat: 37.5706, lng: 126.9832 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "스타필드 애비뉴 그랑서울에 위치한 태국 커리 전문점. 팟타이와 똠얌꿍이 인기. 휠체어 접근 가능한 쾌적한 분위기.",
-    naver: "https://map.naver.com/p/search/크루아타이커진%20스타필드",
+    naver: "https://map.naver.com/v5/search/크루아타이커진+스타필드+그랑서울",
     reservation: true,
   },
   {
@@ -2276,7 +2276,7 @@ export const restaurantDB = [
     coords: { lat: 37.5706, lng: 126.9832 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "스타필드 애비뉴 그랑서울 내 베트남 레스토랑. 쌀국수와 분짜가 인기. 깔끔하고 모던한 분위기.",
-    naver: "https://map.naver.com/p/search/깐깐%20스타필드%20그랑서울",
+    naver: "https://map.naver.com/v5/search/깐깐+스타필드+그랑서울",
     reservation: false,
   },
   {
@@ -2297,7 +2297,7 @@ export const restaurantDB = [
     coords: { lat: 37.5688, lng: 126.9770 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "베트남음식 전문점. 쌀국수와 분짜가 인기 메뉴. 네이버 예약 시 음료 쿠폰 제공.",
-    naver: "https://map.naver.com/p/search/까몬%20광화문점",
+    naver: "https://map.naver.com/v5/search/까몬+광화문",
     reservation: true,
   },
   {
@@ -2318,7 +2318,7 @@ export const restaurantDB = [
     coords: { lat: 37.5710, lng: 126.9807 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "종로1가에 위치한 태국음식 전문점. 팟타이와 똠얌꿍 등 정통 태국 요리 제공.",
-    naver: "https://map.naver.com/p/search/쿠아타이푸드",
+    naver: "https://map.naver.com/v5/search/쿠아타이푸드+광화문",
     reservation: false,
   },
   {
@@ -2339,7 +2339,7 @@ export const restaurantDB = [
     coords: { lat: 37.5701, lng: 126.9768 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "광화문역 1번 출구 KT 광화문빌딩 지하 1층. 쌀국수와 똠양꿍이 인기. 현지 셰프의 정통 태국 요리.",
-    naver: "https://map.naver.com/p/search/니욤",
+    naver: "https://map.naver.com/v5/search/니욤+광화문",
     reservation: false,
   },
   {
@@ -2360,7 +2360,7 @@ export const restaurantDB = [
     coords: { lat: 37.5692, lng: 126.9771 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "광화문 아시아 음식 전문점. 다양한 동남아 요리 제공. 예약 가능.",
-    naver: "https://map.naver.com/p/search/생어거스틴%20광화문파이낸스점",
+    naver: "https://map.naver.com/v5/search/생어거스틴+광화문파이낸스",
     reservation: true,
   },
   {
@@ -2381,7 +2381,7 @@ export const restaurantDB = [
     coords: { lat: 37.5703, lng: 126.9779 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "광화문 뉴욕 스타일 베트남 음식점. 쌀국수와 반미 전문. 세련된 분위기.",
-    naver: "https://map.naver.com/p/search/반포식스%20광화문점",
+    naver: "https://map.naver.com/v5/search/반포식스+광화문",
     reservation: false,
   },
   {
@@ -2402,7 +2402,7 @@ export const restaurantDB = [
     coords: { lat: 37.5689, lng: 126.9778 },
     calorie: { emoji: "🟡", label: "보통", color: "#f39c12" },
     reason: "SFC몰 지하2층 베트남 음식점. 분짜와 쌀국수가 인기. 현지 느낌의 인테리어.",
-    naver: "https://map.naver.com/p/search/띤띤%20SFC",
+    naver: "https://map.naver.com/v5/search/띤띤+SFC",
     reservation: false,
   },
 ];
