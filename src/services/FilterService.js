@@ -83,11 +83,29 @@ export class FilterService {
 
     if (dietSelection === 'light') {
       // 가벼운 식사: light, diet, seafood 포함
-      return restaurants.filter(r => 
+      const filtered = restaurants.filter(r => 
         r.diet.includes('light') || 
         r.diet.includes('diet') || 
         r.diet.includes('seafood')
       );
+
+      // 가벼운 식사에 어울리지 않는 고칼로리 카테고리 제외
+      const lightExcludeKeywords = [
+        '튀김', '치킨', '돈까스', '카츠', '텐동', '가라아게', '크리스피', '프라이',
+        '피자', '파스타', '버거', '햄버거',
+        '갈비', '구이', '석갈비', '삼겹살', '목살', '항정살',
+        '부대찌개', '떡볶이', '순대',
+        '무한리필', '뷔페',
+        '라멘', '라면',
+        '돌솥밥', '덮밥', '돈부리',
+        '설렁탕', '곰탕', '곰국', '육개장', '갈비탕',
+        '국밥', '수육'
+      ];
+
+      return filtered.filter(r => {
+        const category = r.category || '';
+        return !lightExcludeKeywords.some(keyword => category.includes(keyword));
+      });
     }
 
     return restaurants;

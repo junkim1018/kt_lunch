@@ -431,7 +431,7 @@ export default function LunchRecommender() {
             } else if (r.calorie && r.calorie.label === '보통칼로리') {
               totalScore += 2;
             } else if (r.calorie && r.calorie.label === '고칼로리') {
-              totalScore -= 3; // 다이어트인데 고칼로리면 감점
+              totalScore -= 15; // 다이어트인데 고칼로리면 강한 감점
             }
           }
           
