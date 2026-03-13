@@ -394,23 +394,29 @@ export default function LunchRecommender() {
             totalScore += 10;
           }
           
-          // 💰 예산 근접도 보너스 (최대 8점) - 예산과의 거리 기반 계단식 점수
+          // 💰 예산 근접도 보너스/페널티 - 예산과의 거리 기반 계단식 점수
           const parsed = parsePriceRange(r);
-          if (parsed && matches[4]) { // 예산 매칭된 경우만
+          if (parsed) {
             const { min } = parsed;
             const comparablePrice = min; // 최소가(실제 이용가능 가격) 기준
             const budgetDiff = Math.abs(comparablePrice - budgetNum);
             
-            if (comparablePrice <= budgetNum) {
-              // 예산 이하: 차이가 적을수록 고점수
-              if (budgetDiff < 2000) totalScore += 8;      // 거의 딱 맞음
-              else if (budgetDiff < 5000) totalScore += 5;  // 적당히 여유
-              else totalScore += 2;                         // 지나치게 저렴
+            if (matches[4]) { // 예산 매칭된 경우
+              if (comparablePrice <= budgetNum) {
+                // 예산 이하: 차이가 적을수록 고점수
+                if (budgetDiff < 2000) totalScore += 8;      // 거의 딱 맞음
+                else if (budgetDiff < 5000) totalScore += 5;  // 적당히 여유
+                else totalScore += 2;                         // 지나치게 저렴
+              } else {
+                // 예산 약간 초과 (허용 범위 내)
+                if (budgetDiff < 2000) totalScore += 3;       // 약간 초과, 허용
+                else totalScore -= 3;                         // 허용 범위 끝자락
+              }
             } else {
-              // 예산 초과: 초과분에 비례해 감점
-              if (budgetDiff < 2000) totalScore += 3;       // 약간 초과, 허용
-              else if (budgetDiff < 5000) totalScore -= 3;  // 부담스러운 초과
-              else totalScore -= Math.min(Math.round(budgetDiff / 1000), 10); // 최대 -10점
+              // 예산 미매칭: 초과 금액에 비례해 강한 감점
+              if (budgetDiff < 5000) totalScore -= 10;        // 약간 벗어남
+              else if (budgetDiff < 10000) totalScore -= 20;  // 상당히 벗어남
+              else totalScore -= 30;                          // 크게 벗어남 (사실상 추천 제외)
             }
           }
           
