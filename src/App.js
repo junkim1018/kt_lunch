@@ -504,12 +504,16 @@ export default function LunchRecommender() {
         // 🎯 Phase B: 글로벌 점수 기반 정렬 (티어 간 경계 제거)
         // Tier2 고점수가 Tier1 저점수보다 우선되도록 글로벌 정렬
         let allCandidates = [...tier1, ...tier2, ...tier3];
+        
+        // 🎲 랜덤 가중치: 동점대 식당 순서를 매번 다르게 (±8점 범위 셔플)
+        const jitter = () => (Math.random() - 0.5) * 16;
+        
         allCandidates.sort((a, b) => {
           // 매칭 수 가중치 + 점수 통합 정렬
           const tierBonusA = a.matchCount >= 5 ? 15 : a.matchCount >= 3 ? 5 : 0;
           const tierBonusB = b.matchCount >= 5 ? 15 : b.matchCount >= 3 ? 5 : 0;
-          const scoreA = a.score + tierBonusA;
-          const scoreB = b.score + tierBonusB;
+          const scoreA = a.score + tierBonusA + jitter();
+          const scoreB = b.score + tierBonusB + jitter();
           if (a.isRecent !== b.isRecent) return a.isRecent ? 1 : -1;
           return scoreB - scoreA;
         });
