@@ -1015,7 +1015,7 @@ export const restaurantDB = [
     budget: ["normal"],
     calorie: { emoji: "🟢", label: "저칼로리", color: "#03C75A" },
     reason: "삼표 직원이 '전날 과음하고 가면 천상의 맛'이라 극찬한 생태탕 맛집. 생대구·생태 모두 신선하고 갓 한 밥이 정말 맛있는 광화문 해장 명소.",
-    naver: "https://map.naver.com/v5/search/부산식당+광화문+생태탕",
+    naver: "https://map.naver.com/v5/search/부산식당+종로+관훈동",
     reservation: []
   },
 
