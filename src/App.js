@@ -162,7 +162,7 @@ export default function LunchRecommender() {
       weather,
       mood,
       people: 2,
-      diet: selections.diet !== 'nodiet' ? selections.diet : 'nodiet',
+      diet: 'nodiet',
       budget: 15000,
     };
 
@@ -545,14 +545,14 @@ export default function LunchRecommender() {
         let allCandidates = [...tier1, ...tier2, ...tier3];
         
         // 🎲 랜덤 가중치: 동점대 식당 순서를 매번 다르게 (±8점 범위 셔플)
-        const jitter = () => (Math.random() - 0.5) * 16;
+        allCandidates.forEach(r => { r._jitter = (Math.random() - 0.5) * 16; });
         
         allCandidates.sort((a, b) => {
           // 매칭 수 가중치 + 점수 통합 정렬
           const tierBonusA = a.matchCount >= 5 ? 15 : a.matchCount >= 3 ? 5 : 0;
           const tierBonusB = b.matchCount >= 5 ? 15 : b.matchCount >= 3 ? 5 : 0;
-          const scoreA = a.score + tierBonusA + jitter();
-          const scoreB = b.score + tierBonusB + jitter();
+          const scoreA = a.score + tierBonusA + a._jitter;
+          const scoreB = b.score + tierBonusB + b._jitter;
           if (a.isRecent !== b.isRecent) return a.isRecent ? 1 : -1;
           return scoreB - scoreA;
         });
@@ -1002,11 +1002,7 @@ export default function LunchRecommender() {
                   <button
                     key={idx}
                     onClick={() => {
-                      const newSettings = {
-                        ...preset.settings,
-                        diet: selections.diet !== 'nodiet' ? selections.diet : preset.settings.diet,
-                      };
-                      setSelections(newSettings);
+                      setSelections(preset.settings);
                     }}
                     style={{
                       background: "#f8fafc",
