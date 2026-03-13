@@ -229,7 +229,7 @@ export const restaurantDB = [
     ribbon: false,
     diet: ["nodiet"],
     weather: ["mild","cold","rainy"],
-    mood: ["team","hearty"],
+    mood: ["executive","team","hearty"],
     people: ["small","medium","large"],
     budget: ["expensive"],
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
