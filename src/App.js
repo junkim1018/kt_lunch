@@ -215,7 +215,7 @@ export default function LunchRecommender() {
             if (isInappropriate) return false;
             // 2단계: 해장 카테고리 또는 mood 태그 매칭
             const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('hangover');
-            const hasHangoverCategory = /(국밥|순대국|해장국|해장|육개장|감자탕|뼈다귀|곰탕|설렁탕|갈비탕|닭볶음탕|매운탕|추어탕|삼계탕|찌개|짬봉|쌀국수)/.test(category);
+            const hasHangoverCategory = /(국밥|순대국|해장국|해장|육개장|감자탕|뼈다귀|곰탕|설렁탕|갈비탕|닭볶음탕|매운탕|추어탕|삼계탕|찌개|짬봉|쌀국수|라면|분식)/.test(category);
             return hasMoodTag || hasHangoverCategory;
           }
           
