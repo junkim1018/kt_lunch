@@ -462,17 +462,32 @@ export default function LunchRecommender() {
           // 📝 추천 이유 동적 생성
           const reasons = [];
           
-          // 해장/격식/다이어트/가볍게: mood/diet 이유를 최우선 배치
-          const moodFirst = isMoodCritical || isDietCritical;
+          // 순서 결정: 해장/격식 → mood 먼저, 다이어트/가볍게/채식 → diet 먼저
+          const moodFirst = isMoodCritical;
+          const dietFirst = !isMoodCritical && isDietCritical;
+          const normalOrder = !moodFirst && !dietFirst;
           
-          if (!moodFirst && matches[0]) { // weather (일반일 때만 먼저)
+          // ── 1순위 이유 ──
+          if (moodFirst && matches[1]) { // 해장/격식: mood 이유가 최우선
+            if (selections.mood === 'hangover') reasons.push('💊 해장에 최고');
+            else if (selections.mood === 'executive') reasons.push('🤵 격식있는 자리에 적합');
+          }
+          
+          if (dietFirst && matches[3]) { // 다이어트/가볍게/채식: diet 이유가 최우선
+            if (selections.diet === 'vegetarian') reasons.push('🥗 채식 메뉴 가능');
+            else if (selections.diet === 'diet') reasons.push('🏃 다이어트 추천');
+            else if (selections.diet === 'light') reasons.push('🍃 가볍게 먹기 좋음');
+          }
+          
+          // ── 2순위 이유 ──
+          if (normalOrder && matches[0]) { // 일반: 날씨가 먼저
             if (selections.weather === 'hot') reasons.push('🌡️ 더운 날 딱 맞는 메뉴');
             else if (selections.weather === 'cold') reasons.push('❄️ 추운 날 몸 녹이기 좋은 메뉴');
             else if (selections.weather === 'rainy') reasons.push('☔ 비 오는 날 생각나는 메뉴');
             else if (selections.weather === 'mild') reasons.push('🌤️ 선선한 날씨에 제격');
           }
           
-          if (matches[1]) { // mood — 해장/격식일 때 가장 먼저
+          if (!moodFirst && matches[1]) { // mood (해장/격식 아닐 때)
             if (selections.mood === 'hangover') reasons.push('💊 해장에 최고');
             else if (selections.mood === 'executive') reasons.push('🤵 격식있는 자리에 적합');
             else if (selections.mood === 'team') reasons.push('👥 팀 점심으로 추천');
@@ -489,13 +504,13 @@ export default function LunchRecommender() {
             else if (peopleCategory === 'large') reasons.push('👨‍👩‍👧‍👦 단체 손님 환영');
           }
           
-          if (matches[3] && selections.diet !== 'nodiet') { // diet — 다이어트/가볍게일 때 우선
+          if (!dietFirst && matches[3] && selections.diet !== 'nodiet') { // diet (식단이 1순위 아닐 때)
             if (selections.diet === 'vegetarian') reasons.push('🥗 채식 메뉴 가능');
             else if (selections.diet === 'diet') reasons.push('🏃 다이어트 추천');
             else if (selections.diet === 'light') reasons.push('🍃 가볍게 먹기 좋음');
           }
           
-          if (moodFirst && matches[0]) { // weather (해장/다이어트일 때는 뒤로)
+          if (!normalOrder && matches[0]) { // weather (해장/식단관리일 때 뒤로)
             if (selections.weather === 'hot') reasons.push('🌡️ 더운 날 딱 맞는 메뉴');
             else if (selections.weather === 'cold') reasons.push('❄️ 추운 날 몸 녹이기 좋은 메뉴');
             else if (selections.weather === 'rainy') reasons.push('☔ 비 오는 날 생각나는 메뉴');
