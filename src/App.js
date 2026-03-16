@@ -294,6 +294,9 @@ export default function LunchRecommender() {
           // 정확히 매칭되거나
           if (r.people.includes(peopleCategory)) return true;
           
+          // solo(1명)는 정확 매칭만 허용 — 인접 매칭 비활성화
+          if (peopleCategory === 'solo') return false;
+          
           // 양방향 인접 카테고리 매칭 (1단계 차이까지 허용)
           const categoryMap = { 'solo': 0, 'small': 1, 'medium': 2, 'large': 3 };
           const userCat = categoryMap[peopleCategory];
