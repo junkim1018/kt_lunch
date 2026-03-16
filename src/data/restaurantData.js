@@ -1407,7 +1407,7 @@ export const restaurantDB = [
     reason: "🥢 압구정 맛집 보보식당이 KT West 입성! 동파육·마라가지튀김 폭발적 인기. 평점 4.6★ KT West 중식 대표주자.",
     naver: "https://map.naver.com/v5/search/보보식당+광화문",
     reservation: [
-      { label: "캐치테이블 예약", url: "https://app.catchtable.co.kr/ct/shop/bobo", color: "#FF6B35" }
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/bobo", color: "#FF6B35" }
     ]
   },
   {
@@ -1523,7 +1523,7 @@ export const restaurantDB = [
     reason: "🍢 이자카야 분위기에 야키토리·가라아게. 회식·소모임에 최적. 디타워 특유의 테라스 분위기에서 하이볼 한 잔.",
     naver: "https://map.naver.com/v5/search/야마야+광화문+디타워",
     reservation: [
-      { label: "캐치테이블 예약", url: "https://app.catchtable.co.kr/ct/shop/yamaya_ghm", color: "#FF6B35" }
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/yamaya_ghm", color: "#FF6B35" }
     ]
   },
   {
@@ -2683,7 +2683,9 @@ export const restaurantDB = [
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#FFA500" },
     reason: "삼청동 한옥에서 즐기는 이탈리안 파인다이닝. 넓은 마당과 개별 룸으로 접대·기념일·팀 모임에 최적. 화덕피자·봉골레파스타·한우스테이크 인기. 발렛파킹 가능. 예약 추천.",
     naver: "https://map.naver.com/v5/search/스미스가좋아하는한옥",
-    reservation: [],
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/smith", color: "#FF6B35" }
+    ],
   },
   {
     name: "더 키친 일뽀르노 광화문점",
@@ -2705,7 +2707,9 @@ export const restaurantDB = [
     calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
     reason: "매일유업 운영 나폴리식 이탈리안 세미뷔페. 세계 피자대회 2위 화덕피자 + 파스타·샐러드·디저트 무한리필. 넓은 매장·테라스로 팀 회식·모임에 최적. 식약처 위생등급 매우우수. 주차 3시간 무료.",
     naver: "https://map.naver.com/v5/search/더키친일뽀르노+광화문점",
-    reservation: [],
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/the_kitchen_ilforno_khm", color: "#FF6B35" }
+    ],
   },
   {
     name: "봉추찜닭 광화문점",
@@ -2727,7 +2731,9 @@ export const restaurantDB = [
     calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
     reason: "광화문 직장인 찜닭 맛집. 넙적한 당면과 바삭 누룽지가 시그니처. 콜키지 무료. 넓은 매장으로 팀 점심·회식에 최적. 맛·양·가격 모두 만족.",
     naver: "https://map.naver.com/v5/search/봉추찜닭+광화문점",
-    reservation: [],
+    reservation: [
+      { label: "네이버 예약", url: "https://m.booking.naver.com/booking/6/bizes/680808/search", color: "#03C75A" }
+    ],
   },
   {
     name: "심퍼티쿠시 광화문점",
