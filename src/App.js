@@ -366,13 +366,11 @@ export default function LunchRecommender() {
           
           const { min, max } = parsed;
           
-          // 예산이 최소값 이상이고 최소값이 예산의 2배 이내면 매칭
-          // (최소 메뉴가 예산 안에 있어도, 대부분 메뉴가 훨씬 비싸면 제외)
+          // 30,000+는 "3만원 이상" = 상한 없음 → 모든 식당 매칭
+          if (budgetNum >= 30000) return true;
+          
+          // 예산이 최소값 이상이면 매칭
           if (budgetNum >= min) {
-            // 최소가가 예산 범위 내 + 최대가가 예산의 2.5배 이하면 OK
-            if (max <= budgetNum * 2.5) return true;
-            // 최대가가 너무 높아도, 최소가가 예산의 80% 이상이면 OK (적절한 메뉴 있음)
-            if (min >= budgetNum * 0.5) return true;
             return true;
           }
           
