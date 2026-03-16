@@ -265,6 +265,11 @@ export default function LunchRecommender() {
         // ✅ 조건 매칭 함수들
         const matchWeather = (r) => {
           if (!selections.weather) return false;
+          // 추운 날 샐러드/포케 카테고리 강제 제외
+          if (selections.weather === 'cold') {
+            const cat = r.category || '';
+            if (/(샐러드|포케|요거트|그릭요거트)/.test(cat)) return false;
+          }
           const hasTag = r.weather && Array.isArray(r.weather) && r.weather.includes(selections.weather);
           if (hasTag) return true;
           // 태그 없어도 메뉴/카테고리로 매칭

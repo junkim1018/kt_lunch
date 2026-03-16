@@ -1259,7 +1259,7 @@ export const restaurantDB = [
     rating: "4.4",
     ribbon: false,
     diet: ["vegetarian","light","diet"],
-    weather: ["hot","mild","cold","rainy"],
+    weather: ["hot","mild","rainy"],
     mood: ["safe"],
     people: ["solo","small"],
     budget: ["cheap","normal"],
