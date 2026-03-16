@@ -2773,7 +2773,7 @@ export const restaurantDB = [
     ribbon: false,
     diet: ["vegetarian","light","diet"],
     weather: ["hot","mild","cold","rainy"],
-    mood: ["executive","safe"],
+    mood: ["executive","safe","team"],
     people: ["small","medium","large"],
     budget: ["expensive"],
     waiting: false,
