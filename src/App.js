@@ -595,9 +595,12 @@ export default function LunchRecommender() {
         const hasDietFilter = selections.diet && selections.diet !== 'nodiet';
         // 해장/격식 선택 시, mood 미매칭 식당은 반드시 제외 (메뉴 적합성 최우선)
         const hasMoodFilter = selections.mood && ['hangover', 'executive'].includes(selections.mood);
+        // 채식선호 시 채식 식당이 10개뿐이므로, 식단 매칭되면 예산/인원 필터 면제
+        const isVegetarianFilter = selections.diet === 'vegetarian';
         const candidates = withMatches.filter(r => {
-          if (!r.peopleMatched) return false;
-          if (!r.budgetMatched) return false;
+          const vegPass = isVegetarianFilter && r.dietMatched;
+          if (!r.peopleMatched && !vegPass) return false;
+          if (!r.budgetMatched && !vegPass) return false;
           if (hasDietFilter && !r.dietMatched) return false;
           if (hasMoodFilter && !r.moodMatched) return false;
           return true;
