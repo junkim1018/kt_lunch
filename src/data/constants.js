@@ -71,4 +71,6 @@ export const QUICK_PRESETS = [
   { emoji: '🍜', label: '혼자 간단하게', settings: { weather: 'mild', mood: 'safe', people: 1, diet: 'nodiet', budget: 10000 } },
   { emoji: '🥘', label: '든든한 한 끼', settings: { weather: 'mild', mood: 'hearty', people: 2, diet: 'nodiet', budget: 15000 } },
   { emoji: '🌿', label: '채식 점심', settings: { weather: 'mild', mood: 'safe', people: 1, diet: 'vegetarian', budget: 15000 } },
+  { emoji: '🦪', label: '겨울 굴국밥', settings: { weather: 'cold', mood: 'hearty', people: 2, diet: 'nodiet', budget: 12000 } },
+  { emoji: '🍲', label: '이북식 탕반', settings: { weather: 'cold', mood: 'safe', people: 1, diet: 'nodiet', budget: 12000 } },
 ];

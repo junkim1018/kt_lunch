@@ -491,28 +491,6 @@ export const restaurantDB = [
   },
 
   {
-    name: "진중 우육면관 광화문점",
-    category: "중식 · 대만식 우육면",
-    cuisine: "chinese",
-    coords: { lat: 37.572, lng: 126.988 },
-    menus: ["우육면 14,000원", "반근 14,000원", "수제 군만두 7,000원"],
-    price: "12,000~16,000원",
-    priceNote: "1인 평균 1만원",
-    walk: "도보 6분 (청진동 39)",
-    rating: "4.6",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["team"],
-    people: ["solo","small"],
-    budget: ["normal"],
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 직장인 법무팀 차장이 극찬한 대만 본토 우육면. 진한 소고기 국물에 쫄깃한 면발. 뉴로미엔관과 함께 광화문 양대 우육면 맛집.",
-    naver: "https://map.naver.com/v5/search/진중+우육면관+광화문",
-    reservation: []
-  },
-
-  {
     name: "금금 스타필드애비뉴 그랑서울점",
     category: "한식 · 한식 기반 솥밥/덮밥",
     cuisine: "korean",
@@ -2556,6 +2534,7 @@ export const restaurantDB = [
   {
     name: "이타마에스시 광화문디타워점",
     category: "일식 · 정통 에도마에 스시",
+    cuisine: "japanese",
     price: "25,000~58,000원",
     priceNum: [25000, 58000],
     priceNote: "런치특선 히비 2.5만/이로도리 2.9만/오마카세 3.3만, 혼마구로세트 5.5만, 극상니기리 5.8만",
@@ -2578,6 +2557,7 @@ export const restaurantDB = [
   {
     name: "멜팅샵X치즈룸 광화문디타워점",
     category: "양식 · 이탈리안/치즈 레스토랑",
+    cuisine: "western",
     price: "21,000~35,000원",
     priceNum: [21000, 35000],
     priceNote: "카프레제파스타 2.1만, 보드카리가토니 2.4만, 트러플파케리 2.6만, 발사믹관자 2.9만, 소고기찜리조또 3.5만",
@@ -2600,6 +2580,7 @@ export const restaurantDB = [
   {
     name: "멘츠루 종로점",
     category: "일식 · 시오라멘/쇼유라멘",
+    cuisine: "japanese",
     price: "12,000~15,000원",
     priceNum: [12000, 15000],
     priceNote: "시오/쇼유라멘 1.2만, 토리파이탄/아부라소바 1.3만, 모츠라멘(곱창) 1.5만, 규동 1.2만",
@@ -2622,6 +2603,7 @@ export const restaurantDB = [
   {
     name: "온센 광화문점",
     category: "일식 · 텐동(튀김덮밥) 전문",
+    cuisine: "japanese",
     price: "9,900~16,900원",
     priceNum: [9900, 16900],
     priceNote: "버섯텐동 9,900, 온센텐동 10,900, 에비텐동 14,900, 이까텐동 15,900, 아나고텐동 16,900",
@@ -2843,8 +2825,8 @@ export const restaurantDB = [
     rating: "4.5",
     ribbon: false,
     diet: ["nodiet"],
-    weather: ["cold","rainy"],
-    mood: ["safe","hangover"],
+    weather: ["cold","rainy","mild"],
+    mood: ["safe","hearty","hangover"],
     people: ["solo","small","medium"],
     budget: ["normal"],
     waiting: false,

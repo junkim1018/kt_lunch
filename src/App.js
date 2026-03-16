@@ -625,6 +625,7 @@ export default function LunchRecommender() {
             const dist = getDistance(KT_EAST_COORDS.lat, KT_EAST_COORDS.lng, r.coords.lat, r.coords.lng);
             if (dist < 150) reasons.push('🚶 도보 2분 이내');
             else if (dist < 250) reasons.push('🚶 도보 5분 이내');
+            else if (dist >= 700) reasons.push('⚠️ 도보 12분+');
           }
           
           // 대기/칼로리 정보
