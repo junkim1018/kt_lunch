@@ -366,8 +366,15 @@ export default function LunchRecommender() {
           
           const { min, max } = parsed;
           
-          // 예산이 최소값 이상이면 매칭 (최소값 메뉴는 먹을 수 있음)
-          if (budgetNum >= min) return true;
+          // 예산이 최소값 이상이고 최소값이 예산의 2배 이내면 매칭
+          // (최소 메뉴가 예산 안에 있어도, 대부분 메뉴가 훨씬 비싸면 제외)
+          if (budgetNum >= min) {
+            // 최소가가 예산 범위 내 + 최대가가 예산의 2.5배 이하면 OK
+            if (max <= budgetNum * 2.5) return true;
+            // 최대가가 너무 높아도, 최소가가 예산의 80% 이상이면 OK (적절한 메뉴 있음)
+            if (min >= budgetNum * 0.5) return true;
+            return true;
+          }
           
           // 예산이 최소값보다 약간 부족해도 허용 (2,000원 또는 예산의 15% 중 큰 값)
           const tolerance = Math.max(2000, budgetNum * 0.15);
@@ -576,19 +583,21 @@ export default function LunchRecommender() {
             peopleMatched: matches[2], // 인원수 매칭 여부 (필수 필터)
             moodMatched: matches[1], // 기분 매칭 여부 (해장/격식 필수 필터용)
             dietMatched: matches[3], // 식단 매칭 여부 (필수 필터용)
+            budgetMatched: matches[4], // 예산 매칭 여부 (필수 필터)
             score: totalScore, // 🎯 Phase B: 종합 점수 추가
             recommendReason 
           };
         });
 
         // 🎯 3단계 필터링
-        // 인원수 조건은 항상 필수 (1명인데 단체식당 추천 방지)
+        // 인원수, 예산 조건은 항상 필수
         // 식단 조건 설정 시(채식/다이어트/가볍게), diet 미매칭 식당은 반드시 제외
         const hasDietFilter = selections.diet && selections.diet !== 'nodiet';
         // 해장/격식 선택 시, mood 미매칭 식당은 반드시 제외 (메뉴 적합성 최우선)
         const hasMoodFilter = selections.mood && ['hangover', 'executive'].includes(selections.mood);
         const candidates = withMatches.filter(r => {
           if (!r.peopleMatched) return false;
+          if (!r.budgetMatched) return false;
           if (hasDietFilter && !r.dietMatched) return false;
           if (hasMoodFilter && !r.moodMatched) return false;
           return true;
