@@ -376,8 +376,8 @@ export default function LunchRecommender() {
             return true;
           }
           
-          // 예산이 최소값보다 약간 부족해도 허용 (2,000원 또는 예산의 15% 중 큰 값)
-          const tolerance = Math.max(2000, budgetNum * 0.15);
+          // 예산이 최소값보다 약간 부족해도 허용 (2,000원 또는 예산의 20% 중 큰 값)
+          const tolerance = Math.max(2000, budgetNum * 0.20);
           if (min - budgetNum <= tolerance) return true;
           
           return false;
