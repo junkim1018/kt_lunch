@@ -1446,7 +1446,7 @@ export const restaurantDB = [
     diet: ["nodiet"],
     weather: ["mild"],
     mood: ["exciting","sad"],
-    people: ["solo","small"],
+    people: ["small"],
     budget: ["normal"],
     hot: true,
     calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
