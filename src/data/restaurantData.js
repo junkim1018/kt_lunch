@@ -2782,4 +2782,29 @@ export const restaurantDB = [
     naver: "https://map.naver.com/v5/search/발우공양",
     reservation: [],
   },
+
+  {
+    name: "진중 우육면관 광화문점",
+    category: "중식 · 대만식 우육면",
+    cuisine: "chinese",
+    coords: { lat: 37.5720, lng: 126.9812 },
+    menus: ["우육면 진 15,000원", "우육면 12,000원", "수교(물만두) 8,000원", "오이소채 3,000원"],
+    price: "12,000~15,000원",
+    priceNote: "1인 평균 1.3만원, 밥 무료 제공",
+    walk: "도보 5분 (종로구 종로7길 29-14)",
+    rating: "4.7",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["cold","rainy","mild"],
+    mood: ["safe","hearty","hangover"],
+    people: ["solo","small","medium","large"],
+    budget: ["normal"],
+    waiting: true,
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "🏅 미슐랭 빕구르망 5년 연속 선정. 진한 소고기 국물에 양지·아롱사태·업진살이 듬뿍 올라간 우육면이 대표 메뉴. 하루 70접시 한정 수교(물만두)도 필수. 1층 바테이블 혼밥, 2층 단체 모두 가능.",
+    naver: "https://map.naver.com/v5/search/진중+우육면관+광화문점",
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/niurouminaguan_ghm", color: "#FF6B35" }
+    ],
+  },
 ];
