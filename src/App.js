@@ -878,7 +878,7 @@ export default function LunchRecommender() {
   };
 
   const handleReset = () => {
-    setSelections({ weather: 'hot', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
+    setSelections({ weather: realWeatherRef.current || 'mild', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
     setResults({ list: [], relaxedMsg: null });
     recentSeen.current = []; // 제외 목록 초기화
     saveRecentSeen([]);
