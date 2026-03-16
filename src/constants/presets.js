@@ -58,7 +58,7 @@ export const QUICK_PRESETS = [
   { 
     emoji: '💼', 
     label: '임원과 점심', 
-    settings: { weather: 'mild', mood: 'executive', people: 3, diet: 'nodiet', budget: 25000 } 
+    settings: { weather: 'mild', mood: 'executive', people: 5, diet: 'nodiet', budget: 25000 } 
   },
   { 
     emoji: '🎉', 
