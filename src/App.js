@@ -34,7 +34,7 @@ function saveRecentSeen(names) {
 }
 
 export default function LunchRecommender() {
-  const [selections, setSelections] = useState({ weather: 'hot', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
+  const [selections, setSelections] = useState({ weather: 'mild', mood: 'safe', people: 2, diet: 'nodiet', budget: 15000 });
   const [results, setResults] = useState({ list: [], relaxedMsg: null });
   const [showAll, setShowAll] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null);
@@ -43,6 +43,8 @@ export default function LunchRecommender() {
   const pageTopRef = useRef(null);
   const [time, setTime] = useState("");
   const [step, setStep] = useState("form");
+  const [weatherInfo, setWeatherInfo] = useState(null); // 실시간 날씨 정보
+  const realWeatherRef = useRef(null); // 빠른 추천/프리셋용 실시간 날씨 캐시
   const [loadingDot, setLoadingDot] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [quickPresets, setQuickPresets] = useState([]);
@@ -59,16 +61,88 @@ export default function LunchRecommender() {
     return () => clearInterval(t);
   }, []);
 
-  // 빠른 추천 버튼을 섞는 함수 (현재 시간/계절에 맞게 필터링)
+  // 🌤️ Open-Meteo API로 실시간 날씨 가져오기 (광화문 좌표, key 불필요)
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const res = await fetch(
+          'https://api.open-meteo.com/v1/forecast?latitude=37.5716&longitude=126.9768&current_weather=true&timezone=Asia%2FSeoul'
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        const cw = data.current_weather;
+        if (!cw) return;
+
+        const temp = cw.temperature; // 현재 기온 (°C)
+        const code = cw.weathercode; // WMO 날씨 코드
+
+        // WMO 코드 → 앱 날씨 매핑
+        // 비: 51-67(이슬비/비), 80-82(소나기), 95-99(뇌우)
+        // 눈: 71-77(눈), 85-86(눈소나기) → cold로 처리
+        let weather = 'mild';
+        let description = '선선';
+        let emoji = '🌤️';
+
+        const isRain = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || (code >= 95 && code <= 99);
+        const isSnow = (code >= 71 && code <= 77) || (code >= 85 && code <= 86);
+
+        if (isRain) {
+          weather = 'rainy';
+          description = '비';
+          emoji = '🌧️';
+        } else if (isSnow) {
+          weather = 'cold';
+          description = '눈';
+          emoji = '❄️';
+        } else if (temp >= 28) {
+          weather = 'hot';
+          description = '더움';
+          emoji = '☀️';
+        } else if (temp <= 5) {
+          weather = 'cold';
+          description = '추움';
+          emoji = '🥶';
+        } else if (temp > 5 && temp < 15) {
+          weather = 'cold';
+          description = '쌀쌀';
+          emoji = '🧥';
+        } else {
+          weather = 'mild';
+          description = '선선';
+          emoji = '🌤️';
+        }
+
+        const info = { weather, temp: Math.round(temp), description, emoji, code };
+        setWeatherInfo(info);
+        realWeatherRef.current = weather;
+        // 날씨 자동 설정 (사용자가 아직 변경하지 않은 초기 상태)
+        setSelections(prev => ({ ...prev, weather }));
+      } catch {
+        // API 실패 시 계절 기반 폴백
+        const month = new Date().getMonth() + 1;
+        let weather = 'mild';
+        if (month >= 6 && month <= 8) weather = 'hot';
+        else if (month >= 12 || month <= 2) weather = 'cold';
+        realWeatherRef.current = weather;
+        setSelections(prev => ({ ...prev, weather }));
+      }
+    };
+    fetchWeather();
+  }, []);
+
+  // 빠른 추천 버튼을 섞는 함수 (실시간 날씨 + 시간대 기반)
   const shuffleQuickPresets = () => {
     const now = new Date();
     const hour = now.getHours();
-    const month = now.getMonth() + 1;
 
-    // 현재 계절에 맞는 날씨 판단
-    let currentWeather = 'mild';
-    if (month >= 6 && month <= 8) currentWeather = 'hot';
-    else if (month >= 12 || month <= 2) currentWeather = 'cold';
+    // 실시간 날씨 사용 (API 미응답 시 계절 폴백)
+    let currentWeather = realWeatherRef.current;
+    if (!currentWeather) {
+      const month = now.getMonth() + 1;
+      currentWeather = 'mild';
+      if (month >= 6 && month <= 8) currentWeather = 'hot';
+      else if (month >= 12 || month <= 2) currentWeather = 'cold';
+    }
 
     // 프리셋의 날씨를 현재 날씨로 덮어쓰기 (비/해장 등 날씨 고정 프리셋 제외)
     const weatherFixed = new Set(['rainy']);
@@ -131,11 +205,10 @@ export default function LunchRecommender() {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  // ⚡ 빠른 추천: 현재 날씨와 시간대를 고려한 자동 추천
+  // ⚡ 빠른 추천: 실시간 날씨와 시간대를 고려한 자동 추천
   const handleQuickRecommend = () => {
     const now = new Date();
     const hour = now.getHours();
-    const month = now.getMonth() + 1; // 0-based
 
     // 시간대 기반 기분 설정
     let mood = 'safe';
@@ -147,14 +220,13 @@ export default function LunchRecommender() {
       mood = 'safe'; // 늦은 시간: 간단한 식사
     }
 
-    // 계절 기반 날씨 설정
-    let weather = 'mild';
-    if (month >= 6 && month <= 8) {
-      weather = 'hot'; // 여름
-    } else if (month >= 12 || month <= 2) {
-      weather = 'cold'; // 겨울
-    } else if (month === 3 || month === 9 || month === 10 || month === 11) {
-      weather = 'mild'; // 봄/가을
+    // 실시간 날씨 사용 (API 미응답 시 계절 폴백)
+    let weather = realWeatherRef.current;
+    if (!weather) {
+      const month = now.getMonth() + 1;
+      weather = 'mild';
+      if (month >= 6 && month <= 8) weather = 'hot';
+      else if (month >= 12 || month <= 2) weather = 'cold';
     }
 
     // 빠른 추천 설정 적용
@@ -863,7 +935,7 @@ export default function LunchRecommender() {
           ⚡ 바로 추천받기
         </button>
         <div style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 12, fontWeight: 400, marginTop: 10, letterSpacing: 0.3 }}>
-          현재 날씨·시간 기반 자동 추천
+          {weatherInfo ? `${weatherInfo.emoji} ${weatherInfo.temp}°C ${weatherInfo.description} · 실시간 날씨 기반 추천` : '현재 날씨·시간 기반 자동 추천'}
         </div>
       </div>
 
@@ -880,6 +952,11 @@ export default function LunchRecommender() {
               <div style={{ marginBottom: 24 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
                   ☀️ 오늘 날씨가 어때요?
+                  {weatherInfo && (
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6366F1", marginLeft: 4 }}>
+                      ({weatherInfo.emoji} 현재 {weatherInfo.temp}°C, {weatherInfo.description})
+                    </span>
+                  )}
                 </div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {OPTIONS.weather.map(opt => (
