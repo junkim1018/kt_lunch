@@ -1,4 +1,4 @@
-// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (129개)
+// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (131개)
 // 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
 export const restaurantDB = [
   {
@@ -3005,5 +3005,54 @@ export const restaurantDB = [
     reason: "65년 전통 정통 삼계탕 전문점. 수컷 닭으로 만들어 살코기가 탄탄하고 부드러움. 찹쌀·대추·인삼이 속을 채우고 깔끔한 국물이 보양식으로 제격. 좌식 룸석 보유. 외국인 관광객에게도 인기.",
     naver: "https://map.naver.com/v5/search/고려삼계탕+광화문점",
     reservation: [],
+  },
+
+  {
+    name: "강문순두부 종각본점",
+    category: "한식 · 순두부찌개/전골",
+    cuisine: "korean",
+    coords: { lat: 37.5707, lng: 126.9808 },
+    menus: ["우삼겹 순두부 11,000원", "해물 순두부 11,000원", "굴매생이 순두부 12,000원", "떡갈비 1인 세트 15,000원"],
+    price: "11,000~15,000원",
+    priceNote: "순두부 기본 1.1만원, 세트 1.5만원, 비빔밥 서비스",
+    walk: "도보 3분 (종로구 종로5길 7 타워8 1층)",
+    rating: "4.5",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["cold","rainy","mild"],
+    mood: ["safe","hearty","hangover"],
+    people: ["solo","small","medium"],
+    budget: ["normal"],
+    waiting: true,
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "순두부찌개 종류만 10가지 이상인 전문점. 우삼겹·곱창·알탕·굴매생이 등 다양한 순두부 중 선택 가능. 공기밥 주문 시 비빔밥 그릇 별도 제공. 떡갈비 세트도 인기. 직장인 점심 회전율 빠름.",
+    naver: "https://map.naver.com/v5/search/강문순두부+종각본점",
+    reservation: [],
+  },
+
+  {
+    name: "올리페페 광화문점",
+    category: "이탈리안 · 화덕피자/파스타",
+    cuisine: "western",
+    coords: { lat: 37.5694, lng: 126.9790 },
+    menus: ["올리 올리베 피자 25,000원", "카치오 올리페페 파스타 22,000원", "마르게리타 피자 21,000원", "감베리 비스크 파스타 28,000원"],
+    price: "18,000~28,000원",
+    priceNote: "피자·파스타 기준 인당 2~3만원",
+    walk: "도보 5분 (종로구 청계천로 11 청계한국빌딩 2층)",
+    rating: "4.5",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["hot","mild","cold"],
+    mood: ["exciting","team","sad"],
+    people: ["small","medium","large"],
+    budget: ["expensive"],
+    waiting: false,
+    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
+    reason: "CJ푸드빌 운영 신상 이탈리안 비스트로. 청계천 뷰 창가석이 인기. 화덕피자·생면 파스타 퀄리티 높고 와인 리스트 다양. 156석 넓은 매장에 룸석 보유. 데이트·모임·회식 모두 적합.",
+    naver: "https://map.naver.com/v5/search/올리페페+광화문점",
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/olipepe_gwanghwamun", color: "#FF6B35" },
+      { label: "네이버 예약", url: "https://map.naver.com/v5/search/올리페페+광화문점", color: "#03C75A" },
+    ],
   },
 ];
