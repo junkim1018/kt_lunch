@@ -2900,7 +2900,7 @@ export const restaurantDB = [
     rating: "4.3",
     ribbon: false,
     diet: ["nodiet"],
-    weather: ["hot","mild","cold"],
+    weather: ["hot","mild"],
     mood: ["safe"],
     people: ["solo","small"],
     budget: ["cheap","normal"],
