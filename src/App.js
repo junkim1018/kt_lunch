@@ -224,7 +224,7 @@ export default function LunchRecommender() {
             const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('executive');
             const isUpscale = r.ribbon || (r.budget && Array.isArray(r.budget) && r.budget.includes('expensive'));
             const category = r.category || '';
-            const isCasual = /(순대|분식|떡볶이|김밥|국밥|백반|푸드코트)/.test(category);
+            const isCasual = /(순대|분식|떡볶이|김밥|국밥|백반|푸드코트|해장국)/.test(category);
             return hasMoodTag || (isUpscale && !isCasual);
           }
           
