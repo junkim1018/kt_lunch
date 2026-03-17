@@ -59,12 +59,12 @@ export const BUDGET_COMPAT = {
 };
 
 export const QUICK_PRESETS = [
-  { emoji: '🌧️', label: '비 오는 날 국물 점심', settings: { weather: 'rainy', mood: 'hearty', people: 2, diet: 'nodiet', budget: 12000 } },
-  { emoji: '🥗', label: '다이어트 점심', settings: { weather: 'hot', mood: 'safe', people: 1, diet: 'diet', budget: 12000 } },
+  { emoji: '🌧️', label: '비 오는 날 국물 점심', weatherFixed: true, settings: { weather: 'rainy', mood: 'hearty', people: 2, diet: 'nodiet', budget: 12000 } },
+  { emoji: '🥗', label: '다이어트 점심', settings: { weather: 'mild', mood: 'safe', people: 1, diet: 'diet', budget: 12000 } },
   { emoji: '👥', label: '4인 팀 점심', settings: { weather: 'mild', mood: 'team', people: 4, diet: 'nodiet', budget: 18000 } },
-  { emoji: '🤢', label: '해장 모드', settings: { weather: 'cold', mood: 'hangover', people: 2, diet: 'nodiet', budget: 12000 } },
-  { emoji: '🔥', label: '더운 날 시원한 점심', settings: { weather: 'hot', mood: 'safe', people: 2, diet: 'light', budget: 15000 } },
-  { emoji: '❄️', label: '추운 날 따뜻한 점심', settings: { weather: 'cold', mood: 'hearty', people: 2, diet: 'nodiet', budget: 15000 } },
+  { emoji: '🤢', label: '해장 모드', settings: { weather: 'mild', mood: 'hangover', people: 2, diet: 'nodiet', budget: 12000 } },
+  { emoji: '🔥', label: '더운 날 시원한 점심', weatherFixed: true, settings: { weather: 'hot', mood: 'safe', people: 2, diet: 'light', budget: 15000 } },
+  { emoji: '❄️', label: '추운 날 따뜻한 점심', weatherFixed: true, settings: { weather: 'cold', mood: 'hearty', people: 2, diet: 'nodiet', budget: 15000 } },
   { emoji: '💼', label: '임원과 점심', settings: { weather: 'mild', mood: 'executive', people: 3, diet: 'nodiet', budget: 25000 } },
   { emoji: '🎉', label: '특별한 날', settings: { weather: 'mild', mood: 'exciting', people: 4, diet: 'nodiet', budget: 25000 } },
   { emoji: '😔', label: '위로가 필요해', settings: { weather: 'mild', mood: 'sad', people: 2, diet: 'nodiet', budget: 15000 } },
