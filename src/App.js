@@ -5,7 +5,7 @@ import { getDistance } from "./utils/distance";
 import { getTimeContextScore, calculateMMRScore } from "./services/ScoringService";
 import { saveFeedback, getFeedbackScore } from "./services/FeedbackService";
 import { saveVisit, getPersonalizationScore } from "./services/PersonalizationService";
-import { fetchLLMReasons } from "./services/LLMService";
+import { fetchSingleLLMReason } from "./services/LLMService";
 
 // ✅ KT East 빌딩 기준 좌표 (종로3길 33)
 const KT_EAST_COORDS = { lat: 37.5703, lng: 126.9835 };
@@ -829,20 +829,22 @@ export default function LunchRecommender() {
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
 
-          // LLM 추천 이유 비동기 요청 (결과 표시 후 도착하면 자동 반영)
+          // LLM 추천 이유 순차 요청 (TOP1부터 하나씩 표시)
           setLlmReasons({});
           setLlmLoading(true);
           const top3ForLLM = normalizedList.slice(0, 3);
           const selCopy = { ...selections };
-          fetchLLMReasons(top3ForLLM, selCopy).then(reasons => {
-            if (reasons && Array.isArray(reasons)) {
-              const map = {};
-              top3ForLLM.forEach((r, idx) => {
-                if (reasons[idx]) map[r.name] = reasons[idx];
-              });
-              setLlmReasons(map);
+          (async () => {
+            for (const r of top3ForLLM) {
+              try {
+                const reason = await fetchSingleLLMReason(r, selCopy);
+                if (reason) {
+                  setLlmReasons(prev => ({ ...prev, [r.name]: reason }));
+                }
+              } catch {}
             }
-          }).catch(() => {}).finally(() => setLlmLoading(false));
+            setLlmLoading(false);
+          })();
 
           // 4~10위는 1초 후 공개
           setTimeout(() => setShowAll(true), 1000);
@@ -1417,13 +1419,13 @@ export default function LunchRecommender() {
                   const llmReason = llmReasons[r.name];
                   if (llmReason) {
                     return (
-                      <div style={{ background: "linear-gradient(135deg, #EEF2FF, #F5F3FF)", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
+                      <div style={{ background: "linear-gradient(135deg, #EEF2FF, #F5F3FF)", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500, animation: "fadeIn 0.4s ease" }}>
                         <span style={{ fontSize: 10, fontWeight: 700, color: "#6366F1", letterSpacing: 0.5 }}>AI 추천</span>
                         <div style={{ marginTop: 2 }}>{llmReason}</div>
                       </div>
                     );
                   }
-                  if (llmLoading) {
+                  if (llmLoading && !llmReasons[r.name]) {
                     return (
                       <div style={{ background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s ease-in-out infinite", borderRadius: 10, padding: "10px 14px", marginBottom: 12, borderLeft: `3px solid ${rankColor}20`, height: 44 }}>
                         <div style={{ width: "70%", height: 10, borderRadius: 5, background: "rgba(0,0,0,0.06)", marginBottom: 6 }} />

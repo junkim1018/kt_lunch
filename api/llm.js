@@ -45,24 +45,10 @@ export default async function handler(req, res) {
 
     const restaurantCount = top3.length;
     const restaurantDescriptions = top3.map((r, i) => {
-      return `${i + 1}위: ${r.name} (${r.category}) - 메뉴: ${(r.menus || []).slice(0, 3).join(', ')} / ${r.priceNote || r.price || ''} / ${r.walk || ''} / 매칭점수: ${r.score100}점`;
-    }).join('\n');
+      return `${i + 1}. ${r.name}(${r.category}) ${(r.menus || []).slice(0, 2).join('·')} ${r.priceNote || ''}`;
+    }).join(' / ');
 
-    const reasonPlaceholders = top3.map((_, i) => `"${i + 1}위 추천이유"`).join(',');
-
-    const prompt = `당신은 광화문 직장인 점심 추천 전문가입니다.
-오늘 사용자의 조건: 날씨=${weatherText}, 기분=${moodText}, 인원=${peopleText}, 식단=${dietText}
-
-아래 TOP ${restaurantCount} 식당 각각에 대해 오늘 조건에 맞는 추천 이유를 자연스럽고 친근한 한국어로 1~2문장(50자 이내)으로 작성해주세요.
-- 이모지 1개로 시작
-- 오늘 날씨/기분/인원에 맞춰 왜 이 식당이 좋은지 구체적으로
-- 메뉴나 특징을 언급하면 더 좋음
-- 각 식당마다 다른 관점으로
-
-${restaurantDescriptions}
-
-반드시 아래 JSON 형식으로만 응답하세요:
-{"reasons":[${reasonPlaceholders}]}`;
+    const prompt = `광화문 점심추천. 조건: ${weatherText},${moodText},${peopleText},${dietText}. 식당: ${restaurantDescriptions}. 각 식당별 추천이유를 이모지1개+한문장(30자이내)으로 JSON응답: {"reasons":["이유1","이유2","이유3"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 
@@ -74,10 +60,9 @@ ${restaurantDescriptions}
       },
       body: JSON.stringify({
         messages: [
-          { role: 'system', content: '당신은 점심 메뉴 추천 도우미입니다. 항상 JSON 형식으로만 응답합니다.' },
           { role: 'user', content: prompt }
         ],
-        max_completion_tokens: 8000,
+        max_completion_tokens: 4000,
         reasoning_effort: 'low',
       }),
     });
