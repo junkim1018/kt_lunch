@@ -1,4 +1,4 @@
-// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (131개)
+// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (133개)
 // 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
 export const restaurantDB = [
   {
@@ -3053,6 +3053,57 @@ export const restaurantDB = [
     reservation: [
       { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/olipepe_gwanghwamun", color: "#FF6B35" },
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/올리페페+광화문점", color: "#03C75A" },
+    ],
+  },
+
+  {
+    name: "콘피에르 셀렉션 스타필드 애비뉴 그랑서울점",
+    category: "양식 · 캐주얼 파인다이닝/코스",
+    cuisine: "western",
+    coords: { lat: 37.5712, lng: 126.9813 },
+    menus: ["시그니처 코스 A 89,000원", "시그니처 코스 B 69,000원", "시그니처 코스 C 55,000원", "홍새우 미나리 비스큐 파스타 27,000원"],
+    price: "55,000~89,000원",
+    priceNote: "런치코스 C 5.5만·B 6.9만·A 8.9만, 단품 파스타 2.7만",
+    walk: "도보 6분 (종로구 종로 33 스타필드 애비뉴 그랑서울 L4층)",
+    rating: "4.5",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["hot","mild","cold","rainy"],
+    mood: ["executive","team","exciting"],
+    people: ["small","medium"],
+    budget: ["expensive"],
+    waiting: false,
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "콘피에르 서울역점의 세컨드 브랜드. 오픈키친 바 테이블과 프라이빗 룸 보유. 제철 식재료 기반 프렌치 코스를 캐주얼한 분위기에서 합리적으로 즐길 수 있어 기념일·임원 미팅에 적합. 캐치테이블 평점 4.5.",
+    naver: "https://map.naver.com/v5/search/콘피에르+셀렉션+그랑서울",
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/confierselection_granseoul", color: "#FF6B35" },
+      { label: "네이버 예약", url: "https://map.naver.com/v5/search/콘피에르+셀렉션+그랑서울", color: "#03C75A" },
+    ],
+  },
+
+  {
+    name: "디라이프스타일키친 광화문점",
+    category: "양식 · 지중해식 저탄고지/브런치",
+    cuisine: "western",
+    coords: { lat: 37.5684, lng: 126.9783 },
+    menus: ["스테이크 콥 샐러드 24,900원", "트러플 리코타치즈 샐러드 24,900원", "통명란 크림파스타 25,500원", "해산물 빠에야 26,200원", "감자퓨레 등심스테이크 56,900원"],
+    price: "24,900~56,900원",
+    priceNote: "샐러드·파스타 2.5만, 스테이크 5.7만",
+    walk: "도보 5분 (중구 세종대로 136 서울파이낸스센터 지하1층)",
+    rating: "4.5",
+    ribbon: false,
+    diet: ["nodiet","light"],
+    weather: ["hot","mild","cold","rainy"],
+    mood: ["exciting","team","executive"],
+    people: ["solo","small","medium","large"],
+    budget: ["normal","expensive"],
+    waiting: false,
+    calorie: { emoji: "🟢", label: "저칼로리", color: "#10b981" },
+    reason: "미슐랭 2스타 출신 셰프가 만드는 슈가프리·저탄고지 지중해 요리. 블루리본 5년 연속 선정. 샐러드·파스타·빠에야·스테이크 등 다양하고 건강 메뉴 풍부. 넓은 매장에 룸석 보유, 10인 단체까지 가능. 주차 2시간 무료.",
+    naver: "https://map.naver.com/v5/search/디라이프스타일키친+광화문",
+    reservation: [
+      { label: "네이버 예약", url: "https://map.naver.com/v5/search/디라이프스타일키친+광화문", color: "#03C75A" },
     ],
   },
 ];
