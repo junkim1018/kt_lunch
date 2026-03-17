@@ -53,7 +53,6 @@ export default function LunchRecommender() {
   const [feedbackGiven, setFeedbackGiven] = useState({});
   const [llmReasons, setLlmReasons] = useState({});
   const [llmLoading, setLlmLoading] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState('광화문 맛집 데이터를 분석하고 있어요...');
 
   useEffect(() => {
     const tick = () => {
@@ -825,28 +824,25 @@ export default function LunchRecommender() {
           setShowAll(false);
           setFeedbackGiven({});
 
-          // LLM 추천 이유를 먼저 가져온 후 결과 표시
-          setLoadingMsg('AI가 맞춤 추천 이유를 작성하고 있어요...');
-          const top3ForLLM = normalizedList.slice(0, 3);
-          const selCopy = { ...selections };
-          setLlmReasons({});
-          setLlmLoading(true);
-          let llmMap = {};
-          try {
-            const reasons = await fetchLLMReasons(top3ForLLM, selCopy);
-            if (reasons && Array.isArray(reasons)) {
-              top3ForLLM.forEach((r, idx) => {
-                if (reasons[idx]) llmMap[r.name] = reasons[idx];
-              });
-            }
-          } catch {}
-          setLlmReasons(llmMap);
-          setLlmLoading(false);
-
           setResults({ 
             list: normalizedList, 
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
+
+          // LLM 추천 이유 비동기 요청 (결과 표시 후 도착하면 자동 반영)
+          setLlmReasons({});
+          setLlmLoading(true);
+          const top3ForLLM = normalizedList.slice(0, 3);
+          const selCopy = { ...selections };
+          fetchLLMReasons(top3ForLLM, selCopy).then(reasons => {
+            if (reasons && Array.isArray(reasons)) {
+              const map = {};
+              top3ForLLM.forEach((r, idx) => {
+                if (reasons[idx]) map[r.name] = reasons[idx];
+              });
+              setLlmReasons(map);
+            }
+          }).catch(() => {}).finally(() => setLlmLoading(false));
 
           // 4~10위는 1초 후 공개
           setTimeout(() => setShowAll(true), 1000);
@@ -886,7 +882,6 @@ export default function LunchRecommender() {
       setShowAlert(true); 
       return; 
     }
-    setLoadingMsg('광화문 맛집 데이터를 분석하고 있어요...');
     setStep("loading");
   };
 
@@ -898,7 +893,6 @@ export default function LunchRecommender() {
       saveRecentSeen(recentSeen.current);
     }
     // 다시 추천 실행
-    setLoadingMsg('광화문 맛집 데이터를 분석하고 있어요...');
     setStep("loading");
   };
 
@@ -1237,10 +1231,10 @@ export default function LunchRecommender() {
               ))}
             </div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 8 }}>
-              {loadingMsg}
+              광화문 맛집 데이터를 분석하고 있어요...
             </div>
             <div style={{ fontSize: 13, color: "#64748b" }}>
-              {loadingMsg.includes('AI') ? '날씨 · 기분 · 인원에 딱 맞는 이유를 찾는 중' : '블루리본 · 네이버 평점 · 카카오맵 참고 중'}
+              블루리본 · 네이버 평점 · 카카오맵 참고 중
             </div>
           </div>
         )}
@@ -1431,8 +1425,9 @@ export default function LunchRecommender() {
                   }
                   if (llmLoading) {
                     return (
-                      <div style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: "#94a3b8", borderLeft: `3px solid #e2e8f0`, fontWeight: 500 }}>
-                        <span style={{ display: "inline-block", animation: "pulse 1.5s ease-in-out infinite" }}>✨ AI가 추천 이유를 작성하고 있어요...</span>
+                      <div style={{ background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s ease-in-out infinite", borderRadius: 10, padding: "10px 14px", marginBottom: 12, borderLeft: `3px solid ${rankColor}20`, height: 44 }}>
+                        <div style={{ width: "70%", height: 10, borderRadius: 5, background: "rgba(0,0,0,0.06)", marginBottom: 6 }} />
+                        <div style={{ width: "45%", height: 10, borderRadius: 5, background: "rgba(0,0,0,0.04)" }} />
                       </div>
                     );
                   }
