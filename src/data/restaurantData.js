@@ -1,4 +1,4 @@
-// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (133개)
+// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (132개)
 // 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
 export const restaurantDB = [
   {
@@ -3038,5 +3038,51 @@ export const restaurantDB = [
     reservation: [
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/디라이프스타일키친+광화문", color: "#03C75A" },
     ],
+  },
+
+  {
+    name: "전주풍남회관",
+    category: "한식 · 백반/계란탕",
+    cuisine: "korean",
+    coords: { lat: 37.5686, lng: 126.9760 },
+    menus: ["계란탕 10,000원", "제육볶음 11,000원", "오징어볶음 12,000원", "김치찌개 10,000원", "돌솥비빔밥 13,000원"],
+    price: "10,000~13,000원",
+    priceNote: "1인 평균 1만원대, 가성비 백반",
+    walk: "도보 6분 (세종대로21길 48 2층)",
+    rating: "4.3",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["mild","cold","rainy"],
+    mood: ["hearty","safe","team"],
+    people: ["solo","small","medium","large"],
+    budget: ["cheap","normal"],
+    waiting: false,
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "1987년 개업 광화문 노포 백반집. SBS 생활의달인 '계란탕 달인' 출연. 계란탕·제육볶음·오징어볶음 가성비 집밥 메뉴. 넓은 공간에 혼밥부터 단체까지 가능.",
+    naver: "https://map.naver.com/v5/search/전주풍남회관+광화문",
+    reservation: false,
+  },
+
+  {
+    name: "다담정식",
+    category: "한식 · 가정식백반",
+    cuisine: "korean",
+    coords: { lat: 37.5694, lng: 126.9814 },
+    menus: ["가정식 백반 10,000원"],
+    price: "10,000원",
+    priceNote: "백반 단일메뉴 1만원, 반찬 무한리필",
+    walk: "도보 5분 (청계천로 35 관정빌딩 B1)",
+    rating: "4.5",
+    ribbon: false,
+    diet: ["nodiet"],
+    weather: ["mild","cold","rainy"],
+    mood: ["hearty","safe"],
+    people: ["solo","small","medium"],
+    budget: ["cheap"],
+    waiting: true,
+    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
+    reason: "종각역 인근 직장인 소울푸드. 1만원에 제육볶음·계란말이·생선구이·된장찌개 등 반찬 무한리필. 매일 바뀌는 가정식 한 상. 혼밥 편하고 회전율 빠름.",
+    naver: "https://map.naver.com/v5/search/다담정식+종각",
+    reservation: false,
   },
 ];
