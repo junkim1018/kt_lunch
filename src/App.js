@@ -155,8 +155,8 @@ export default function LunchRecommender() {
       else if (month >= 12 || month <= 2) currentWeather = 'cold';
     }
 
-    // 프리셋의 날씨를 현재 날씨로 덮어쓰기 (비/해장 등 날씨 고정 프리셋 제외)
-    const weatherFixed = new Set(['rainy']);
+    // 프리셋의 날씨를 현재 날씨로 덮어쓰기 (날씨가 컨셉인 프리셋은 제외)
+    const weatherFixed = new Set(['rainy', 'hot', 'cold']);
     const adjusted = QUICK_PRESETS.map(p => {
       if (weatherFixed.has(p.settings.weather)) return p;
       return { ...p, settings: { ...p.settings, weather: currentWeather } };
