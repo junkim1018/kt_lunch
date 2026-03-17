@@ -105,6 +105,13 @@ export function getNegativeAffinityPenalty(restaurant, selections) {
     if (/백반|구내식당/.test(category)) penalty -= 8;
   }
   
+  if (selections.mood === 'stressed') {
+    // 스트레스 해소에 가벼운 식사는 부적합
+    if (/샐러드|포케|요거트|그릭요거트/.test(category)) penalty -= 12;
+    // 격식 있는 환경은 스트레스 가중
+    if (/오마카세|파인다이닝|코스/.test(category)) penalty -= 10;
+  }
+  
   // 날씨별 부적합
   if (selections.weather === 'hot') {
     // 더운 날 뜨거운 국물류 약간 감점 (하드 블록은 아님)

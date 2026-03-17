@@ -142,7 +142,6 @@ export const restaurantDB = [
     reason: "서울 웨이팅 맛집 쌤쌤쌤이 광화문 디타워에 오픈! 4.8★. 감성 인테리어에 수준급 파스타·라자냐.",
     naver: "https://map.naver.com/v5/search/쌤쌤쌤+광화문점",
     reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/samsamsam_kr", color: "#FF6B35" },
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/쌤쌤쌤+광화문점", color: "#03C75A" },
     ]
   },
@@ -1384,9 +1383,7 @@ export const restaurantDB = [
     calorie: { emoji: "🔴", label: "고칼로리", color: "#E53935" },
     reason: "🥢 압구정 맛집 보보식당이 KT West 입성! 동파육·마라가지튀김 폭발적 인기. 평점 4.6★ KT West 중식 대표주자.",
     naver: "https://map.naver.com/v5/search/보보식당+광화문",
-    reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/bobo", color: "#FF6B35" }
-    ]
+    reservation: []
   },
   {
     name: "타코챔피언 (KT West)",
@@ -3051,7 +3048,6 @@ export const restaurantDB = [
     reason: "CJ푸드빌 운영 신상 이탈리안 비스트로. 청계천 뷰 창가석이 인기. 화덕피자·생면 파스타 퀄리티 높고 와인 리스트 다양. 156석 넓은 매장에 룸석 보유. 데이트·모임·회식 모두 적합.",
     naver: "https://map.naver.com/v5/search/올리페페+광화문점",
     reservation: [
-      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/olipepe_gwanghwamun", color: "#FF6B35" },
       { label: "네이버 예약", url: "https://map.naver.com/v5/search/올리페페+광화문점", color: "#03C75A" },
     ],
   },
