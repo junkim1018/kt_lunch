@@ -5,6 +5,7 @@ import { getDistance } from "./utils/distance";
 import { getTimeContextScore, calculateMMRScore } from "./services/ScoringService";
 import { saveFeedback, getFeedbackScore } from "./services/FeedbackService";
 import { saveVisit, getPersonalizationScore } from "./services/PersonalizationService";
+import { fetchLLMReasons } from "./services/LLMService";
 
 // ✅ KT East 빌딩 기준 좌표 (종로3길 33)
 const KT_EAST_COORDS = { lat: 37.5703, lng: 126.9835 };
@@ -50,6 +51,8 @@ export default function LunchRecommender() {
   const [quickPresets, setQuickPresets] = useState([]);
   const [toast, setToast] = useState(null);
   const [feedbackGiven, setFeedbackGiven] = useState({});
+  const [llmReasons, setLlmReasons] = useState({});
+  const [llmLoading, setLlmLoading] = useState(false);
 
   useEffect(() => {
     const tick = () => {
@@ -826,6 +829,21 @@ export default function LunchRecommender() {
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
 
+          // TOP3 LLM 추천 이유 비동기 요청
+          setLlmReasons({});
+          setLlmLoading(true);
+          const top3ForLLM = normalizedList.slice(0, 3);
+          const selCopy = { ...selections };
+          fetchLLMReasons(top3ForLLM, selCopy).then(reasons => {
+            if (reasons && Array.isArray(reasons)) {
+              const map = {};
+              top3ForLLM.forEach((r, idx) => {
+                if (reasons[idx]) map[r.name] = reasons[idx];
+              });
+              setLlmReasons(map);
+            }
+          }).catch(() => {}).finally(() => setLlmLoading(false));
+
           // 4~10위는 1초 후 공개
           setTimeout(() => setShowAll(true), 1000);
 
@@ -1394,12 +1412,33 @@ export default function LunchRecommender() {
                   {r.priceNote && r.walk && <span style={{ color: "#64748b" }}> · 💰 {r.priceNote}</span>}
                 </div>
 
-                {/* 추천 이유 */}
-                {r.recommendReason && (
-                  <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
-                    {r.recommendReason}
-                  </div>
-                )}
+                {/* 추천 이유 (LLM 자연어 or 기본 추천 이유) */}
+                {(() => {
+                  const llmReason = llmReasons[r.name];
+                  if (llmReason) {
+                    return (
+                      <div style={{ background: "linear-gradient(135deg, #EEF2FF, #F5F3FF)", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "#6366F1", letterSpacing: 0.5 }}>AI 추천</span>
+                        <div style={{ marginTop: 2 }}>{llmReason}</div>
+                      </div>
+                    );
+                  }
+                  if (llmLoading) {
+                    return (
+                      <div style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: "#94a3b8", borderLeft: `3px solid #e2e8f0`, fontWeight: 500 }}>
+                        <span style={{ display: "inline-block", animation: "pulse 1.5s ease-in-out infinite" }}>✨ AI가 추천 이유를 작성하고 있어요...</span>
+                      </div>
+                    );
+                  }
+                  if (r.recommendReason) {
+                    return (
+                      <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
+                        {r.recommendReason}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
 
                 {/* 예약/지도 링크 */}
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
