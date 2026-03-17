@@ -260,7 +260,7 @@ export default function LunchRecommender() {
   // �️ 상황별 메뉴 추천 — 날씨/기분/식단에 맞는 메뉴 우선 표시
   const RAW_COLD_PATTERN = /초밥|스시|사시미|회덮|카이센|포케|물회|횟|刺身|생연어|연어덮|연어초|참치회|회전초밥/;
   const HOT_SOUP_PATTERN = /탕|국밥|찌개|전골|라멘|라면|짬뽕|우동|수제비|칼국수|설렁|곰국|해장|쌀국수|우육면|마라탕|똠얌|모츠나베|솥밥/;
-  const COOL_MENU_PATTERN = /냉면|냉모밀|콩국수|물회|포케|샐러드|냉채|비빔|분짜|월남쌈|반미|타코|부리또|샌드위치|버거|회덮|초밥|스시/;
+  const COOL_MENU_PATTERN = /냉면|냉모밀|콩국수|물회|포케|샐러드|냉채|비빔|분짜|월남쌈|반미|타코|부리또|샌드위치|버거|회덮|초밥|스시|파스타|피자|리조또|돈카츠|규카츠|카레|오므라이스|덮밥|스테이크|팟타이|나초|케사디아|엔칠라다|함박|팬케이크|브런치|와플|그릭요거트/;
   const SOUP_MENU_PATTERN = /탕|국밥|찌개|전골|라멘|라면|짬뽕|우동|수제비|칼국수|설렁|곰국|해장|쌀국수|우육면|순대국|마라탕|똠얌|곰탕|갈비탕|떡만두|모츠나베|파전|전\s|부침/;
   const LIGHT_MENU_PATTERN = /샐러드|포케|요거트|그릭|그레인|두부|채식|비건|선식|사찰|순두부/;
   const filterMenusByContext = (menus, weather, mood, diet) => {
@@ -286,13 +286,13 @@ export default function LunchRecommender() {
 
     if (!preferred && !excluded) return menus;
 
-    // 1순위: preferred 매칭 메뉴
+    // 1순위: preferred 매칭 메뉴 (절반 이상일 때만)
     const best = preferred ? menus.filter(m => preferred.test(m)) : [];
     // 2순위: excluded에 안 걸리는 메뉴
     const ok = excluded ? menus.filter(m => !excluded.test(m)) : menus;
     // 3순위: 원본 전체 (폴백)
 
-    if (best.length > 0) return best;
+    if (best.length >= menus.length / 2) return best;
     if (ok.length > 0 && ok.length < menus.length) return ok;
     return menus;
   };
