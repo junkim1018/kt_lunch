@@ -77,7 +77,8 @@ ${restaurantDescriptions}
           { role: 'system', content: '당신은 점심 메뉴 추천 도우미입니다. 항상 JSON 형식으로만 응답합니다.' },
           { role: 'user', content: prompt }
         ],
-        max_completion_tokens: 2000,
+        max_completion_tokens: 8000,
+        reasoning_effort: 'low',
       }),
     });
 
@@ -88,13 +89,10 @@ ${restaurantDescriptions}
     }
 
     const data = await response.json();
-    console.log('Azure response usage:', JSON.stringify(data.usage));
-    console.log('Azure response finish_reason:', data.choices?.[0]?.finish_reason);
-    console.log('Azure response content length:', data.choices?.[0]?.message?.content?.length);
     const content = data.choices?.[0]?.message?.content?.trim();
 
     if (!content) {
-      console.error('Empty content. Full response:', JSON.stringify(data).substring(0, 500));
+      console.error('Empty LLM content. finish_reason:', data.choices?.[0]?.finish_reason, 'reasoning_tokens:', data.usage?.completion_tokens_details?.reasoning_tokens);
       return res.status(502).json({ error: 'LLM 응답이 비어있습니다.' });
     }
 
