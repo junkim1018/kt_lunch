@@ -8,8 +8,8 @@ import { saveVisit, getPersonalizationScore } from "./services/PersonalizationSe
 import { getWeightProfile, getNegativeAffinityPenalty } from "./constants/scoring";
 import { fetchSingleLLMReason } from "./services/LLMService";
 
-// ✅ KT East 빌딩 기준 좌표 (종로3길 33)
-const KT_EAST_COORDS = { lat: 37.5703, lng: 126.9835 };
+// ✅ KT East 빌딩 기준 좌표 (종로3길 33, OSM 확인)
+const KT_EAST_COORDS = { lat: 37.5720, lng: 126.9788 };
 
 const RECENT_SEEN_KEY = 'kt-lunch-recent-seen';
 const RECENT_SEEN_EXPIRY_MS = 3 * 60 * 60 * 1000; // 3시간

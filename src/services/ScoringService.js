@@ -6,8 +6,8 @@
 
 import { getDistance } from '../utils/distance.js';
 
-const KT_BASE_LAT = 37.5716;
-const KT_BASE_LNG = 126.9769;
+const KT_BASE_LAT = 37.5720;
+const KT_BASE_LNG = 126.9788;
 
 /**
  * 시간/요일 기반 컨텍스트 점수 계산

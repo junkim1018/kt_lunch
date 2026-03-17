@@ -95,7 +95,7 @@ else { console.log(`  ❌ FAIL: ${tagErrors}개 잘못된 태그`); totalFail++;
 
 // ── 3. 좌표 / 거리 검증 ──
 console.log('── 검증 3: 좌표 및 거리 ──');
-const KT = { lat: 37.5703, lng: 126.9835 };
+const KT = { lat: 37.5720, lng: 126.9788 };
 function haversine(lat1, lng1, lat2, lng2) {
   const R = 6371000;
   const dLat = (lat2 - lat1) * Math.PI / 180;

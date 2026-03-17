@@ -32,7 +32,7 @@ try {
 }
 
 // KT East 좌표
-const KT_EAST = { lat: 37.5716, lng: 126.9768 };
+const KT_EAST = { lat: 37.5720, lng: 126.9788 };
 const MAX_DISTANCE_M = 700;
 
 // 거리 계산 (Haversine)
