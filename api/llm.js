@@ -2,8 +2,12 @@
 // API 키는 서버 측 환경변수에서만 접근 (클라이언트 노출 방지)
 
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS — 프로덕션 도메인만 허용
+  const allowedOrigin = 'https://kt-lunch.vercel.app';
+  const origin = req.headers.origin;
+  if (origin === allowedOrigin || origin?.endsWith('.vercel.app')) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -52,20 +56,34 @@ export default async function handler(req, res) {
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': apiKey,
-      },
-      body: JSON.stringify({
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-        max_completion_tokens: 4000,
-        reasoning_effort: 'low',
-      }),
-    });
+    const fetchController = new AbortController();
+    const fetchTimeout = setTimeout(() => fetchController.abort(), 12000);
+
+    let response;
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': apiKey,
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+          max_completion_tokens: 4000,
+          reasoning_effort: 'low',
+        }),
+        signal: fetchController.signal,
+      });
+    } catch (fetchErr) {
+      clearTimeout(fetchTimeout);
+      if (fetchErr.name === 'AbortError') {
+        return res.status(504).json({ error: 'LLM API 응답 시간 초과' });
+      }
+      throw fetchErr;
+    }
+    clearTimeout(fetchTimeout);
 
     if (!response.ok) {
       const errText = await response.text();

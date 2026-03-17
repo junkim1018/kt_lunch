@@ -31,7 +31,12 @@ function loadRecentSeen() {
 function saveRecentSeen(names) {
   try {
     localStorage.setItem(RECENT_SEEN_KEY, JSON.stringify({ names, timestamp: Date.now() }));
-  } catch { /* quota exceeded 등 무시 */ }
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      console.warn('localStorage 쿼터 초과 — 오래된 데이터 정리 시도');
+      try { localStorage.removeItem(RECENT_SEEN_KEY); } catch { /* ignore */ }
+    }
+  }
 }
 
 export default function LunchRecommender() {
@@ -720,15 +725,16 @@ export default function LunchRecommender() {
         }
         
         // 🔄 후보가 부족하면 제외 목록 초기화 후 재시도
+        let recycleNotice = null;
         if (filteredCandidates.length < 3 && recentSeen.current.length > 0) {
           recentSeen.current = [];
           saveRecentSeen([]);
           allCandidates = [...allCandidates]; // 원본 유지 (제외 없이)
           // 사용자에게 순환 안내
-          var recycleNotice = "🔄 추천 가능한 식당을 모두 보여드렸어요! 처음부터 다시 추천합니다.";
+          recycleNotice = "🔄 추천 가능한 식당을 모두 보여드렸어요! 처음부터 다시 추천합니다.";
         } else {
           allCandidates = filteredCandidates;
-          var recycleNotice = null;
+          recycleNotice = null;
         }
 
         // 🎯 Phase B: MMR 다양성 알고리즘 적용

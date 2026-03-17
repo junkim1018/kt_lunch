@@ -46,6 +46,14 @@ export function saveFeedback(restaurantName, feedbackType, context) {
     localStorage.setItem(FEEDBACK_KEY, JSON.stringify(filtered));
     return true;
   } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      console.warn('localStorage 쿼터 초과 — 오래된 피드백 정리 후 재시도');
+      try {
+        const existing = getUserFeedback().slice(-20);
+        localStorage.setItem(FEEDBACK_KEY, JSON.stringify(existing));
+        return true;
+      } catch { /* 재시도도 실패 */ }
+    }
     console.error('피드백 저장 실패:', e);
     return false;
   }

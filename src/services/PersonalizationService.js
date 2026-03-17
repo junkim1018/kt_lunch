@@ -45,6 +45,14 @@ export function saveVisit(restaurantName, category, cuisine) {
     localStorage.setItem(VISITS_KEY, JSON.stringify(trimmed));
     return true;
   } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      console.warn('localStorage 쿼터 초과 — 오래된 방문 기록 정리 후 재시도');
+      try {
+        const reduced = getVisitHistory().slice(-30);
+        localStorage.setItem(VISITS_KEY, JSON.stringify(reduced));
+        return true;
+      } catch { /* 재시도도 실패 */ }
+    }
     console.error('방문 기록 실패:', e);
     return false;
   }
