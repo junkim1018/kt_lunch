@@ -30,6 +30,9 @@ export const WEIGHT_PROFILES = {
   // 우울: mood가 중요, 기분전환 음식
   sad:       { weather: 15, mood: 35, people: 15, diet: 15, budget: 20 },
   
+  // 스트레스: 매운/자극적 음식이 중요
+  stressed:  { weather: 15, mood: 35, people: 15, diet: 10, budget: 25 },
+  
   // 비 오는 날: 날씨 적합성이 최우선
   rainy:     { weather: 35, mood: 20, people: 15, diet: 15, budget: 15 },
   

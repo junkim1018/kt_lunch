@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     const top3 = restaurants.slice(0, 3);
 
     const weatherLabels = { hot: '더운 날', mild: '선선한 날', cold: '추운 날', rainy: '비 오는 날' };
-    const moodLabels = { safe: '무난하게', hearty: '든든하게', exciting: '새로운 맛', team: '같이 먹기 좋은', hangover: '해장', sad: '기분전환', executive: '격식 있게' };
+    const moodLabels = { safe: '무난하게', hearty: '든든하게', exciting: '새로운 맛', team: '같이 먹기 좋은', hangover: '해장', sad: '기분전환', executive: '격식 있게', stressed: '스트레스 해소' };
     const dietLabels = { nodiet: '상관없음', light: '가볍게', diet: '다이어트', vegetarian: '채식' };
 
     const weatherText = weatherLabels[selections.weather] || selections.weather;

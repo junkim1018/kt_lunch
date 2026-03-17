@@ -592,6 +592,7 @@ export default function LunchRecommender() {
             else if (selections.mood === 'hearty') reasons.push('🍖 든든하게 배부르게');
             else if (selections.mood === 'exciting') reasons.push('🎉 특별한 날 분위기 좋음');
             else if (selections.mood === 'sad') reasons.push('😌 기분 전환에 좋은 맛');
+            else if (selections.mood === 'stressed') reasons.push('🔥 스트레스 해소에 딱');
             else if (selections.mood === 'safe') reasons.push('😊 무난하고 안전한 선택');
           }
           
