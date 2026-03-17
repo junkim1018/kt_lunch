@@ -15,10 +15,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.AZURE_OPENAI_API_KEY;
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-  const deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION || '2024-12-01-preview';
+  const apiKey = (process.env.AZURE_OPENAI_API_KEY || '').trim();
+  const endpoint = (process.env.AZURE_OPENAI_ENDPOINT || '').trim();
+  const deploymentName = (process.env.AZURE_OPENAI_DEPLOYMENT_NAME || '').trim();
+  const apiVersion = (process.env.AZURE_OPENAI_API_VERSION || '2024-12-01-preview').trim();
 
   if (!apiKey || !endpoint || !deploymentName) {
     return res.status(500).json({ error: 'LLM 환경변수가 설정되지 않았습니다.' });
