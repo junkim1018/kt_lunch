@@ -77,15 +77,15 @@ export default function LunchRecommender() {
     const fetchWeather = async () => {
       try {
         const res = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=37.5716&longitude=126.9768&current_weather=true&timezone=Asia%2FSeoul'
+          'https://api.open-meteo.com/v1/forecast?latitude=37.5716&longitude=126.9768&current=temperature_2m,weather_code,is_day&timezone=Asia%2FSeoul'
         );
         if (!res.ok) return;
         const data = await res.json();
-        const cw = data.current_weather;
+        const cw = data.current;
         if (!cw) return;
 
-        const temp = cw.temperature; // 현재 기온 (°C)
-        const code = cw.weathercode; // WMO 날씨 코드
+        const temp = cw.temperature_2m; // 현재 기온 (°C)
+        const code = cw.weather_code; // WMO 날씨 코드
 
         // WMO 코드 → 앱 날씨 매핑
         // 비: 51-67(이슬비/비), 80-82(소나기), 95-99(뇌우)
@@ -1013,7 +1013,7 @@ export default function LunchRecommender() {
           ⚡ 바로 추천받기
         </button>
         <div style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 12, fontWeight: 400, marginTop: 10, letterSpacing: 0.3 }}>
-          {weatherInfo ? `${weatherInfo.emoji} ${weatherInfo.temp}°C ${weatherInfo.description} · 실시간 날씨 기반 추천` : '현재 날씨·시간 기반 자동 추천'}
+          {weatherInfo ? `${weatherInfo.emoji} 약 ${weatherInfo.temp}°C ${weatherInfo.description} · 실시간 날씨 기반 추천` : '현재 날씨·시간 기반 자동 추천'}
         </div>
       </div>
 
@@ -1032,7 +1032,7 @@ export default function LunchRecommender() {
                   ☀️ 오늘 날씨가 어때요?
                   {weatherInfo && (
                     <span style={{ fontSize: 12, fontWeight: 500, color: "#6366F1", marginLeft: 4 }}>
-                      ({weatherInfo.emoji} 현재 {weatherInfo.temp}°C, {weatherInfo.description})
+                      ({weatherInfo.emoji} 현재 약 {weatherInfo.temp}°C, {weatherInfo.description})
                     </span>
                   )}
                 </div>
