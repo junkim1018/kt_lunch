@@ -88,9 +88,13 @@ ${restaurantDescriptions}
     }
 
     const data = await response.json();
+    console.log('Azure response usage:', JSON.stringify(data.usage));
+    console.log('Azure response finish_reason:', data.choices?.[0]?.finish_reason);
+    console.log('Azure response content length:', data.choices?.[0]?.message?.content?.length);
     const content = data.choices?.[0]?.message?.content?.trim();
 
     if (!content) {
+      console.error('Empty content. Full response:', JSON.stringify(data).substring(0, 500));
       return res.status(502).json({ error: 'LLM 응답이 비어있습니다.' });
     }
 
