@@ -5,6 +5,7 @@ import { getDistance } from "./utils/distance";
 import { getTimeContextScore, calculateMMRScore } from "./services/ScoringService";
 import { saveFeedback, getFeedbackScore } from "./services/FeedbackService";
 import { saveVisit, getPersonalizationScore } from "./services/PersonalizationService";
+import { getWeightProfile, getNegativeAffinityPenalty } from "./constants/scoring";
 import { fetchSingleLLMReason } from "./services/LLMService";
 
 // ✅ KT East 빌딩 기준 좌표 (종로3길 33)
@@ -482,18 +483,17 @@ export default function LunchRecommender() {
           const isRecent = recentSet.has(r.name);
           const rating = parseFloat(r.rating) || 0;
 
-          // 🎯 Phase B: 종합 점수 계산
-          let totalScore = matchCount * 20; // 기본 점수 (조건 1개당 20점)
+          // 🎯 Phase B: 상황 적응형 가중치 점수 계산
+          const weights = getWeightProfile(selections);
+          let totalScore = 
+            (matches[0] ? weights.weather : 0) +
+            (matches[1] ? weights.mood : 0) +
+            (matches[2] ? weights.people : 0) +
+            (matches[3] ? weights.diet : 0) +
+            (matches[4] ? weights.budget : 0);
           
-          // 🍜 해장/격식/다이어트/가볍게: 메뉴 적합성에 가중치 (다른 조건보다 메뉴 우선)
           const isMoodCritical = ['hangover', 'executive'].includes(selections.mood);
           const isDietCritical = selections.diet && selections.diet !== 'nodiet';
-          if (isMoodCritical && matches[1]) {
-            totalScore += 30; // mood 매칭 추가 보너스
-          }
-          if (isDietCritical && matches[3]) {
-            totalScore += 20; // diet 매칭 추가 보너스
-          }
           
           // 평점 점수 (최대 10점)
           totalScore += rating * 2;
@@ -553,6 +553,9 @@ export default function LunchRecommender() {
           
           // 📊 개인화 점수 (방문 이력 기반)
           totalScore += getPersonalizationScore(r);
+          
+          // 🚫 네거티브 어피니티 감점 (필터 통과했지만 상황에 덜 적합한 식당)
+          totalScore += getNegativeAffinityPenalty(r, selections);
 
           // 📝 추천 이유 동적 생성
           const reasons = [];

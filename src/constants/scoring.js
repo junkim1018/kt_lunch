@@ -4,6 +4,119 @@
  */
 
 /**
+ * 상황 적응형 동적 가중치 프로필
+ * 각 상황에서 5개 차원(weather, mood, people, diet, budget)의 중요도를 다르게 설정
+ * 합계 = 100 (정규화)
+ */
+export const WEIGHT_PROFILES = {
+  // 기본 (mood가 safe 등 일반적일 때)
+  default:   { weather: 20, mood: 20, people: 20, diet: 20, budget: 20 },
+  
+  // 해장: 음식 종류(mood)가 압도적으로 중요, 날씨는 부차적
+  hangover:  { weather: 10, mood: 40, people: 10, diet: 10, budget: 30 },
+  
+  // 격식: 분위기(mood) + 가격(budget)이 핵심
+  executive: { weather: 5,  mood: 35, people: 20, diet: 10, budget: 30 },
+  
+  // 팀점심: 인원수 + 분위기가 핵심
+  team:      { weather: 15, mood: 20, people: 30, diet: 15, budget: 20 },
+  
+  // 든든하게: 음식 종류(mood)가 중요
+  hearty:    { weather: 15, mood: 30, people: 15, diet: 15, budget: 25 },
+  
+  // 특별한 날: mood + 가격 둘 다 중요
+  exciting:  { weather: 10, mood: 30, people: 15, diet: 10, budget: 35 },
+  
+  // 우울: mood가 중요, 기분전환 음식
+  sad:       { weather: 15, mood: 35, people: 15, diet: 15, budget: 20 },
+  
+  // 비 오는 날: 날씨 적합성이 최우선
+  rainy:     { weather: 35, mood: 20, people: 15, diet: 15, budget: 15 },
+  
+  // 더울 때: 시원한 메뉴가 중요
+  hot:       { weather: 30, mood: 20, people: 15, diet: 15, budget: 20 },
+  
+  // 추울 때: 따뜻한 메뉴 중요
+  cold:      { weather: 25, mood: 20, people: 15, diet: 20, budget: 20 },
+  
+  // 식단 관리 (다이어트/채식/가볍게): 식단이 가장 중요
+  diet:      { weather: 15, mood: 15, people: 15, diet: 35, budget: 20 },
+};
+
+/**
+ * 상황에 맞는 가중치 프로필 선택
+ * @param {Object} selections - { weather, mood, diet, people, budget }
+ * @returns {Object} { weather, mood, people, diet, budget } 가중치
+ */
+export function getWeightProfile(selections) {
+  // 1순위: 식단이 특수하면 diet 프로필
+  if (selections.diet && selections.diet !== 'nodiet') {
+    return WEIGHT_PROFILES.diet;
+  }
+  // 2순위: mood가 핵심 상황이면 mood 프로필
+  if (selections.mood && WEIGHT_PROFILES[selections.mood]) {
+    return WEIGHT_PROFILES[selections.mood];
+  }
+  // 3순위: 날씨가 극단적이면 날씨 프로필
+  if (selections.weather && ['rainy', 'hot', 'cold'].includes(selections.weather)) {
+    return WEIGHT_PROFILES[selections.weather];
+  }
+  return WEIGHT_PROFILES.default;
+}
+
+/**
+ * 네거티브 어피니티 — 필터 통과했지만 "약간 부적합"한 식당 감점
+ * @param {Object} restaurant - 식당 객체
+ * @param {Object} selections - 사용자 선택
+ * @returns {number} 감점 (0 또는 음수)
+ */
+export function getNegativeAffinityPenalty(restaurant, selections) {
+  let penalty = 0;
+  const category = (restaurant.category || '').toLowerCase();
+  const cuisine = restaurant.cuisine || '';
+  
+  if (selections.mood === 'hangover') {
+    // 해장인데 양식 계열이 필터 통과 시 — 낮은 적합도
+    if (cuisine === 'western') penalty -= 15;
+    // 일식 중 라멘/우동은 OK, 나머지는 감점
+    if (cuisine === 'japanese' && !/라멘|우동/.test(category)) penalty -= 10;
+    // 멕시칸/인도 커리 — 해장에 덜 적합
+    if (cuisine === 'mexican' || cuisine === 'indian') penalty -= 12;
+  }
+  
+  if (selections.mood === 'executive') {
+    // 격식인데 캐주얼 분위기
+    if (/포차|주점|선술집|편의점/.test(category)) penalty -= 20;
+    // 격식인데 체인 분식
+    if (/분식|떡볶이|김밥천국/.test(category)) penalty -= 20;
+  }
+  
+  if (selections.mood === 'hearty') {
+    // 든든하게인데 저칼로리/가벼운 식당
+    if (restaurant.calorie && restaurant.calorie.label === '저칼로리') penalty -= 10;
+    if (/샐러드|포케|요거트|그릭요거트/.test(category)) penalty -= 15;
+  }
+  
+  if (selections.mood === 'sad') {
+    // 기분전환인데 너무 평범한 식당 (약간만 감점)
+    if (/백반|구내식당/.test(category)) penalty -= 8;
+  }
+  
+  // 날씨별 부적합
+  if (selections.weather === 'hot') {
+    // 더운 날 뜨거운 국물류 약간 감점 (하드 블록은 아님)
+    if (/전골|부대찌개|샤브샤브/.test(category)) penalty -= 8;
+  }
+  
+  if (selections.weather === 'cold') {
+    // 추운 날 차가운 음식 (이미 샐러드는 하드 블록, 추가 방어)  
+    if (/냉면|물회|콩국수|빙수/.test(category)) penalty -= 15;
+  }
+  
+  return penalty;
+}
+
+/**
  * 추천 알고리즘 점수 가중치
  * 각 기준별 점수 증감 값 정의
  * @type {Object}
