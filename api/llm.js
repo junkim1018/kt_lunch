@@ -74,8 +74,7 @@ ${restaurantDescriptions}
           { role: 'system', content: '당신은 점심 메뉴 추천 도우미입니다. 항상 JSON 형식으로만 응답합니다.' },
           { role: 'user', content: prompt }
         ],
-        temperature: 0.7,
-        max_tokens: 300,
+        max_completion_tokens: 2000,
       }),
     });
 
