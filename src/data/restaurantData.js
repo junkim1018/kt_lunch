@@ -759,29 +759,7 @@ export const restaurantDB = [
     reservation: []
   },
 
-  {
-    name: "미도갈비",
-    category: "한식 · 한돈 수제 돼지갈비/와규",
-    cuisine: "korean",
-    coords: { lat: 37.5710, lng: 126.9870 },
-    menus: ["수제 돼지갈비 1인 18,000원", "와규 갈비 1인 35,000원", "냉면 12,000원"],
-    price: "18,000~40,000원",
-    priceNote: "1인 평균 2~3만원",
-    walk: "도보 9분",
-    rating: "4.5",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold"],
-    mood: ["hearty","stressed","safe"],
-    people: ["small","medium","large"],
-    budget: ["expensive"],
-    calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
-    reason: "종각 대표 수제 돼지갈비 맛집. 직접 손질한 두툼한 갈비가 시그니처. 단체 회식·팀 점심으로 딱. 불판 앞에서 구워주는 서비스도 만족.",
-    naver: "https://map.naver.com/v5/search/미도갈비+종각",
-    reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/미도갈비+종각", color: "#03C75A" },
-    ]
-  },
+  // ⛔ 미도갈비 — 관철동 소재, KT East에서 1.9km 이상으로 도보권 초과하여 제거
 
   {
     name: "동해도 광화문점",
@@ -1090,25 +1068,27 @@ export const restaurantDB = [
   },
 
   {
-    name: "스모야 (종각·돌솥밥)",
-    category: "한식 · 돌솥밥",
-    cuisine: "korean",
+    name: "스모야 센트로폴리스점",
+    category: "일식 · 프리미엄 솥밥정식",
+    cuisine: "japanese",
     coords: { lat: 37.5725, lng: 126.9825 },
-    menus: ["제육돌솥밥 13,000원", "낙지돌솥밥 14,000원", "차돌된장돌솥밥 14,000원"],
-    price: "12,000~16,000원",
-    priceNote: "1인 평균 1.4만원",
+    menus: ["완도 전복 솥밥정식 19,000원", "채끝 스테끼 솥밥정식 27,000원", "도미 미나리 솥밥정식 25,000원", "미나리 삼겹 솥밥정식 16,000원"],
+    price: "15,000~33,000원",
+    priceNote: "1인 평균 2만원",
     walk: "도보 6분 (센트로폴리스 B동 1층)",
     rating: "4.5",
     ribbon: false,
-    diet: ["nodiet"],
+    diet: ["nodiet","light"],
     weather: ["cold","rainy","mild"],
-    mood: ["hangover","team"],
+    mood: ["safe","executive","team"],
     people: ["solo","small","medium"],
-    budget: ["normal"],
+    budget: ["normal","expensive"],
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "종각 직장인 핫플 돌솥밥 전문점. 제육·낙지·차돌된장 등 다양한 종류를 취향껏. 뜨끈하게 눌은밥까지 긁어 먹는 재미. 가볍고 든든한 점심으로 딱.",
-    naver: "https://map.naver.com/v5/search/스모야+종각",
-    reservation: []
+    reason: "김소봉 셰프의 프리미엄 솥밥 전문점. 전복·도미·장어·스테끼 등 고급 재료로 즉석 솥밥 조리. 반찬 3종+국 정식 구성. 단체석·룸 있어 회식 가능. 주말 휴무.",
+    naver: "https://map.naver.com/v5/search/스모야+센트로폴리스",
+    reservation: [
+      { label: "캐치테이블", url: "https://app.catchtable.co.kr/ct/shop/sumoplace", color: "#FF6B35" },
+    ]
   },
 
   {
@@ -1716,51 +1696,8 @@ export const restaurantDB = [
     reservation: []
   },
 
-  {
-    name: "동광원",
-    category: "한식 · 평양냉면/불고기",
-    cuisine: "korean",
-    coords: { lat: 37.5725, lng: 126.9825 },
-    menus: ["냉면 14,000원", "불고기전골 1인 18,000원", "갈비탕 17,000원", "만두 9,000원"],
-    price: "14,000~22,000원",
-    priceNote: "1인 평균 1.6만원",
-    walk: "도보 6분 (종로1가)",
-    rating: "4.4",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild","cold"],
-    mood: ["safe","hearty","team"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "🍜 오랜 전통의 광화문 냉면집. 시원한 육수와 쫄깃한 면발. 불고기전골도 인기. 넓은 홀에 룸도 있어 회식 가능.",
-    naver: "https://map.naver.com/v5/search/동광원+광화문",
-    reservation: []
-  },
-
-  {
-    name: "진미평양냉면 종로점",
-    category: "한식 · 평양냉면/만두",
-    cuisine: "korean",
-    coords: { lat: 37.5725, lng: 126.9825 },
-    menus: ["평양냉면 13,000원", "비빔냉면 13,000원", "갈비탕 15,000원", "편육 소 35,000원", "만두 8,000원"],
-    price: "13,000~18,000원",
-    priceNote: "1인 평균 1.4만원",
-    walk: "도보 5분 (종로2가)",
-    rating: "4.2",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["safe","hearty","team"],
-    people: ["solo","small","medium"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🟢", label: "저칼로리", color: "#4CAF50" },
-    reason: "❄️ 가성비 좋은 평양냉면 전문점. 시원한 육수, 적당한 면 양. 혼밥도 부담 없고 빠른 회전율. 여름 점심 추천.",
-    naver: "https://map.naver.com/v5/search/진미평양냉면+종로점",
-    reservation: []
-  },
+  // ⛔ 동광원 — 네이버 지도 검색 결과 없음 (폐업/존재 확인 불가)으로 제거
+  // ⛔ 진미평양냉면 종로점 — 네이버 지도 검색 결과 없음 (폐업/존재 확인 불가)으로 제거
 
   {
     name: "류경회관 광화문점",
