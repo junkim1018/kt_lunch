@@ -61,6 +61,8 @@ export default async function handler(req, res) {
 
     const r = top3[0]; // 단일 식당 (개별 호출)
     const menuList = (r.menus || []).join(', ');
+    const allMenuList = r.allMenus ? (r.allMenus || []).join(', ') : '';
+    const hasFilteredMenus = r.allMenus && r.allMenus.length > (r.menus || []).length;
     const extras = [];
     if (r.ribbon) extras.push('블루리본 인증');
     if (r.calorie) extras.push(r.calorie.label);
@@ -76,15 +78,21 @@ export default async function handler(req, res) {
 
     const toneText = toneGuides[selections.mood] || '자연스럽게';
 
+    // 날씨별 메뉴 가이드
+    const isRainyOrCold = selections.weather === 'rainy' || selections.weather === 'cold';
+    const weatherMenuGuide = isRainyOrCold
+      ? `\n규칙: ${selections.weather === 'rainy' ? '비 오는 날' : '추운 날'} → 따뜻한 메뉴(탕/국/우동/전골 등) 추천. 회·초밥·사시미 등 날것 메뉴 언급 금지.`
+      : '';
+
     const prompt = `KT 광화문 직장인 점심 추천 한줄평. ${toneText} 작성.
 
 상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
 식당: ${r.name} (${r.category})
-메뉴: ${menuList}
+추천메뉴: ${menuList}${hasFilteredMenus ? `\n전체메뉴: ${allMenuList}` : ''}
 가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
 형식: ${suggestedEmoji} + 메뉴명 포함 + 상황에 맞는 위트/공감 + 40자이내
-금지: k/K 가격축약, 딱딱한 안내문 톤
+금지: k/K 가격축약, 딱딱한 안내문 톤${weatherMenuGuide}
 출력: {"reasons":["한줄평"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;

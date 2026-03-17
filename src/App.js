@@ -257,6 +257,18 @@ export default function LunchRecommender() {
     }, 100);
   };
 
+  // 🌧️ 날씨별 메뉴 필터링 — 비/추운 날 회·초밥 제외, 따뜻한 메뉴 우선
+  const RAW_COLD_PATTERN = /초밥|스시|사시미|회덮|카이센|포케|물회|횟|刺身|생연어|연어덮|연어초|참치회|회전초밥/;
+  const WARM_MENU_PATTERN = /탕|국|찌개|전골|우동|라멘|라면|수제비|칼국수|짬뽕|국밥|볶음|카레|그라탕|스튜|전\s|부침/;
+  const filterMenusByWeather = (menus, weather) => {
+    if (!menus || !Array.isArray(menus) || menus.length === 0) return menus;
+    if (weather !== 'rainy' && weather !== 'cold') return menus;
+    // 따뜻한 메뉴만 남기고, 회/초밥 제외
+    const warmMenus = menus.filter(m => !RAW_COLD_PATTERN.test(m));
+    // 모든 메뉴가 필터링되면 원본 유지 (추천할 게 없으면 차선)
+    return warmMenus.length > 0 ? warmMenus : menus;
+  };
+
   useEffect(() => {
     if (step !== "loading") return;
     const interval = setInterval(() => setLoadingDot(d => (d + 1) % 3), 150);
@@ -557,6 +569,12 @@ export default function LunchRecommender() {
           // 🚫 네거티브 어피니티 감점 (필터 통과했지만 상황에 덜 적합한 식당)
           totalScore += getNegativeAffinityPenalty(r, selections);
 
+          // 🌧️ 비/추운 날 회·초밥 전문점 감점 (따뜻한 대안 메뉴 없는 경우)
+          if (selections.weather === 'rainy' || selections.weather === 'cold') {
+            const allMenusRaw = r.menus && r.menus.length > 0 && r.menus.every(m => RAW_COLD_PATTERN.test(m));
+            if (allMenusRaw) totalScore -= 25; // 모든 메뉴가 회/초밥 → 강한 감점
+          }
+
           // 📝 추천 이유 동적 생성
           const reasons = [];
           
@@ -681,11 +699,15 @@ export default function LunchRecommender() {
             ? { primary: orderedReasons[0], tags: orderedReasons.slice(1, 4) }
             : (r.reason ? { primary: r.reason, tags: [] } : { primary: '추천 맛집', tags: [] });
 
+          // 🌧️ 날씨 기반 메뉴 필터링 (비/추운 날 따뜻한 메뉴 우선)
+          const weatherMenus = filterMenusByWeather(r.menus, selections.weather);
+
           return { 
             ...r, 
             matchCount, 
             isRecent, 
             rating,
+            weatherMenus, // 날씨 필터링된 메뉴
             peopleMatched: matches[2], // 인원수 매칭 여부 (필수 필터)
             moodMatched: matches[1], // 기분 매칭 여부 (해장/격식 필수 필터용)
             dietMatched: matches[3], // 식단 매칭 여부 (필수 필터용)
@@ -1460,9 +1482,9 @@ export default function LunchRecommender() {
                   })()}
                 </div>
 
-                {/* 대표메뉴 + 가격 */}
+                {/* 대표메뉴 + 가격 (날씨 필터링 적용) */}
                 <div style={{ fontSize: 13, color: "#475569", marginBottom: 10, lineHeight: 1.6 }}>
-                  🍽️ {r.menus && Array.isArray(r.menus) ? r.menus.join(", ") : '-'}
+                  🍽️ {(r.weatherMenus || r.menus || []).join(", ") || '-'}
                   {r.priceNote && r.walk && <span style={{ color: "#64748b" }}> · 💰 {r.priceNote}</span>}
                 </div>
 
@@ -1608,9 +1630,9 @@ export default function LunchRecommender() {
                         )}
                       </div>
 
-                      {/* 대표메뉴 + 가격 */}
+                      {/* 대표메뉴 + 가격 (날씨 필터링 적용) */}
                       <div style={{ fontSize: 13, color: "#475569", marginBottom: 10, lineHeight: 1.6 }}>
-                        🍽️ {r.menus && Array.isArray(r.menus) ? r.menus.join(", ") : '-'}
+                        🍽️ {(r.weatherMenus || r.menus || []).join(", ") || '-'}
                         {r.priceNote && r.walk && <span style={{ color: "#64748b" }}> · 💰 {r.priceNote}</span>}
                       </div>
 

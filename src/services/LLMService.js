@@ -24,7 +24,8 @@ export async function fetchSingleLLMReason(restaurant, selections) {
         restaurants: [{
           name: restaurant.name,
           category: restaurant.category,
-          menus: restaurant.menus,
+          menus: restaurant.weatherMenus || restaurant.menus,
+          allMenus: restaurant.menus,
           price: restaurant.price,
           priceNote: restaurant.priceNote,
           walk: restaurant.walk,

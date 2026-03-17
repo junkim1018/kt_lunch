@@ -146,6 +146,27 @@ const scenarios = [
     },
     selections: { weather: 'rainy', mood: 'sad', people: 1, diet: 'nodiet' }
   },
+  {
+    label: '비 오는 날 + 무난하게 + 2명 (초밥집→따뜻한 메뉴)',
+    restaurant: {
+      name: '코끼리초밥 광화문점', category: '일식 · 초밥 세트/런치',
+      menus: ['런치 B세트(12P+우동) 28,000원'],
+      allMenus: ['런치 B세트(12P+우동) 28,000원', '연어 스페셜 세트 32,000원', '런치 단품 초밥 1,500원~'],
+      priceNote: '인당 2.8~3.2만원', walk: 'KT East 지하1층', rating: '4.7',
+      calorie: { label: '저칼로리' }, waiting: false, ribbon: false, hot: false
+    },
+    selections: { weather: 'rainy', mood: 'safe', people: 2, diet: 'nodiet' }
+  },
+  {
+    label: '추운 날 + 든든하게 + 3명 (참치회→따뜻한 코스)',
+    restaurant: {
+      name: 'VIP참치 광화문점', category: '일식 · 참치회/코스',
+      menus: ['회덮밥 (점심) 12,000원', '참다랑어 정식 (점심) 29,000원', '참다랑어 특정식 (점심) 39,000원'],
+      priceNote: '1인 평균 3만원 (점심코스)', walk: '도보 4분 (도렴빌딩 지하1층)', rating: '4.3',
+      calorie: { label: '저칼로리' }, waiting: false, ribbon: false, hot: false
+    },
+    selections: { weather: 'cold', mood: 'hearty', people: 3, diet: 'nodiet' }
+  },
 ];
 
 // 프롬프트 빌더 (api/llm.js와 동일 로직)
@@ -171,6 +192,8 @@ function buildPrompt(r, selections) {
   const toneText = toneGuides[selections.mood] || '자연스럽게';
 
   const menuList = (r.menus || []).join(', ');
+  const allMenuList = r.allMenus ? (r.allMenus || []).join(', ') : '';
+  const hasFilteredMenus = r.allMenus && r.allMenus.length > (r.menus || []).length;
   const extras = [];
   if (r.ribbon) extras.push('블루리본 인증');
   if (r.calorie) extras.push(r.calorie.label);
@@ -184,15 +207,21 @@ function buildPrompt(r, selections) {
   const moodEmoji = { safe: '😊', hearty: '🍖', exciting: '✨', team: '👥', hangover: '💊', sad: '🎉', executive: '🤵', stressed: '🔥' };
   const suggestedEmoji = moodEmoji[selections.mood] || weatherEmoji[selections.weather] || '🍽️';
 
+  // 날씨별 메뉴 가이드
+  const isRainyOrCold = selections.weather === 'rainy' || selections.weather === 'cold';
+  const weatherMenuGuide = isRainyOrCold
+    ? `\n규칙: ${selections.weather === 'rainy' ? '비 오는 날' : '추운 날'} → 따뜻한 메뉴(탕/국/우동/전골 등) 추천. 회·초밥·사시미 등 날것 메뉴 언급 금지.`
+    : '';
+
   return `KT 광화문 직장인 점심 추천 한줄평. ${toneText} 작성.
 
 상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
 식당: ${r.name} (${r.category})
-메뉴: ${menuList}
+추천메뉴: ${menuList}${hasFilteredMenus ? `\n전체메뉴: ${allMenuList}` : ''}
 가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
 형식: ${suggestedEmoji} + 메뉴명 포함 + 상황에 맞는 위트/공감 + 40자이내
-금지: k/K 가격축약, 딱딱한 안내문 톤
+금지: k/K 가격축약, 딱딱한 안내문 톤${weatherMenuGuide}
 출력: {"reasons":["한줄평"]}`;
 }
 
@@ -249,7 +278,7 @@ async function main() {
       const reason = result.reasons?.[0] || '(없음)';
       const len = reason.length;
       const hasEmoji = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(reason);
-      const hasMenu = s.restaurant.menus.some(m => {
+      const hasMenu = [...(s.restaurant.menus || []), ...(s.restaurant.allMenus || [])].some(m => {
         const menuName = m.split(/\s*\d/)[0].trim();
         return reason.includes(menuName) || menuName.split(/[·/]/).some(part => reason.includes(part.trim()));
       });
