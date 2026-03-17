@@ -57,21 +57,23 @@ export default async function handler(req, res) {
     if (r.hot) extras.push('핫한 신상 맛집');
     const extrasText = extras.length > 0 ? extras.join(', ') : '';
 
-    const prompt = `광화문 직장인 점심 추천. 아래 상황과 식당 메뉴를 분석하여 추천 이유를 작성하세요.
+    const prompt = `당신은 광화문 직장인 점심 추천 전문가입니다. 상황과 메뉴를 분석하여 추천 한줄평을 작성하세요.
 
-[상황] ${weatherText}, ${moodText} 상황, ${peopleText}${dietText ? ', ' + dietText : ''}
-[식당] ${r.name} (${r.category})
-[메뉴] ${menuList}
-[가격] ${r.priceNote || r.price}
-[거리] ${r.walk || ''}
-[평점] ${r.rating || ''}★
-[특징] ${extrasText}
+상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
+식당: ${r.name} (${r.category})
+메뉴: ${menuList}
+가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★
+특징: ${extrasText}
 
-규칙:
-- 메뉴 중 현재 상황(날씨/기분/인원)에 가장 어울리는 구체적 메뉴명을 반드시 언급
-- 이모지1개로 시작, 45자 이내 한 문장
-- 왜 이 상황에 이 식당의 이 메뉴가 좋은지 설명
-JSON: {"reasons":["추천이유"]}`;
+반드시 지켜야 할 형식:
+1. 반드시 이모지 1개로 시작 (🔥🍜❄️☔🥗🍖 등)
+2. 메뉴판에 있는 구체적 메뉴명 1개를 반드시 포함
+3. 현재 상황(날씨/기분)과 해당 메뉴가 왜 어울리는지 연결
+4. 40자 이내 한 문장 (초과 금지)
+5. JSON만 출력: {"reasons":["이모지+한줄평"]}
+
+좋은 예시: {"reasons":["🔥 추운 날 뼈해장국으로 속까지 따뜻하게 해장"]}
+나쁜 예시: {"reasons":["맛있는 식당입니다"]} (메뉴명 없음, 상황 연결 없음)`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 
@@ -118,14 +120,32 @@ JSON: {"reasons":["추천이유"]}`;
       return res.status(502).json({ error: 'LLM 응답이 비어있습니다.' });
     }
 
-    // JSON 파싱 (```json ... ``` 래핑 제거)
-    const jsonStr = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    // JSON 파싱 (```json ... ``` 래핑 제거 + 텍스트 중간 JSON 추출)
+    const cleaned = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     let parsed;
+    // 1순위: 응답 전체가 JSON인 경우
     try {
-      parsed = JSON.parse(jsonStr);
-    } catch (parseErr) {
-      console.error('LLM JSON parse error:', jsonStr.substring(0, 200));
-      return res.status(502).json({ error: 'LLM 응답 형식 오류' });
+      parsed = JSON.parse(cleaned);
+    } catch {
+      // 2순위: 텍스트 안에 {"reasons":[...]} 가 포함된 경우 추출
+      const jsonMatch = cleaned.match(/\{\s*"reasons"\s*:\s*\[.*?\]\s*\}/s);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch {
+          parsed = null;
+        }
+      }
+      // 3순위: JSON 없이 텍스트만 반환된 경우 — 첫 줄을 추천 이유로 사용
+      if (!parsed) {
+        const firstLine = cleaned.split('\n')[0].replace(/^["']|["']$/g, '').trim();
+        if (firstLine.length > 0 && firstLine.length <= 80) {
+          parsed = { reasons: [firstLine] };
+        } else {
+          console.error('LLM JSON parse error:', cleaned.substring(0, 200));
+          return res.status(502).json({ error: 'LLM 응답 형식 오류' });
+        }
+      }
     }
 
     if (!parsed.reasons || !Array.isArray(parsed.reasons) || parsed.reasons.length < 1) {
