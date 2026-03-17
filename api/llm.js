@@ -43,14 +43,17 @@ export default async function handler(req, res) {
     const dietText = dietLabels[selections.diet] || selections.diet;
     const peopleText = selections.people >= 8 ? '8명 이상' : `${selections.people}명`;
 
+    const restaurantCount = top3.length;
     const restaurantDescriptions = top3.map((r, i) => {
       return `${i + 1}위: ${r.name} (${r.category}) - 메뉴: ${(r.menus || []).slice(0, 3).join(', ')} / ${r.priceNote || r.price || ''} / ${r.walk || ''} / 매칭점수: ${r.score100}점`;
     }).join('\n');
 
+    const reasonPlaceholders = top3.map((_, i) => `"${i + 1}위 추천이유"`).join(',');
+
     const prompt = `당신은 광화문 직장인 점심 추천 전문가입니다.
 오늘 사용자의 조건: 날씨=${weatherText}, 기분=${moodText}, 인원=${peopleText}, 식단=${dietText}
 
-아래 TOP 3 식당 각각에 대해 오늘 조건에 맞는 추천 이유를 자연스럽고 친근한 한국어로 1~2문장(50자 이내)으로 작성해주세요.
+아래 TOP ${restaurantCount} 식당 각각에 대해 오늘 조건에 맞는 추천 이유를 자연스럽고 친근한 한국어로 1~2문장(50자 이내)으로 작성해주세요.
 - 이모지 1개로 시작
 - 오늘 날씨/기분/인원에 맞춰 왜 이 식당이 좋은지 구체적으로
 - 메뉴나 특징을 언급하면 더 좋음
@@ -59,7 +62,7 @@ export default async function handler(req, res) {
 ${restaurantDescriptions}
 
 반드시 아래 JSON 형식으로만 응답하세요:
-{"reasons":["1위 추천이유","2위 추천이유","3위 추천이유"]}`;
+{"reasons":[${reasonPlaceholders}]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 
@@ -93,7 +96,17 @@ ${restaurantDescriptions}
 
     // JSON 파싱 (```json ... ``` 래핑 제거)
     const jsonStr = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(jsonStr);
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      console.error('LLM JSON parse error:', jsonStr.substring(0, 200));
+      return res.status(502).json({ error: 'LLM 응답 형식 오류' });
+    }
+
+    if (!parsed.reasons || !Array.isArray(parsed.reasons) || parsed.reasons.length < 1) {
+      return res.status(502).json({ error: 'LLM 응답에 reasons 배열이 없습니다.' });
+    }
 
     return res.status(200).json(parsed);
   } catch (error) {

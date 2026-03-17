@@ -13,10 +13,13 @@ const LLM_API_PATH = '/api/llm';
  * @returns {Promise<string[]>} 추천 이유 배열 (3개)
  */
 export async function fetchLLMReasons(top3, selections) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
   try {
     const response = await fetch(LLM_API_PATH, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         restaurants: top3.map(r => ({
           name: r.name,
@@ -31,12 +34,14 @@ export async function fetchLLMReasons(top3, selections) {
         selections,
       }),
     });
+    clearTimeout(timeout);
 
     if (!response.ok) return null;
 
     const data = await response.json();
     return data.reasons || null;
   } catch {
+    clearTimeout(timeout);
     return null;
   }
 }
