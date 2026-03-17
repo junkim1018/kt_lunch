@@ -38,21 +38,40 @@ export default async function handler(req, res) {
     // TOP3만 허용 (과도한 사용 방지)
     const top3 = restaurants.slice(0, 3);
 
-    const weatherLabels = { hot: '더운 날', mild: '선선한 날', cold: '추운 날', rainy: '비 오는 날' };
-    const moodLabels = { safe: '무난하게', hearty: '든든하게', exciting: '새로운 맛', team: '같이 먹기 좋은', hangover: '해장', sad: '기분전환', executive: '격식 있게', stressed: '스트레스 해소' };
-    const dietLabels = { nodiet: '상관없음', light: '가볍게', diet: '다이어트', vegetarian: '채식' };
+    const weatherLabels = { hot: '더운 날씨', mild: '선선한 날씨', cold: '추운 날씨', rainy: '비 오는 날씨' };
+    const moodLabels = { safe: '무난하게 먹고 싶은', hearty: '든든하게 배부르게 먹고 싶은', exciting: '새로운 맛을 경험하고 싶은', team: '팀/동료와 같이 먹기 좋은', hangover: '해장이 필요한', sad: '기분전환이 필요한', executive: '격식 있는 자리가 필요한', stressed: '스트레스 해소가 필요한' };
+    const dietLabels = { nodiet: '', light: '가볍게 먹고 싶은', diet: '다이어트 중인', vegetarian: '채식 선호' };
 
     const weatherText = weatherLabels[selections.weather] || selections.weather;
     const moodText = moodLabels[selections.mood] || selections.mood;
-    const dietText = dietLabels[selections.diet] || selections.diet;
-    const peopleText = selections.people >= 8 ? '8명 이상' : `${selections.people}명`;
+    const dietText = dietLabels[selections.diet] || '';
+    const peopleText = selections.people >= 8 ? '8명 이상 단체' : selections.people >= 5 ? `${selections.people}명 중규모 모임` : selections.people >= 2 ? `${selections.people}명` : '혼밥';
 
-    const restaurantCount = top3.length;
-    const restaurantDescriptions = top3.map((r, i) => {
-      return `${i + 1}. ${r.name}(${r.category}) ${(r.menus || []).slice(0, 2).join('·')} ${r.priceNote || ''}`;
-    }).join(' / ');
+    const r = top3[0]; // 단일 식당 (개별 호출)
+    const menuList = (r.menus || []).join(', ');
+    const extras = [];
+    if (r.ribbon) extras.push('블루리본 인증');
+    if (r.calorie) extras.push(r.calorie.label);
+    if (r.waiting) extras.push('웨이팅 있음');
+    else extras.push('대기 없이 바로 입장');
+    if (r.hot) extras.push('핫한 신상 맛집');
+    const extrasText = extras.length > 0 ? extras.join(', ') : '';
 
-    const prompt = `광화문 점심추천. 조건: ${weatherText},${moodText},${peopleText},${dietText}. 식당: ${restaurantDescriptions}. 각 식당별 추천이유를 이모지1개+한문장(30자이내)으로 JSON응답: {"reasons":["이유1","이유2","이유3"]}`;
+    const prompt = `광화문 직장인 점심 추천. 아래 상황과 식당 메뉴를 분석하여 추천 이유를 작성하세요.
+
+[상황] ${weatherText}, ${moodText} 상황, ${peopleText}${dietText ? ', ' + dietText : ''}
+[식당] ${r.name} (${r.category})
+[메뉴] ${menuList}
+[가격] ${r.priceNote || r.price}
+[거리] ${r.walk || ''}
+[평점] ${r.rating || ''}★
+[특징] ${extrasText}
+
+규칙:
+- 메뉴 중 현재 상황(날씨/기분/인원)에 가장 어울리는 구체적 메뉴명을 반드시 언급
+- 이모지1개로 시작, 45자 이내 한 문장
+- 왜 이 상황에 이 식당의 이 메뉴가 좋은지 설명
+JSON: {"reasons":["추천이유"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 
