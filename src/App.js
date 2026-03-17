@@ -829,22 +829,19 @@ export default function LunchRecommender() {
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
 
-          // LLM 추천 이유 순차 요청 (TOP1부터 하나씩 표시)
+          // LLM 추천 이유 병렬 요청 (3개 동시 호출, 도착순 표시)
           setLlmReasons({});
           setLlmLoading(true);
           const top3ForLLM = normalizedList.slice(0, 3);
           const selCopy = { ...selections };
-          (async () => {
-            for (const r of top3ForLLM) {
-              try {
-                const reason = await fetchSingleLLMReason(r, selCopy);
-                if (reason) {
-                  setLlmReasons(prev => ({ ...prev, [r.name]: reason }));
-                }
-              } catch {}
-            }
-            setLlmLoading(false);
-          })();
+          const llmPromises = top3ForLLM.map(r =>
+            fetchSingleLLMReason(r, selCopy)
+              .then(reason => {
+                if (reason) setLlmReasons(prev => ({ ...prev, [r.name]: reason }));
+              })
+              .catch(() => {})
+          );
+          Promise.allSettled(llmPromises).then(() => setLlmLoading(false));
 
           // 4~10위는 1초 후 공개
           setTimeout(() => setShowAll(true), 1000);
