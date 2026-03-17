@@ -53,6 +53,8 @@ export default function LunchRecommender() {
   const [feedbackGiven, setFeedbackGiven] = useState({});
   const [llmReasons, setLlmReasons] = useState({});
   const [llmLoading, setLlmLoading] = useState(false);
+  const llmBufferRef = useRef({});
+  const llmOrderRef = useRef([]);
 
   useEffect(() => {
     const tick = () => {
@@ -829,17 +831,44 @@ export default function LunchRecommender() {
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
 
-          // LLM 추천 이유 병렬 요청 (3개 동시 호출, 도착순 표시)
+          // LLM 추천 이유 병렬 요청 + 순서 보장 표시 (TOP1→TOP2→TOP3)
           setLlmReasons({});
           setLlmLoading(true);
+          llmBufferRef.current = {};
           const top3ForLLM = normalizedList.slice(0, 3);
+          const llmNames = top3ForLLM.map(r => r.name);
+          llmOrderRef.current = llmNames;
           const selCopy = { ...selections };
+
+          const flushBuffer = () => {
+            const buf = llmBufferRef.current;
+            const order = llmOrderRef.current;
+            // 순서대로 연속으로 준비된 항목만 표시
+            const ready = [];
+            for (let i = 0; i < order.length; i++) {
+              if (order[i] in buf) {
+                if (buf[order[i]]) ready.push({ name: order[i], reason: buf[order[i]] });
+              } else {
+                break;
+              }
+            }
+            ready.forEach((item, idx) => {
+              setTimeout(() => {
+                setLlmReasons(prev => prev[item.name] ? prev : { ...prev, [item.name]: item.reason });
+              }, idx * 150);
+            });
+          };
+
           const llmPromises = top3ForLLM.map(r =>
             fetchSingleLLMReason(r, selCopy)
               .then(reason => {
-                if (reason) setLlmReasons(prev => ({ ...prev, [r.name]: reason }));
+                llmBufferRef.current[r.name] = reason || '';
+                flushBuffer();
               })
-              .catch(() => {})
+              .catch(() => {
+                llmBufferRef.current[r.name] = '';
+                flushBuffer();
+              })
           );
           Promise.allSettled(llmPromises).then(() => setLlmLoading(false));
 
@@ -1422,7 +1451,7 @@ export default function LunchRecommender() {
                       </div>
                     );
                   }
-                  if (llmLoading && !llmReasons[r.name]) {
+                  if (llmLoading && !(r.name in llmReasons)) {
                     return (
                       <div style={{ background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s ease-in-out infinite", borderRadius: 10, padding: "10px 14px", marginBottom: 12, borderLeft: `3px solid ${rankColor}20`, height: 44 }}>
                         <div style={{ width: "70%", height: 10, borderRadius: 5, background: "rgba(0,0,0,0.06)", marginBottom: 6 }} />
