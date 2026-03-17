@@ -723,9 +723,11 @@ export default function LunchRecommender() {
           });
           // 우선순위: 고유 특성 > 상황 매칭 > 날씨
           const orderedReasons = [...uniqueReasons, ...contextReasons, ...weatherReasons];
-          const recommendReason = orderedReasons.length > 0
-            ? { primary: orderedReasons[0], tags: orderedReasons.slice(1, 4) }
-            : (r.reason ? { primary: r.reason, tags: [] } : { primary: '추천 맛집', tags: [] });
+          // DB reason(자연어 추천이유)을 항상 primary로, 동적 이유를 tags로
+          const recommendReason = {
+            primary: r.reason || '추천 맛집',
+            tags: orderedReasons.slice(0, 4)
+          };
 
           // �️ 상황별 메뉴 추천 (날씨/기분/식단에 맞는 메뉴 우선)
           const weatherMenus = filterMenusByContext(r.menus, selections.weather, selections.mood, selections.diet);
@@ -1539,11 +1541,11 @@ export default function LunchRecommender() {
                     const { primary, tags } = typeof r.recommendReason === 'object' ? r.recommendReason : { primary: r.recommendReason, tags: [] };
                     return (
                       <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, borderLeft: `3px solid ${rankColor}` }}>
-                        <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 600 }}>{primary}</div>
+                        <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 500, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{primary}</div>
                         {tags.length > 0 && (
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
                             {tags.map((tag, ti) => (
-                              <span key={ti} style={{ fontSize: 11, color: "#475569", background: "#f1f5f9", padding: "2px 8px", borderRadius: 50 }}>{tag}</span>
+                              <span key={ti} style={{ fontSize: 11, color: "#475569", background: "#f1f5f9", padding: "3px 8px", borderRadius: 50 }}>{tag}</span>
                             ))}
                           </div>
                         )}
@@ -1669,11 +1671,11 @@ export default function LunchRecommender() {
                         const { primary, tags } = typeof r.recommendReason === 'object' ? r.recommendReason : { primary: r.recommendReason, tags: [] };
                         return (
                           <div style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 14px", marginBottom: 10, borderLeft: "3px solid #e2e8f0" }}>
-                            <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 600 }}>{primary}</div>
+                            <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 500, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{primary}</div>
                             {tags.length > 0 && (
                               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
                                 {tags.map((tag, ti) => (
-                                  <span key={ti} style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 50 }}>{tag}</span>
+                                  <span key={ti} style={{ fontSize: 11, color: "#475569", background: "#f1f5f9", padding: "3px 8px", borderRadius: 50 }}>{tag}</span>
                                 ))}
                               </div>
                             )}
