@@ -39,7 +39,19 @@ export default async function handler(req, res) {
     const top3 = restaurants.slice(0, 3);
 
     const weatherLabels = { hot: '더운 날씨', mild: '선선한 날씨', cold: '추운 날씨', rainy: '비 오는 날씨' };
-    const moodLabels = { safe: '무난하게 먹고 싶은', hearty: '든든하게 배부르게 먹고 싶은', exciting: '신나는 날! 특별하고 새로운 맛을 즐기고 싶은', team: '팀/동료와 같이 먹기 좋은', hangover: '해장이 필요한', sad: '기분전환이 필요한', executive: '격식 있는 자리가 필요한', stressed: '스트레스 해소가 필요한' };
+    const moodLabels = { safe: '무난하게 먹고 싶은', hearty: '든든하게 배부르게 먹고 싶은', exciting: '신나는 날! 특별하고 새로운 맛을 즐기고 싶은', team: '팀/동료와 같이 먹기 좋은', hangover: '해장이 필요한', sad: '기분전환이 필요한', executive: '임원/VIP와 격식 있는 식사가 필요한', stressed: '스트레스 해소가 필요한' };
+
+    // 기분별 톤 가이드 — 자연어 다양성과 재미
+    const toneGuides = {
+      safe: '편안하고 친근한 말투로',
+      hearty: '푸짐함을 강조하며 배고픈 직장인 공감하듯',
+      exciting: '설레는 톤으로, 맛집 탐험가처럼',
+      team: '팀워크/동료 케미를 살려서',
+      hangover: '해장 선배가 조언하듯 위트있게',
+      sad: '따뜻하게 위로하듯',
+      executive: '품격 있되 센스있는 비서처럼',
+      stressed: '시원하게 날려버리자는 느낌으로',
+    };
     const dietLabels = { nodiet: '', light: '가볍게 먹고 싶은', diet: '다이어트 중인', vegetarian: '채식 선호' };
 
     const weatherText = weatherLabels[selections.weather] || selections.weather;
@@ -62,15 +74,17 @@ export default async function handler(req, res) {
     const moodEmoji = { safe: '😊', hearty: '🍖', exciting: '✨', team: '👥', hangover: '💊', sad: '🎉', executive: '🤵', stressed: '🔥' };
     const suggestedEmoji = moodEmoji[selections.mood] || weatherEmoji[selections.weather] || '🍽️';
 
-    const prompt = `광화문 직장인 점심 추천 한줄평.
+    const toneText = toneGuides[selections.mood] || '자연스럽게';
+
+    const prompt = `KT 광화문 직장인 점심 추천 한줄평. ${toneText} 작성.
 
 상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
 식당: ${r.name} (${r.category})
 메뉴: ${menuList}
 가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
-형식: ${suggestedEmoji} + 메뉴명 포함 + 상황과 연결 + 40자이내
-금지: 가격을 k/K로 축약하지 말 것 (22k❌ → 2.2만원⭕)
+형식: ${suggestedEmoji} + 메뉴명 포함 + 상황에 맞는 위트/공감 + 40자이내
+금지: k/K 가격축약, 딱딱한 안내문 톤
 출력: {"reasons":["한줄평"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
