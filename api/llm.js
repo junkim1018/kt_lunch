@@ -57,23 +57,20 @@ export default async function handler(req, res) {
     if (r.hot) extras.push('핫한 신상 맛집');
     const extrasText = extras.length > 0 ? extras.join(', ') : '';
 
-    const prompt = `당신은 광화문 직장인 점심 추천 전문가입니다. 상황과 메뉴를 분석하여 추천 한줄평을 작성하세요.
+    // 상황별 이모지 매핑
+    const weatherEmoji = { hot: '☀️', mild: '🌤️', cold: '❄️', rainy: '☔' };
+    const moodEmoji = { safe: '😊', hearty: '🍖', exciting: '✨', team: '👥', hangover: '💊', sad: '🎉', executive: '🤵', stressed: '🔥' };
+    const suggestedEmoji = moodEmoji[selections.mood] || weatherEmoji[selections.weather] || '🍽️';
+
+    const prompt = `광화문 직장인 점심 추천 한줄평.
 
 상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
 식당: ${r.name} (${r.category})
 메뉴: ${menuList}
-가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★
-특징: ${extrasText}
+가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
-반드시 지켜야 할 형식:
-1. 반드시 이모지 1개로 시작 (🔥🍜❄️☔🥗🍖 등)
-2. 메뉴판에 있는 구체적 메뉴명 1개를 반드시 포함
-3. 현재 상황(날씨/기분)과 해당 메뉴가 왜 어울리는지 연결
-4. 40자 이내 한 문장 (초과 금지)
-5. JSON만 출력: {"reasons":["이모지+한줄평"]}
-
-좋은 예시: {"reasons":["🔥 추운 날 뼈해장국으로 속까지 따뜻하게 해장"]}
-나쁜 예시: {"reasons":["맛있는 식당입니다"]} (메뉴명 없음, 상황 연결 없음)`;
+형식: ${suggestedEmoji} + 메뉴명 포함 + 상황과 연결 + 40자이내
+출력: {"reasons":["한줄평"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
 

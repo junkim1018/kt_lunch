@@ -86,6 +86,46 @@ const scenarios = [
     },
     selections: { weather: 'hot', mood: 'sad', people: 1, diet: 'diet' }
   },
+  {
+    label: '선선한 날 + 든든하게 + 8명 단체',
+    restaurant: {
+      name: '새마을식당 광화문점', category: '한식 · 삼겹살/구이',
+      menus: ['열탄불고기 12,000원', '7분돼지김치찌개 8,000원', '된장찌개 8,000원'],
+      priceNote: '1인 평균 1만원', walk: '도보 6분', rating: '4.1',
+      calorie: { label: '고칼로리' }, waiting: true, ribbon: false, hot: false
+    },
+    selections: { weather: 'mild', mood: 'hearty', people: 8, diet: 'nodiet' }
+  },
+  {
+    label: '비 오는 날 + 새로운 맛 + 2명',
+    restaurant: {
+      name: '야마야 광화문 디타워점', category: '일식 · 규카츠/일본커틀릿',
+      menus: ['규카츠 정식 18,000원', '메가 규카츠 정식 23,000원', '히레카츠 정식 18,000원'],
+      priceNote: '인당 1.8~2.3만원', walk: '도보 2분 (디타워 B1)', rating: '4.5',
+      calorie: { label: '고칼로리' }, waiting: true, ribbon: false, hot: false
+    },
+    selections: { weather: 'rainy', mood: 'exciting', people: 2, diet: 'nodiet' }
+  },
+  {
+    label: '추운 날 + 무난하게 + 혼밥 + 채식',
+    restaurant: {
+      name: '컬러그린 광화문점', category: '샐러드 · 건강식/비건',
+      menus: ['비건 시금치 파스타 13,500원', '두부강황 볶음밥 12,500원', '구운 채소 곡물볼 11,500원'],
+      priceNote: '인당 1.2~1.4만원', walk: '도보 4분', rating: '4.3',
+      calorie: { label: '저칼로리' }, waiting: false, ribbon: false, hot: false
+    },
+    selections: { weather: 'cold', mood: 'safe', people: 1, diet: 'vegetarian' }
+  },
+  {
+    label: '더운 날 + 팀 점심 + 3명 + 가볍게',
+    restaurant: {
+      name: '후라토식당 본점', category: '일식 · 정식/가정식',
+      menus: ['후라토 정식 16,000원', '사시미 정식 19,000원', '규카츠 정식 17,000원'],
+      priceNote: '인당 1.6~1.9만원', walk: '도보 5분', rating: '4.6',
+      calorie: { label: '보통' }, waiting: false, ribbon: false, hot: false
+    },
+    selections: { weather: 'hot', mood: 'team', people: 3, diet: 'light' }
+  },
 ];
 
 // 프롬프트 빌더 (api/llm.js와 동일 로직)
@@ -108,23 +148,20 @@ function buildPrompt(r, selections) {
   if (r.hot) extras.push('핫한 신상 맛집');
   const extrasText = extras.join(', ');
 
-  return `당신은 광화문 직장인 점심 추천 전문가입니다. 상황과 메뉴를 분석하여 추천 한줄평을 작성하세요.
+  // 상황별 이모지 매핑
+  const weatherEmoji = { hot: '☀️', mild: '🌤️', cold: '❄️', rainy: '☔' };
+  const moodEmoji = { safe: '😊', hearty: '🍖', exciting: '✨', team: '👥', hangover: '💊', sad: '🎉', executive: '🤵', stressed: '🔥' };
+  const suggestedEmoji = moodEmoji[selections.mood] || weatherEmoji[selections.weather] || '🍽️';
+
+  return `광화문 직장인 점심 추천 한줄평.
 
 상황: ${weatherText}, ${moodText}, ${peopleText}${dietText ? ', ' + dietText : ''}
 식당: ${r.name} (${r.category})
 메뉴: ${menuList}
-가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★
-특징: ${extrasText}
+가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
-반드시 지켜야 할 형식:
-1. 반드시 이모지 1개로 시작 (🔥🍜❄️☔🥗🍖 등)
-2. 메뉴판에 있는 구체적 메뉴명 1개를 반드시 포함
-3. 현재 상황(날씨/기분)과 해당 메뉴가 왜 어울리는지 연결
-4. 40자 이내 한 문장 (초과 금지)
-5. JSON만 출력: {"reasons":["이모지+한줄평"]}
-
-좋은 예시: {"reasons":["🔥 추운 날 뼈해장국으로 속까지 따뜻하게 해장"]}
-나쁜 예시: {"reasons":["맛있는 식당입니다"]} (메뉴명 없음, 상황 연결 없음)`;
+형식: ${suggestedEmoji} + 메뉴명 포함 + 상황과 연결 + 40자이내
+출력: {"reasons":["한줄평"]}`;
 }
 
 async function callLLM(prompt) {

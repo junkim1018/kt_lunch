@@ -661,9 +661,25 @@ export default function LunchRecommender() {
             reasons.push('❄️ 겨울 시즌 추천');
           }
 
-          const recommendReason = reasons.length > 0 
-            ? reasons.slice(0, 3).join(' · ') 
-            : r.reason || '추천 맛집';
+          // 추천 이유를 primary(핵심) + tags(보조) 구조로 분리
+          // 식당 고유 특성을 우선 배치하고, 공통 요소(날씨)는 보조 태그로
+          const uniqueReasons = []; // 식당 고유 특성 (블루리본, 평점, 거리, 시즌, 대기, 칼로리)
+          const contextReasons = []; // 상황 매칭 (기분, 식단, 인원, 예산)
+          const weatherReasons = []; // 날씨 (모든 식당 공통 → 최하위)
+          reasons.forEach(reason => {
+            if (/블루리본|평점|도보|대기 없이|저칼로리|시즌/.test(reason)) {
+              uniqueReasons.push(reason);
+            } else if (/추운 날|더운 날|비 오는|선선한/.test(reason)) {
+              weatherReasons.push(reason);
+            } else {
+              contextReasons.push(reason);
+            }
+          });
+          // 우선순위: 고유 특성 > 상황 매칭 > 날씨
+          const orderedReasons = [...uniqueReasons, ...contextReasons, ...weatherReasons];
+          const recommendReason = orderedReasons.length > 0
+            ? { primary: orderedReasons[0], tags: orderedReasons.slice(1, 4) }
+            : (r.reason ? { primary: r.reason, tags: [] } : { primary: '추천 맛집', tags: [] });
 
           return { 
             ...r, 
@@ -1470,9 +1486,17 @@ export default function LunchRecommender() {
                     );
                   }
                   if (r.recommendReason) {
+                    const { primary, tags } = typeof r.recommendReason === 'object' ? r.recommendReason : { primary: r.recommendReason, tags: [] };
                     return (
-                      <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: `3px solid ${rankColor}`, fontWeight: 500 }}>
-                        {r.recommendReason}
+                      <div style={{ background: "#EEF2FF", borderRadius: 10, padding: "10px 14px", marginBottom: 12, borderLeft: `3px solid ${rankColor}` }}>
+                        <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 600 }}>{primary}</div>
+                        {tags.length > 0 && (
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
+                            {tags.map((tag, ti) => (
+                              <span key={ti} style={{ fontSize: 11, color: "#475569", background: "#f1f5f9", padding: "2px 8px", borderRadius: 50 }}>{tag}</span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     );
                   }
@@ -1591,11 +1615,21 @@ export default function LunchRecommender() {
                       </div>
 
                       {/* 추천 이유 */}
-                      {r.recommendReason && (
-                        <div style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 14px", marginBottom: 10, fontSize: 13, color: "#0f172a", lineHeight: 1.6, borderLeft: "3px solid #e2e8f0", fontWeight: 500 }}>
-                          {r.recommendReason}
-                        </div>
-                      )}
+                      {r.recommendReason && (() => {
+                        const { primary, tags } = typeof r.recommendReason === 'object' ? r.recommendReason : { primary: r.recommendReason, tags: [] };
+                        return (
+                          <div style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 14px", marginBottom: 10, borderLeft: "3px solid #e2e8f0" }}>
+                            <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, fontWeight: 600 }}>{primary}</div>
+                            {tags.length > 0 && (
+                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
+                                {tags.map((tag, ti) => (
+                                  <span key={ti} style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 50 }}>{tag}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       {/* 예약/지도 링크 */}
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
