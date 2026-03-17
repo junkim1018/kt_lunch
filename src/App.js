@@ -257,16 +257,44 @@ export default function LunchRecommender() {
     }, 100);
   };
 
-  // 🌧️ 날씨별 메뉴 필터링 — 비/추운 날 회·초밥 제외, 따뜻한 메뉴 우선
+  // �️ 상황별 메뉴 추천 — 날씨/기분/식단에 맞는 메뉴 우선 표시
   const RAW_COLD_PATTERN = /초밥|스시|사시미|회덮|카이센|포케|물회|횟|刺身|생연어|연어덮|연어초|참치회|회전초밥/;
-  const WARM_MENU_PATTERN = /탕|국|찌개|전골|우동|라멘|라면|수제비|칼국수|짬뽕|국밥|볶음|카레|그라탕|스튜|전\s|부침/;
-  const filterMenusByWeather = (menus, weather) => {
+  const HOT_SOUP_PATTERN = /탕|국밥|찌개|전골|라멘|라면|짬뽕|우동|수제비|칼국수|설렁|곰국|해장|쌀국수|우육면|마라탕|똠얌|모츠나베|솥밥/;
+  const COOL_MENU_PATTERN = /냉면|냉모밀|콩국수|물회|포케|샐러드|냉채|비빔|분짜|월남쌈|반미|타코|부리또|샌드위치|버거|회덮|초밥|스시/;
+  const SOUP_MENU_PATTERN = /탕|국밥|찌개|전골|라멘|라면|짬뽕|우동|수제비|칼국수|설렁|곰국|해장|쌀국수|우육면|순대국|마라탕|똠얌|곰탕|갈비탕|떡만두|모츠나베|파전|전\s|부침/;
+  const LIGHT_MENU_PATTERN = /샐러드|포케|요거트|그릭|그레인|두부|채식|비건|선식|사찰|순두부/;
+  const filterMenusByContext = (menus, weather, mood, diet) => {
     if (!menus || !Array.isArray(menus) || menus.length === 0) return menus;
-    if (weather !== 'rainy' && weather !== 'cold') return menus;
-    // 따뜻한 메뉴만 남기고, 회/초밥 제외
-    const warmMenus = menus.filter(m => !RAW_COLD_PATTERN.test(m));
-    // 모든 메뉴가 필터링되면 원본 유지 (추천할 게 없으면 차선)
-    return warmMenus.length > 0 ? warmMenus : menus;
+
+    let preferred = null;
+    let excluded = null;
+
+    // 더운 날: 시원한 메뉴 우선, 뜨거운 국물 후순위
+    if (weather === 'hot') {
+      preferred = COOL_MENU_PATTERN;
+      excluded = HOT_SOUP_PATTERN;
+    }
+    // 비/추운 날: 따뜻한 국물 우선, 회·초밥 후순위
+    if (weather === 'rainy' || weather === 'cold') {
+      preferred = SOUP_MENU_PATTERN;
+      excluded = RAW_COLD_PATTERN;
+    }
+    // 다이어트/가볍게: 가벼운 메뉴 우선
+    if (diet === 'diet' || diet === 'light') {
+      preferred = LIGHT_MENU_PATTERN;
+    }
+
+    if (!preferred && !excluded) return menus;
+
+    // 1순위: preferred 매칭 메뉴
+    const best = preferred ? menus.filter(m => preferred.test(m)) : [];
+    // 2순위: excluded에 안 걸리는 메뉴
+    const ok = excluded ? menus.filter(m => !excluded.test(m)) : menus;
+    // 3순위: 원본 전체 (폴백)
+
+    if (best.length > 0) return best;
+    if (ok.length > 0 && ok.length < menus.length) return ok;
+    return menus;
   };
 
   useEffect(() => {
@@ -699,15 +727,15 @@ export default function LunchRecommender() {
             ? { primary: orderedReasons[0], tags: orderedReasons.slice(1, 4) }
             : (r.reason ? { primary: r.reason, tags: [] } : { primary: '추천 맛집', tags: [] });
 
-          // 🌧️ 날씨 기반 메뉴 필터링 (비/추운 날 따뜻한 메뉴 우선)
-          const weatherMenus = filterMenusByWeather(r.menus, selections.weather);
+          // �️ 상황별 메뉴 추천 (날씨/기분/식단에 맞는 메뉴 우선)
+          const weatherMenus = filterMenusByContext(r.menus, selections.weather, selections.mood, selections.diet);
 
           return { 
             ...r, 
             matchCount, 
             isRecent, 
             rating,
-            weatherMenus, // 날씨 필터링된 메뉴
+            weatherMenus, // 상황별 필터링된 메뉴
             peopleMatched: matches[2], // 인원수 매칭 여부 (필수 필터)
             moodMatched: matches[1], // 기분 매칭 여부 (해장/격식 필수 필터용)
             dietMatched: matches[3], // 식단 매칭 여부 (필수 필터용)
