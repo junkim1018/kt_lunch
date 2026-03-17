@@ -70,6 +70,7 @@ export default async function handler(req, res) {
 가격: ${r.priceNote || r.price} | 거리: ${r.walk || ''} | 평점: ${r.rating || ''}★ | ${extrasText}
 
 형식: ${suggestedEmoji} + 메뉴명 포함 + 상황과 연결 + 40자이내
+금지: 가격을 k/K로 축약하지 말 것 (22k❌ → 2.2만원⭕)
 출력: {"reasons":["한줄평"]}`;
 
     const url = `${endpoint.replace(/\/$/, '')}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
