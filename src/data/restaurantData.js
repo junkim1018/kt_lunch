@@ -1,4 +1,4 @@
-// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (132개)
+// KT 광화문 West/East 빌딩 반경 실제 맛집 데이터베이스 (131개)
 // 예산 기준: cheap=~1만원 / normal=1~2만원 / expensive=2만원 이상 (1인 기준)
 export const restaurantDB = [
   {
@@ -1673,29 +1673,7 @@ export const restaurantDB = [
     ]
   },
 
-  {
-    name: "필경재 종각점",
-    category: "한식 · 하남냉면/족발",
-    cuisine: "korean",
-    coords: { lat: 37.5725, lng: 126.9825 },
-    menus: ["하남물냉면 13,000원", "하남비빔냉면 13,000원", "족발 소 35,000원", "보쌈 소 35,000원"],
-    price: "13,000~20,000원",
-    priceNote: "1인 평균 1.5만원",
-    walk: "도보 7분 (종로3가)",
-    rating: "4.3",
-    ribbon: false,
-    diet: ["nodiet"],
-    weather: ["hot","mild"],
-    mood: ["safe","hearty","team"],
-    people: ["solo","small","medium","large"],
-    budget: ["normal"],
-    waiting: false,
-    calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "💧 하남 스타일 육수 진한 물냉면. 평양냉면과 달리 진하고 달콤한 육수가 특징. 족발·보쌈과 세트 주문 가능. 더운 날 시원하게.",
-    naver: "https://map.naver.com/v5/search/필경재+종각점",
-    reservation: []
-  },
-
+  // ⛔ 필경재 종각점 — 네이버 지도 검색 결과 없음 (폐업/존재 확인 불가)으로 제거
   // ⛔ 동광원 — 네이버 지도 검색 결과 없음 (폐업/존재 확인 불가)으로 제거
   // ⛔ 진미평양냉면 종로점 — 네이버 지도 검색 결과 없음 (폐업/존재 확인 불가)으로 제거
 
