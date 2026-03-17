@@ -128,6 +128,8 @@ export default function LunchRecommender() {
         realWeatherRef.current = weather;
         // 날씨 자동 설정 (사용자가 아직 변경하지 않은 초기 상태)
         setSelections(prev => ({ ...prev, weather }));
+        // 날씨 확정 후 프리셋 재셔플 (API 응답 전 mild 폴백 방지)
+        setTimeout(() => shuffleQuickPresets(), 0);
       } catch {
         // API 실패 시 계절 기반 폴백
         const month = new Date().getMonth() + 1;
@@ -136,6 +138,7 @@ export default function LunchRecommender() {
         else if (month >= 12 || month <= 2) weather = 'cold';
         realWeatherRef.current = weather;
         setSelections(prev => ({ ...prev, weather }));
+        setTimeout(() => shuffleQuickPresets(), 0);
       }
     };
     fetchWeather();
