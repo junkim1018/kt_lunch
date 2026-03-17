@@ -53,6 +53,7 @@ export default function LunchRecommender() {
   const [feedbackGiven, setFeedbackGiven] = useState({});
   const [llmReasons, setLlmReasons] = useState({});
   const [llmLoading, setLlmLoading] = useState(false);
+  const [loadingMsg, setLoadingMsg] = useState('광화문 맛집 데이터를 분석하고 있어요...');
 
   useEffect(() => {
     const tick = () => {
@@ -824,25 +825,28 @@ export default function LunchRecommender() {
           setShowAll(false);
           setFeedbackGiven({});
 
+          // LLM 추천 이유를 먼저 가져온 후 결과 표시
+          setLoadingMsg('AI가 맞춤 추천 이유를 작성하고 있어요...');
+          const top3ForLLM = normalizedList.slice(0, 3);
+          const selCopy = { ...selections };
+          setLlmReasons({});
+          setLlmLoading(true);
+          let llmMap = {};
+          try {
+            const reasons = await fetchLLMReasons(top3ForLLM, selCopy);
+            if (reasons && Array.isArray(reasons)) {
+              top3ForLLM.forEach((r, idx) => {
+                if (reasons[idx]) llmMap[r.name] = reasons[idx];
+              });
+            }
+          } catch {}
+          setLlmReasons(llmMap);
+          setLlmLoading(false);
+
           setResults({ 
             list: normalizedList, 
             relaxedMsg: recycleNotice || (final.length < 5 ? "💡 조건에 맞는 식당이 적어요. 다른 조건을 선택해보세요!" : null)
           });
-
-          // TOP3 LLM 추천 이유 비동기 요청
-          setLlmReasons({});
-          setLlmLoading(true);
-          const top3ForLLM = normalizedList.slice(0, 3);
-          const selCopy = { ...selections };
-          fetchLLMReasons(top3ForLLM, selCopy).then(reasons => {
-            if (reasons && Array.isArray(reasons)) {
-              const map = {};
-              top3ForLLM.forEach((r, idx) => {
-                if (reasons[idx]) map[r.name] = reasons[idx];
-              });
-              setLlmReasons(map);
-            }
-          }).catch(() => {}).finally(() => setLlmLoading(false));
 
           // 4~10위는 1초 후 공개
           setTimeout(() => setShowAll(true), 1000);
@@ -882,6 +886,7 @@ export default function LunchRecommender() {
       setShowAlert(true); 
       return; 
     }
+    setLoadingMsg('광화문 맛집 데이터를 분석하고 있어요...');
     setStep("loading");
   };
 
@@ -893,6 +898,7 @@ export default function LunchRecommender() {
       saveRecentSeen(recentSeen.current);
     }
     // 다시 추천 실행
+    setLoadingMsg('광화문 맛집 데이터를 분석하고 있어요...');
     setStep("loading");
   };
 
@@ -1231,10 +1237,10 @@ export default function LunchRecommender() {
               ))}
             </div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 8 }}>
-              광화문 맛집 데이터를 분석하고 있어요...
+              {loadingMsg}
             </div>
             <div style={{ fontSize: 13, color: "#64748b" }}>
-              블루리본 · 네이버 평점 · 카카오맵 참고 중
+              {loadingMsg.includes('AI') ? '날씨 · 기분 · 인원에 딱 맞는 이유를 찾는 중' : '블루리본 · 네이버 평점 · 카카오맵 참고 중'}
             </div>
           </div>
         )}
