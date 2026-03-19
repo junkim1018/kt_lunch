@@ -112,6 +112,13 @@ export function getNegativeAffinityPenalty(restaurant, selections) {
     if (/오마카세|파인다이닝|코스/.test(category)) penalty -= 10;
   }
   
+  if (selections.mood === 'exciting') {
+    // 신나는 날에 분위기 없는 식당 감점
+    if (/국밥|해장국|순대국|북어국|설렁탕|곰탕|백반/.test(category)) penalty -= 15;
+    if (/샐러드|포케|요거트|그릭요거트/.test(category)) penalty -= 12;
+    if (/분식|떡볶이|김밥|순두부/.test(category)) penalty -= 10;
+  }
+  
   // 날씨별 부적합
   if (selections.weather === 'hot') {
     // 더운 날 뜨거운 국물류 약간 감점 (하드 블록은 아님)

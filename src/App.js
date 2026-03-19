@@ -378,12 +378,16 @@ export default function LunchRecommender() {
             return hasMoodTag || isComfortFood || hasComfortCategory;
           }
           
-          // 특별하게/신나게: mood에 'exciting'이 있거나, 이색/프리미엄 식당
+          // 특별하게/신나게: mood에 'exciting'이 있거나, 이색/프리미엄 식당 (분위기 없는 식당 제외)
           if (selections.mood === 'exciting') {
+            const category = r.category || '';
+            // 1단계: 분위기에 맞지 않는 카테고리 강제 제외
+            const isNotExciting = /(순대국|북어국|해장국|국밥|백반|분식|떡볶이|김밥|샐러드|포케|요거트|그릭요거트|순두부|콩나물)/.test(category);
+            if (isNotExciting) return false;
+            // 2단계: exciting 매칭
             const hasMoodTag = r.mood && Array.isArray(r.mood) && r.mood.includes('exciting');
             const isSpecial = r.ribbon || 
               (r.mood && Array.isArray(r.mood) && r.mood.includes('great'));
-            const category = r.category || '';
             const hasExcitingCategory = category.includes('오마카세') || category.includes('코스') ||
               category.includes('프리미엄') || category.includes('스테이크');
             return hasMoodTag || isSpecial || hasExcitingCategory;
