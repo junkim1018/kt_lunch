@@ -2438,9 +2438,9 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🔴", label: "고칼로리", color: "#ff4444" },
     reason: "광화문 대표 프리미엄 중식당. 넓은 홀 + 개별룸으로 단체 회식·접대에 최적. 차돌 낙지 짬뽕·팔진탕면 인기. 고급스러운 인테리어.",
-    naver: "https://map.naver.com/v5/search/금용문+광화문+세종클럽",
+    naver: "https://map.naver.com/v5/search/금용문+광화문",
     reservation: [
-      { label: "네이버 예약", url: "https://map.naver.com/v5/search/금용문+광화문+세종클럽", color: "#03C75A" },
+      { label: "네이버 예약", url: "https://map.naver.com/v5/search/금용문+광화문", color: "#03C75A" },
     ],
   },
   {
