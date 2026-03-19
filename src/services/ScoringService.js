@@ -72,20 +72,25 @@ export function getTimeContextScore(restaurant, selections) {
   const menuText = (restaurant.menus || []).join(' ');
   const searchText = category + ' ' + menuText;
   
+  // 식단 선택(다이어트/가볍게/채식) 시 날씨 메뉴 보너스를 50% 축소
+  const isDietMode = selections.diet && selections.diet !== 'nodiet';
+  const weatherScale = isDietMode ? 0.5 : 1.0;
+  
   if (selections.weather === 'hot') {
-    if (/냉면|회|샐러드|초밥|카이센동|냉모밀|냉소바|물냉|비빔냉|메밀|아이스|콩국수|물회/.test(searchText)) score += 12;
-    if (/찌개|탕|국밥|전골|뚝배기|설렁탕|곰탕/.test(category)) score -= 8;
+    if (/냉면|회|샐러드|초밥|카이센동|냉모밀|냉소바|물냉|비빔냉|메밀|아이스|콩국수|물회/.test(searchText)) score += Math.round(12 * weatherScale);
+    if (/찌개|탕|국밥|전골|뚝배기|설렁탕|곰탕/.test(category)) score -= Math.round(8 * weatherScale);
     if (restaurant.coords) {
       const dist = getDistance(KT_BASE_LAT, KT_BASE_LNG, restaurant.coords.lat, restaurant.coords.lng);
       if (dist > 400) score -= 3;
     }
   }
   if (selections.weather === 'cold') {
-    if (/찌개|탕|국밥|전골|국|라멘|우동|설렁탕|갈비탕|샤브|곰탕|순대국|감자탕/.test(searchText)) score += 12;
-    if (/냉면|회|샐러드|냉모밀|물회|콩국수/.test(searchText)) score -= 5;
+    if (/찌개|탕|국밥|전골|국|라멘|우동|설렁탕|갈비탕|샤브|곰탕|순대국|감자탕/.test(searchText)) score += Math.round(12 * weatherScale);
+    // 식단 선택 시 차가운 음식 감점 면제 (다이어트 식당이 불이익 받지 않도록)
+    if (!isDietMode && /냉면|회|샐러드|냉모밀|물회|콩국수/.test(searchText)) score -= 5;
   }
   if (selections.weather === 'rainy') {
-    if (/찌개|전|국밥|파전|부침|수제비|칼국수|라멘|순대국/.test(searchText)) score += 15;
+    if (/찌개|전|국밥|파전|부침|수제비|칼국수|라멘|순대국/.test(searchText)) score += Math.round(15 * weatherScale);
     if (restaurant.coords) {
       const dist = getDistance(KT_BASE_LAT, KT_BASE_LNG, restaurant.coords.lat, restaurant.coords.lng);
       if (dist > 300) score -= 5;

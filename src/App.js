@@ -571,14 +571,22 @@ export default function LunchRecommender() {
             }
           }
           
-          // 🥗 다이어트/채식-칼로리 시너지 보너스 (최대 6점)
+          // 🥗 다이어트/채식-칼로리 시너지 보너스 (최대 15점)
           if (selections.diet === 'diet' || selections.diet === 'light' || selections.diet === 'vegetarian') {
             if (r.calorie && r.calorie.label === '저칼로리') {
-              totalScore += 6; // 다이어트/채식 선택 + 저칼로리 식당 = 최적
+              totalScore += 15; // 다이어트/채식 선택 + 저칼로리 식당 = 최적
             } else if (r.calorie && r.calorie.label === '보통칼로리') {
-              totalScore += 2;
+              totalScore += 5;
             } else if (r.calorie && r.calorie.label === '고칼로리') {
-              totalScore -= 15; // 다이어트인데 고칼로리면 강한 감점
+              totalScore -= 20; // 다이어트인데 고칼로리면 강한 감점
+            }
+            
+            // 🥗 다이어트 전용 카테고리 보너스: 식단에 최적화된 메뉴 추가 가점
+            const cat = r.category || '';
+            if (/샐러드|포케|그릭요거트|요거트/.test(cat)) {
+              totalScore += 8; // 대표 다이어트 카테고리
+            } else if (/두부|소바|메밀|닭가슴살/.test(cat)) {
+              totalScore += 5; // 준다이어트 카테고리
             }
           }
           
