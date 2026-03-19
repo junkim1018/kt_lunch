@@ -3083,7 +3083,7 @@ export const restaurantDB = [
     waiting: false,
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
     reason: "광화문 곰탕·설렁탕 전문점. 진한 사골 국물에 고기 넉넉. 추운 날 따뜻하게 한 그릇 하기 좋고, 혼밥·소규모 점심에 부담 없는 가격.",
-    naver: "https://map.naver.com/v5/search/고다+광화문",
+    naver: "https://map.naver.com/p/search/%EA%B3%A0%EB%8B%A4%20%EA%B4%91%ED%99%94%EB%AC%B8/place/1249078713",
     reservation: [],
   },
 ];
