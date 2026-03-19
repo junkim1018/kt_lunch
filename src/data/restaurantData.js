@@ -3082,7 +3082,7 @@ export const restaurantDB = [
     budget: ["cheap","normal"],
     waiting: false,
     calorie: { emoji: "🟡", label: "보통칼로리", color: "#f5a623" },
-    reason: "광화문 돼지곰탕·돼지우동 전문점. 진한 국물에 돼지고기 넉넉. 1만원부터 든든하게 한 끼 해결. 추운 날 해장에도 좋고, 혼밥·소규모 점심에 부담 없는 가격.",
+    reason: "돼지곰탕·돼지우동 전문 맛집. 맑은 국물에 풍부한 고기 맛이 일품. 돼지곰탕은 잡내 없이 깔끔하고, 돼지우동은 다대기와 후추가 더해져 깊은 맛. 혼밥족 다찌석과 2~4인 테이블 구비.",
     naver: "https://map.naver.com/p/search/%EA%B3%A0%EB%8B%A4%20%EA%B4%91%ED%99%94%EB%AC%B8/place/1249078713",
     reservation: [],
   },
